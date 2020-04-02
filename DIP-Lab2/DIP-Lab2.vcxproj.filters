@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="DIPLab2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="opencv\sample.cpp">
+      <Filter>Source Files\opencv</Filter>
+    </ClCompile>
+    <ClCompile Include="opencv\lib\PatchGenerator.cpp">
+      <Filter>Source Files\opencv\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="opencv\mycv\BoundingBox.cpp">
+      <Filter>Source Files\opencv\mycv</Filter>
+    </ClCompile>
+    <ClCompile Include="opencv\mycv\Detector.cpp">
+      <Filter>Source Files\opencv\mycv</Filter>
+    </ClCompile>
+    <ClCompile Include="opencv\mycv\FernClassifier.cpp">
+      <Filter>Source Files\opencv\mycv</Filter>
+    </ClCompile>
+    <ClCompile Include="opencv\mycv\ForrestClassifier.cpp">
+      <Filter>Source Files\opencv\mycv</Filter>
+    </ClCompile>
+    <ClCompile Include="opencv\mycv\HaarFeature.cpp">
+      <Filter>Source Files\opencv\mycv</Filter>
+    </ClCompile>
+    <ClCompile Include="opencv\mycv\HaarFeaturesExtractor.cpp">
+      <Filter>Source Files\opencv\mycv</Filter>
+    </ClCompile>
+    <ClCompile Include="opencv\mycv\Img.cpp">
+      <Filter>Source Files\opencv\mycv</Filter>
+    </ClCompile>
+    <ClCompile Include="opencv\mycv\NccClassifier.cpp">
+      <Filter>Source Files\opencv\mycv</Filter>
+    </ClCompile>
+    <ClCompile Include="opencv\mycv\OneBitLBP.cpp">
+      <Filter>Source Files\opencv\mycv</Filter>
+    </ClCompile>
+    <ClCompile Include="opencv\mycv\OneBitLBPExtractor.cpp">
+      <Filter>Source Files\opencv\mycv</Filter>
+    </ClCompile>
+    <ClCompile Include="opencv\mycv\RandomFern.cpp">
+      <Filter>Source Files\opencv\mycv</Filter>
+    </ClCompile>
+    <ClCompile Include="opencv\mycv\RandomForest.cpp">
+      <Filter>Source Files\opencv\mycv</Filter>
+    </ClCompile>
+    <ClCompile Include="opencv\mycv\RandomHaarFeature.cpp">
+      <Filter>Source Files\opencv\mycv</Filter>
+    </ClCompile>
+    <ClCompile Include="opencv\mycv\RandomHaarFeatureExtractor.cpp">
+      <Filter>Source Files\opencv\mycv</Filter>
+    </ClCompile>
+    <ClCompile Include="opencv\mycv\Sample.cpp">
+      <Filter>Source Files\opencv\mycv</Filter>
+    </ClCompile>
+    <ClCompile Include="opencv\mycv\Scanner.cpp">
+      <Filter>Source Files\opencv\mycv</Filter>
+    </ClCompile>
+    <ClCompile Include="QTCVUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Source Files\opencv">
+      <UniqueIdentifier>{17910e80-7685-4a64-a5c2-0d836347d193}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\opencv\mycv">
+      <UniqueIdentifier>{9d8897f0-423c-4595-ae20-a34a0b552279}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\opencv\lib">
+      <UniqueIdentifier>{dce7e786-1628-4368-b290-c7592a5f23f3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="DIPLab2.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="DIPLab2.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="DIPLab2.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="opencv\mycv.h">
+      <Filter>Source Files\opencv</Filter>
+    </ClInclude>
+    <ClInclude Include="opencv\lib\PatchGenerator.h">
+      <Filter>Source Files\opencv\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="QTCVUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

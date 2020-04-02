@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DIPLab2Class</class>
+ <widget class="QMainWindow" name="DIPLab2Class">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>640</width>
+    <height>720</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>640</width>
+    <height>720</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>640</width>
+    <height>720</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>DIPLab2</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QFrame" name="frame">
+    <property name="geometry">
+     <rect>
+      <x>12</x>
+      <y>12</y>
+      <width>616</width>
+      <height>701</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="srcImg1">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>30</y>
+       <width>300</width>
+       <height>300</height>
+      </rect>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::WinPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="lineWidth">
+      <number>1</number>
+     </property>
+     <property name="midLineWidth">
+      <number>1</number>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="indent">
+      <number>-1</number>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="openBtn1">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>0</y>
+       <width>76</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>打开</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="srcImg2">
+     <property name="geometry">
+      <rect>
+       <x>314</x>
+       <y>30</y>
+       <width>300</width>
+       <height>300</height>
+      </rect>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::WinPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="lineWidth">
+      <number>1</number>
+     </property>
+     <property name="midLineWidth">
+      <number>1</number>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="indent">
+      <number>-1</number>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="openBtn2">
+     <property name="geometry">
+      <rect>
+       <x>352</x>
+       <y>0</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>打开</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>8</y>
+       <width>54</width>
+       <height>12</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>图片1</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>314</x>
+       <y>8</y>
+       <width>54</width>
+       <height>12</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>图片2</string>
+     </property>
+    </widget>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>340</y>
+       <width>192</width>
+       <height>108</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>随机厥算法(Random FERN)</string>
+     </property>
+     <widget class="QLabel" name="label_3">
+      <property name="geometry">
+       <rect>
+        <x>12</x>
+        <y>24</y>
+        <width>54</width>
+        <height>12</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>设置矩形</string>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="xInput">
+      <property name="geometry">
+       <rect>
+        <x>42</x>
+        <y>50</y>
+        <width>48</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="maximum">
+       <number>9999</number>
+      </property>
+     </widget>
+     <widget class="QLabel" name="xLabel">
+      <property name="geometry">
+       <rect>
+        <x>12</x>
+        <y>54</y>
+        <width>24</width>
+        <height>12</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>X</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="wInput">
+      <property name="geometry">
+       <rect>
+        <x>42</x>
+        <y>76</y>
+        <width>48</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="maximum">
+       <number>9999</number>
+      </property>
+     </widget>
+     <widget class="QLabel" name="wLabel">
+      <property name="geometry">
+       <rect>
+        <x>12</x>
+        <y>80</y>
+        <width>24</width>
+        <height>12</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>W</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="yLabel">
+      <property name="geometry">
+       <rect>
+        <x>96</x>
+        <y>54</y>
+        <width>24</width>
+        <height>12</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Y</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="hInput">
+      <property name="geometry">
+       <rect>
+        <x>122</x>
+        <y>76</y>
+        <width>48</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="maximum">
+       <number>9999</number>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="yInput">
+      <property name="geometry">
+       <rect>
+        <x>122</x>
+        <y>48</y>
+        <width>48</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="maximum">
+       <number>9999</number>
+      </property>
+     </widget>
+     <widget class="QLabel" name="hLabel">
+      <property name="geometry">
+       <rect>
+        <x>96</x>
+        <y>80</y>
+        <width>24</width>
+        <height>12</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>H</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="rectBtn">
+      <property name="geometry">
+       <rect>
+        <x>96</x>
+        <y>18</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>手动选取</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QLabel" name="pointPos">
+     <property name="geometry">
+      <rect>
+       <x>500</x>
+       <y>684</y>
+       <width>112</width>
+       <height>12</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>指针位置 123, 255</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="DIPLab2.qrc"/>
+ </resources>
+ <connections/>
+ <designerdata>
+  <property name="gridDeltaX">
+   <number>10</number>
+  </property>
+  <property name="gridDeltaY">
+   <number>10</number>
+  </property>
+  <property name="gridSnapX">
+   <bool>true</bool>
+  </property>
+  <property name="gridSnapY">
+   <bool>true</bool>
+  </property>
+  <property name="gridVisible">
+   <bool>true</bool>
+  </property>
+ </designerdata>
+</ui>
