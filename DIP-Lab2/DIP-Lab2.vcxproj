@@ -91,6 +91,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DIPLab2.cpp" />
+    <ClCompile Include="ImageProcess.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="opencv\lib\PatchGenerator.cpp" />
     <ClCompile Include="opencv\mycv\BoundingBox.cpp" />
@@ -122,6 +123,7 @@
     <QtRcc Include="DIPLab2.qrc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ImageProcess.h" />
     <ClInclude Include="opencv\lib\PatchGenerator.h" />
     <ClInclude Include="opencv\mycv.h" />
     <ClInclude Include="QTCVUtils.h" />

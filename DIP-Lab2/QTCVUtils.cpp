@@ -19,15 +19,11 @@ Mat QTCVUtils::qImage2Mat(const QImage& image) {
 		break;
 	}
 
-	imshow("qImage2Mat", mat);
-
 	return mat;
 }
 
 QImage QTCVUtils::mat2QImage(const Mat& mat) {
 	// 8-bits unsigned, NO. OF CHANNELS = 1
-
-	imshow("mat2QImage", mat);
 
 	if (mat.type() == CV_8UC1) {
 		QImage image(mat.cols, mat.rows, QImage::Format_Indexed8);
@@ -65,17 +61,12 @@ QImage QTCVUtils::mat2QImage(const Mat& mat) {
 
 QImage QTCVUtils::drawRect(QImage* image, int x, int y, int w, int h) {
 	auto data = qImage2Mat(*image);
-
 	cvtColor(data, data, COLOR_BGR2GRAY);
 
 	auto tmplImg = ImgT(data);
 	auto tmplBB = BB(x, y, w, h);
 
-	imshow("tmplImg.1", tmplImg.img);
-
 	cv::rectangle(tmplImg.img, tmplBB, Scalar::all(255.0));
-
-	imshow("tmplImg.2", tmplImg.img);
 
 	return mat2QImage(tmplImg.img);
 }

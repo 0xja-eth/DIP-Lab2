@@ -21,11 +21,12 @@ DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 	connect(ui.openBtn2, SIGNAL(clicked()), this, SLOT(openPicture2()));
 	connect(ui.rectBtn, SIGNAL(clicked()), this, SLOT(setRecting()));
 
-	connect(ui.xInput, SIGNAL(valueChanged()), this, SLOT(onRectChanged()));
-	connect(ui.yInput, SIGNAL(valueChanged()), this, SLOT(onRectChanged()));
-	connect(ui.wInput, SIGNAL(valueChanged()), this, SLOT(onRectChanged()));
-	connect(ui.hInput, SIGNAL(valueChanged()), this, SLOT(onRectChanged()));
+	connect(ui.xInput, SIGNAL(valueChanged(int)), this, SLOT(onRectChanged()));
+	connect(ui.yInput, SIGNAL(valueChanged(int)), this, SLOT(onRectChanged()));
+	connect(ui.wInput, SIGNAL(valueChanged(int)), this, SLOT(onRectChanged()));
+	connect(ui.hInput, SIGNAL(valueChanged(int)), this, SLOT(onRectChanged()));
 
+	connect(ui.doFERNS, SIGNAL(clicked()), this, SLOT(doFERNS()));
 }
 
 QImage DIPLab2::srcQImg1() {
@@ -36,23 +37,22 @@ QImage DIPLab2::srcQImg2() {
 	return ui.srcImg2->pixmap()->toImage();
 }
 
-void DIPLab2::openFile(QLabel* tarImg) {
+void DIPLab2::openFile(QLabel* tarImg, QImage* qimg) {
 	static QString title = "Ñ¡ÔñÍ¼Ïñ";
 	static QString filter = "Images(*.png *.bmp *.jpg *.tif *.gif);; AllFiles(*.*)";
 	QString filename = QFileDialog::getOpenFileName(this, title, "", filter);
-	loadFile(filename, tarImg);
+	loadFile(filename, tarImg, qimg);
 }
 
-void DIPLab2::loadFile(QString filename, QLabel* tarImg) {
+void DIPLab2::loadFile(QString filename, QLabel* tarImg, QImage* qimg) {
 	static QString failText = "´ò¿ªÍ¼ÏñÊ§°Ü£¡";
 	if (filename.isEmpty()) return;
 	else {
-		QImage img;
-		if (!(img.load(filename))) 
+		if (!(qimg->load(filename)))
 			//¼ÓÔØÍ¼Ïñ
 			QMessageBox::information(this, failText, failText);
 		else
-			tarImg->setPixmap(QPixmap::fromImage(img));// .scaled(tarImg->size())));
+			tarImg->setPixmap(QPixmap::fromImage(*qimg));// .scaled(tarImg->size())));
 	}
 }
 
@@ -72,15 +72,15 @@ void DIPLab2::processRecting(QPoint pos) {
 	ui.yInput->setValue(miny);
 	ui.wInput->setValue(maxx-minx);
 	ui.hInput->setValue(maxy-miny);
+	//onRectChanged();
 }
 
 void DIPLab2::processEndRecting() {
 	recting = false;
-	onRectChanged();
 }
 
 QPoint DIPLab2::transferPoint(QPoint pos, QLabel* tarImg) {
-	QPoint gPos = tarImg->mapToParent(tarImg->pos());
+	QPoint gPos = tarImg->pos();
 	return pos - gPos;
 }
 
@@ -105,14 +105,6 @@ void DIPLab2::mouseMoveEvent(QMouseEvent *e) {
 	}
 }
 
-void DIPLab2::onRectChanged() {
-	int x = ui.xInput->value(), y = ui.yInput->value();
-	int w = ui.wInput->value(), h = ui.hInput->value();
-	auto img = QTCVUtils::drawRect(&srcQImg1(), x, y, w, h);
-	QLabel* tarImg = ui.srcImg1;
-	tarImg->setPixmap(QPixmap::fromImage(img)); // .scaled(tarImg->size())));
-}
-
 void DIPLab2::mousePressEvent(QMouseEvent * e) {
 	if (recting) {
 		auto pos = transferPoint(e->pos(), ui.srcImg1);
@@ -123,4 +115,23 @@ void DIPLab2::mousePressEvent(QMouseEvent * e) {
 
 void DIPLab2::mouseReleaseEvent(QMouseEvent * e) {
 	if (recting) processEndRecting();
+}
+
+void DIPLab2::onRectChanged() {
+	int x = ui.xInput->value(), y = ui.yInput->value();
+	int w = ui.wInput->value(), h = ui.hInput->value();
+	auto img = QTCVUtils::drawRect(&qimg1, x, y, w, h);
+	ui.srcImg1->setPixmap(QPixmap::fromImage(img)); // .scaled(tarImg->size())));
+}
+
+void DIPLab2::doFERNS() {
+	int x = ui.xInput->value(), y = ui.yInput->value();
+	int w = ui.wInput->value(), h = ui.hInput->value();
+
+	QImage out1, out2;
+
+	ImageProcess::doFERNS(qimg1, qimg2, out1, out2, x, y, w, h);
+	
+	ui.srcImg1->setPixmap(QPixmap::fromImage(out1)); // .scaled(tarImg->size())));
+	ui.srcImg2->setPixmap(QPixmap::fromImage(out2)); // .scaled(tarImg->size())));
 }

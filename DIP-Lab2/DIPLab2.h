@@ -15,8 +15,7 @@
 #include <QHBoxLayout>
 #include <QImage>
 
-#include <opencv2\highgui\highgui.hpp>
-#include <opencv2/opencv.hpp>
+#include "ImageProcess.h"
 
 #include "ui_DIPLab2.h"
 
@@ -32,8 +31,8 @@ public:
 private:
 	Ui::DIPLab2Class ui;
 
-	void openFile(QLabel* tarImg);
-	void loadFile(QString filename, QLabel* tarImg);
+	void openFile(QLabel* tarImg, QImage* qimg);
+	void loadFile(QString filename, QLabel* tarImg, QImage* qimg);
 
 	void processStartRecting(QPoint pos); // 处理开始选择矩形
 	void processRecting(QPoint pos); // 处理矩形选择
@@ -44,10 +43,11 @@ private:
 	bool pointInRect(QPoint pos, QLabel* tarImg, bool global = true);
 
 public slots:
-	void openPicture1() { openFile(ui.srcImg1); };
-	void openPicture2() { openFile(ui.srcImg2); }
+	void openPicture1() { openFile(ui.srcImg1, &qimg1); };
+	void openPicture2() { openFile(ui.srcImg2, &qimg2); }
 	void setRecting() { recting = true; }
 	void onRectChanged();
+	void doFERNS();
 
 protected:
 
@@ -56,6 +56,8 @@ protected:
 	void mouseReleaseEvent(QMouseEvent * e);
 
 private:
+	QImage qimg1, qimg2;
+
 	bool recting = false; // 是否处于选择矩形状态下
 	QPoint startPos;
 
