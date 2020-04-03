@@ -17,8 +17,11 @@ DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 
 	setMouseTracking(true);
 	//添加关联代码，必须放在 setupUi 函数之后,信号与槽机制
-	connect(ui.openBtn1, SIGNAL(clicked()), this, SLOT(openPicture1()));
-	connect(ui.openBtn2, SIGNAL(clicked()), this, SLOT(openPicture2()));
+	connect(ui.openBtn1, SIGNAL(clicked()), this, SLOT(openFile1()));
+	connect(ui.openBtn2, SIGNAL(clicked()), this, SLOT(openFile2()));
+	connect(ui.recoverBtn1, SIGNAL(clicked()), this, SLOT(recover1()));
+	connect(ui.recoverBtn2, SIGNAL(clicked()), this, SLOT(recover2()));
+
 	connect(ui.rectBtn, SIGNAL(clicked()), this, SLOT(setRecting()));
 
 	connect(ui.xInput, SIGNAL(valueChanged(int)), this, SLOT(onRectChanged()));
@@ -27,6 +30,8 @@ DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 	connect(ui.hInput, SIGNAL(valueChanged(int)), this, SLOT(onRectChanged()));
 
 	connect(ui.doFERNS, SIGNAL(clicked()), this, SLOT(doFERNS()));
+
+	connect(ui.doFeatDetect, SIGNAL(clicked()), this, SLOT(doFeatureDetect()));
 }
 
 QImage DIPLab2::srcQImg1() {
@@ -37,24 +42,45 @@ QImage DIPLab2::srcQImg2() {
 	return ui.srcImg2->pixmap()->toImage();
 }
 
-void DIPLab2::openFile(QLabel* tarImg, QImage* qimg) {
+void DIPLab2::setImg(QLabel* tarImg, QImage* qImg) {
+	if (qImg == NULL)
+		tarImg->clear();
+	else
+		tarImg->setPixmap(QPixmap::fromImage(*qImg));
+}
+
+void DIPLab2::setSrcImg1(QImage* qImg) {
+	setImg(ui.srcImg1, qImg);
+}
+
+void DIPLab2::setSrcImg2(QImage* qImg) {
+	setImg(ui.srcImg2, qImg);
+}
+
+void DIPLab2::setTarImg(QImage* qImg) {
+	setImg(ui.tarImg, qImg);
+}
+
+void DIPLab2::openFile(QLabel* tarImg, QImage& qimg) {
 	static QString title = "选择图像";
 	static QString filter = "Images(*.png *.bmp *.jpg *.tif *.gif);; AllFiles(*.*)";
 	QString filename = QFileDialog::getOpenFileName(this, title, "", filter);
 	loadFile(filename, tarImg, qimg);
 }
 
-void DIPLab2::loadFile(QString filename, QLabel* tarImg, QImage* qimg) {
+void DIPLab2::loadFile(QString filename, QLabel* tarImg, QImage& qimg) {
 	static QString failText = "打开图像失败！";
 	if (filename.isEmpty()) return;
 	else {
-		if (!(qimg->load(filename)))
+		if (!(qimg.load(filename)))
 			//加载图像
 			QMessageBox::information(this, failText, failText);
 		else
-			tarImg->setPixmap(QPixmap::fromImage(*qimg));// .scaled(tarImg->size())));
+			setImg(tarImg, &qimg);
 	}
 }
+
+#pragma region 矩形设置
 
 void DIPLab2::processStartRecting(QPoint pos) {
 	startPos = pos;
@@ -70,8 +96,8 @@ void DIPLab2::processRecting(QPoint pos) {
 	int maxx = max(x1, x2), maxy = max(y1, y2);
 	ui.xInput->setValue(minx);
 	ui.yInput->setValue(miny);
-	ui.wInput->setValue(maxx-minx);
-	ui.hInput->setValue(maxy-miny);
+	ui.wInput->setValue(maxx - minx);
+	ui.hInput->setValue(maxy - miny);
 	//onRectChanged();
 }
 
@@ -79,9 +105,13 @@ void DIPLab2::processEndRecting() {
 	recting = false;
 }
 
+// 将鼠标坐标转化到Label内的坐标
 QPoint DIPLab2::transferPoint(QPoint pos, QLabel* tarImg) {
-	QPoint gPos = tarImg->pos();
-	return pos - gPos;
+	QPoint lPos = tarImg->pos();
+	QPoint gMPos = tarImg->mapToGlobal(pos); // 全局鼠标坐标
+	QPoint gLPos = tarImg->mapToGlobal(lPos); // 全局Label坐标
+
+	return gMPos - gLPos;
 }
 
 bool DIPLab2::pointInRect(QPoint pos, QLabel* tarImg, bool global) {
@@ -120,18 +150,55 @@ void DIPLab2::mouseReleaseEvent(QMouseEvent * e) {
 void DIPLab2::onRectChanged() {
 	int x = ui.xInput->value(), y = ui.yInput->value();
 	int w = ui.wInput->value(), h = ui.hInput->value();
-	auto img = QTCVUtils::drawRect(&qimg1, x, y, w, h);
+	auto img = QTCVUtils::drawRect(&qImg1, x, y, w, h);
 	ui.srcImg1->setPixmap(QPixmap::fromImage(img)); // .scaled(tarImg->size())));
 }
+
+#pragma endregion
 
 void DIPLab2::doFERNS() {
 	int x = ui.xInput->value(), y = ui.yInput->value();
 	int w = ui.wInput->value(), h = ui.hInput->value();
 
 	QImage out1, out2;
+	ImageProcess::doFERNS(qImg1, qImg2, out1, out2, x, y, w, h);
 
-	ImageProcess::doFERNS(qimg1, qimg2, out1, out2, x, y, w, h);
-	
-	ui.srcImg1->setPixmap(QPixmap::fromImage(out1)); // .scaled(tarImg->size())));
-	ui.srcImg2->setPixmap(QPixmap::fromImage(out2)); // .scaled(tarImg->size())));
+	setSrcImg1(&out1); setSrcImg2(&out2);
 }
+
+void DIPLab2::doSIFT() {
+	int x = ui.xInput->value(), y = ui.yInput->value();
+	int w = ui.wInput->value(), h = ui.hInput->value();
+
+	QImage out = ImageProcess::doSIFT(qImg1, qImg2);
+
+	setTarImg(&out);
+}
+
+void DIPLab2::doSURF() {
+	int x = ui.xInput->value(), y = ui.yInput->value();
+	int w = ui.wInput->value(), h = ui.hInput->value();
+
+	QImage out = ImageProcess::doSURF(qImg1, qImg2);
+
+	setTarImg(&out);
+}
+
+void DIPLab2::doORB() {
+	int x = ui.xInput->value(), y = ui.yInput->value();
+	int w = ui.wInput->value(), h = ui.hInput->value();
+
+	QImage out = ImageProcess::doORB(qImg1, qImg2);
+
+	setTarImg(&out);
+}
+
+void DIPLab2::doFeatureDetect() {
+	int type = ui.fdAlgoSelect->currentIndex();
+	switch (type) {
+	case 0: doSIFT(); break;
+	case 1: doSURF(); break;
+	case 2: doORB(); break;
+	}
+}
+

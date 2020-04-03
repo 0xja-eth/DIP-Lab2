@@ -46,8 +46,8 @@ private:
 	QPoint transferPoint(QPoint pos, QLabel* tarImg);
 	bool pointInRect(QPoint pos, QLabel* tarImg, bool global = true);
 
-	void doSIFT();
 	void doSURF();
+	void doSIFT();
 	void doORB();
 
 public slots:
