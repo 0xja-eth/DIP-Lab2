@@ -63,13 +63,13 @@ private:
 
 static class QTCVUtils {
 public:
-	typedef Mat(*ProcessFuncType1)(
+	typedef Mat(*ProcessFuncType1)( // 处理一张图片的函数签名
 		const Mat&, const ProcessParam*);
-	typedef Mat(*ProcessFuncType2)(
+	typedef Mat(*ProcessFuncType2)( // 处理两张图片，但只输出一张图片的函数签名
 		const Mat&, const Mat&, const ProcessParam*);
-	typedef void(*ProcessFuncType3)(
+	typedef void(*ProcessFuncType3)( // 处理两张图片，输出两张图片的函数签名
 		const Mat&, const Mat&, Mat&, Mat&, const ProcessParam*);
-	typedef void(*ProcessFuncType4)(
+	typedef void(*ProcessFuncType4)( // 处理视频，输出视频的函数签名
 		const Mat*, long, Mat*&, long&, const ProcessParam*);
 
 	static Mat qImage2Mat(const QImage& image);

@@ -16,13 +16,6 @@
   </Class>
   <Class Name="mycv::ForestClassifier&lt;TpTree&gt;" Collapsed="true">
     <Position X="13.25" Y="0.5" Width="1.5" />
-    <NestedTypes>
-      <Struct Name="mycv::ForestClassifier&lt;TpTree&gt;::__unnamed_struct_01b2_1" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>opencv\mycv\ForrestClassifier.cpp</NewMemberFileName>
-        </TypeIdentifier>
-      </Struct>
-    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AgAAAAAAIAAAAAAACIAAAAAkAAAAAAAAAAACDAAAAAA=</HashCode>
       <FileName>opencv\mycv\ForrestClassifier.cpp</FileName>
@@ -30,13 +23,6 @@
   </Class>
   <Class Name="mycv::HaarFeature" Collapsed="true">
     <Position X="15" Y="0.5" Width="1.5" />
-    <NestedTypes>
-      <Struct Name="mycv::HaarFeature::__unnamed_struct_01b3_1" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>opencv\mycv\HaarFeature.cpp</NewMemberFileName>
-        </TypeIdentifier>
-      </Struct>
-    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AAgAAAAAAAIAAAAAAAAAAAAAACAAAAAgAQAAAAAAAAA=</HashCode>
       <FileName>opencv\mycv\HaarFeature.cpp</FileName>
@@ -44,13 +30,6 @@
   </Class>
   <Class Name="mycv::HaarFeaturesExtractor" Collapsed="true">
     <Position X="9.75" Y="1.5" Width="1.5" />
-    <NestedTypes>
-      <Typedef Name="mycv::HaarFeaturesExtractor::sample_type" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>opencv\mycv\HaarFeaturesExtractor.cpp</NewMemberFileName>
-        </TypeIdentifier>
-      </Typedef>
-    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAIAACAAAAAAAAAAAAAAQQAAAAAAAAAQAAA=</HashCode>
       <FileName>opencv\mycv\HaarFeaturesExtractor.cpp</FileName>
@@ -58,13 +37,6 @@
   </Class>
   <Class Name="mycv::NccClassifier" Collapsed="true">
     <Position X="11.5" Y="1.5" Width="1.5" />
-    <NestedTypes>
-      <Struct Name="mycv::NccClassifier::__unnamed_struct_01b6_2" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>opencv\mycv\NccClassifier.cpp</NewMemberFileName>
-        </TypeIdentifier>
-      </Struct>
-    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AAAAAAAAIBAQAAgAABAAgAAQAAAEAAAABAAACAAAAAA=</HashCode>
       <FileName>opencv\mycv\NccClassifier.cpp</FileName>
@@ -72,18 +44,6 @@
   </Class>
   <Class Name="mycv::NccExtractor" Collapsed="true">
     <Position X="13.25" Y="1.5" Width="1.5" />
-    <NestedTypes>
-      <Struct Name="mycv::NccExtractor::__unnamed_struct_01b6_1" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>opencv\mycv\NccClassifier.cpp</NewMemberFileName>
-        </TypeIdentifier>
-      </Struct>
-      <Typedef Name="mycv::NccExtractor::sample_type" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>opencv\mycv\NccClassifier.cpp</NewMemberFileName>
-        </TypeIdentifier>
-      </Typedef>
-    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAIIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>opencv\mycv\NccClassifier.cpp</FileName>
@@ -91,13 +51,6 @@
   </Class>
   <Class Name="mycv::OneBitLBP" Collapsed="true">
     <Position X="15" Y="1.5" Width="1.5" />
-    <NestedTypes>
-      <Struct Name="mycv::OneBitLBP::__unnamed_struct_01c1_1" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>opencv\mycv\OneBitLBP.cpp</NewMemberFileName>
-        </TypeIdentifier>
-      </Struct>
-    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AAAAEAAAAAIAAAAAAAAAAAAAACAAAAAQAAAAAAAAAAA=</HashCode>
       <FileName>opencv\mycv\OneBitLBP.cpp</FileName>
@@ -105,13 +58,6 @@
   </Class>
   <Class Name="mycv::OneBitLBPExtractor" Collapsed="true">
     <Position X="9.75" Y="2.5" Width="1.5" />
-    <NestedTypes>
-      <Typedef Name="mycv::OneBitLBPExtractor::sample_type" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>opencv\mycv\OneBitLBPExtractor.cpp</NewMemberFileName>
-        </TypeIdentifier>
-      </Typedef>
-    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAIAACAAAAAAAAAAAAAAQAAAAAAgAAAQAAA=</HashCode>
       <FileName>opencv\mycv\OneBitLBPExtractor.cpp</FileName>
@@ -133,13 +79,6 @@
   </Class>
   <Class Name="mycv::RandomHaarFeature" Collapsed="true">
     <Position X="9.75" Y="3.5" Width="1.5" />
-    <NestedTypes>
-      <Struct Name="mycv::RandomHaarFeature::__unnamed_struct_01b9_1" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>opencv\mycv\RandomHaarFeature.cpp</NewMemberFileName>
-        </TypeIdentifier>
-      </Struct>
-    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAIAAAAAAAAAAAAAACAAAAAgAQAAAAAAAAA=</HashCode>
       <FileName>opencv\mycv\RandomHaarFeature.cpp</FileName>
@@ -147,13 +86,6 @@
   </Class>
   <Class Name="mycv::RandomHaarFeaturesExtractor" Collapsed="true">
     <Position X="11.5" Y="3.5" Width="1.5" />
-    <NestedTypes>
-      <Typedef Name="mycv::RandomHaarFeaturesExtractor::sample_type" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>opencv\mycv\RandomHaarFeatureExtractor.cpp</NewMemberFileName>
-        </TypeIdentifier>
-      </Typedef>
-    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAIAACAAAAAAAAAAAAAAQAAAAAAAAAAAAQA=</HashCode>
       <FileName>opencv\mycv\RandomHaarFeatureExtractor.cpp</FileName>
@@ -191,7 +123,7 @@
   <Class Name="DIPLab2">
     <Position X="0.5" Y="4.75" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>EAAEBIEABAABEAADAAAAAAAAQAAQAAAAgAAgAAAAAAA=</HashCode>
+      <HashCode>EFAEBIEABAABGAITAACAAAAgQAAQCAAAgAAiAAAAAAA=</HashCode>
       <FileName>DIPLab2.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -232,17 +164,22 @@
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <NestedTypes>
-      <Typedef Name="QTCVUtils::ProcessFunc1" Collapsed="true">
+      <Typedef Name="QTCVUtils::ProcessFuncType1" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>QTCVUtils.h</NewMemberFileName>
         </TypeIdentifier>
       </Typedef>
-      <Typedef Name="QTCVUtils::ProcessFunc2" Collapsed="true">
+      <Typedef Name="QTCVUtils::ProcessFuncType2" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>QTCVUtils.h</NewMemberFileName>
         </TypeIdentifier>
       </Typedef>
-      <Typedef Name="QTCVUtils::ProcessFunc3" Collapsed="true">
+      <Typedef Name="QTCVUtils::ProcessFuncType3" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>QTCVUtils.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+      <Typedef Name="QTCVUtils::ProcessFuncType4" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>QTCVUtils.h</NewMemberFileName>
         </TypeIdentifier>
@@ -265,6 +202,13 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ImageProcess.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MediaObject">
+    <Position X="2.75" Y="9.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>EABQARDAAIBQAAAIAAAAAAAAkEABCAAAAARACAEAQAA=</HashCode>
+      <FileName>QTCVUtils.h</FileName>
     </TypeIdentifier>
   </Class>
   <Struct Name="mycv::HaarSample_" Collapsed="true">
