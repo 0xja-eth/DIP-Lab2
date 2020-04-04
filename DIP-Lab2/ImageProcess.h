@@ -31,7 +31,7 @@ public:
 	typedef DescriptorMatcher::MatcherType MType;
 
 	Algo algo; // 特征检测算法
-	RType rType; // 特征匹配模式
+	RType rType; // 野点去除模式
 	MType mType; // 特征匹配模式
 
 	FeatDetParam(Algo algo = SIFT, RType rType = None, 
