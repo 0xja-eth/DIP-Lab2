@@ -13,3 +13,7 @@
 #include "mycv/RandomHaarFeature.cpp"
 #include "mycv/RandomHaarFeatureExtractor.cpp"
 #include "mycv/OneBitLBPExtractor.cpp"
+
+using namespace std;
+using namespace mycv;
+using namespace cv;

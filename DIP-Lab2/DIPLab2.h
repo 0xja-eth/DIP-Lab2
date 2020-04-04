@@ -46,19 +46,17 @@ private:
 	QPoint transferPoint(QPoint pos, QLabel* tarImg);
 	bool pointInRect(QPoint pos, QLabel* tarImg, bool global = true);
 
-	void doSIFT();
-	void doSURF();
-	void doORB();
-
 public slots:
 	void openFile1() { openFile(ui.srcImg1, qImg1); };
 	void openFile2() { openFile(ui.srcImg2, qImg2); }
 	void recover1() { setSrcImg1(&qImg1); };
 	void recover2() { setSrcImg2(&qImg2); }
 	void setRecting() { recting = true; }
+	
 	void onRectChanged();
-	void doFERNS();
-	void doFeatureDetect();
+
+	void doRandFERNS();
+	void doFeatDet();
 
 protected:
 

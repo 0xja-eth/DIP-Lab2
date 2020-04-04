@@ -59,14 +59,32 @@ QImage QTCVUtils::mat2QImage(const Mat& mat) {
 	}
 }
 
-QImage QTCVUtils::drawRect(QImage* image, int x, int y, int w, int h) {
-	auto data = qImage2Mat(*image);
-	cvtColor(data, data, COLOR_BGR2GRAY);
+QImage QTCVUtils::process(ProcessFunc1 func, /* 处理函数 */ 
+	const QImage &img, /* 输入图片 */ 
+	const ProcessParam* param /*= NULL 参数*/) {
 
-	auto tmplImg = ImgT(data);
-	auto tmplBB = BB(x, y, w, h);
+	return mat2QImage(func(qImage2Mat(img), param));
+}
 
-	rectangle(tmplImg.img, tmplBB, Scalar::all(255.0));
+QImage QTCVUtils::process(ProcessFunc2 func, /* 处理函数 */ 
+	const QImage &img1, const QImage &img2, /* 输入图片 */ 
+	const ProcessParam* param /*= NULL 参数*/) {
 
-	return mat2QImage(tmplImg.img);
+	auto data1 = qImage2Mat(img1), data2 = qImage2Mat(img2);
+
+	return mat2QImage(func(data1, data2, param));
+}
+
+void QTCVUtils::process(ProcessFunc3 func, /* 处理函数 */ 
+	const QImage &img1, const QImage &img2, /* 输入图片 */ 
+	QImage &out1, QImage &out2, /* 输出图片 */ 
+	const ProcessParam* param /*= NULL 参数*/) {
+
+	auto data1 = qImage2Mat(img1), data2 = qImage2Mat(img2);
+
+	Mat outData1, outData2;
+	func(data1, data2, outData1, outData2, param);
+
+	out1 = mat2QImage(outData1);
+	out2 = mat2QImage(outData2);
 }

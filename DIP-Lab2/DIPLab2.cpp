@@ -29,9 +29,9 @@ DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 	connect(ui.wInput, SIGNAL(valueChanged(int)), this, SLOT(onRectChanged()));
 	connect(ui.hInput, SIGNAL(valueChanged(int)), this, SLOT(onRectChanged()));
 
-	connect(ui.doFERNS, SIGNAL(clicked()), this, SLOT(doFERNS()));
+	connect(ui.doFERNS, SIGNAL(clicked()), this, SLOT(doRandFERNS()));
 
-	connect(ui.doFeatDetect, SIGNAL(clicked()), this, SLOT(doFeatureDetect()));
+	connect(ui.doFeatDetect, SIGNAL(clicked()), this, SLOT(doFeatDet()));
 }
 
 QImage DIPLab2::srcQImg1() {
@@ -150,55 +150,45 @@ void DIPLab2::mouseReleaseEvent(QMouseEvent * e) {
 void DIPLab2::onRectChanged() {
 	int x = ui.xInput->value(), y = ui.yInput->value();
 	int w = ui.wInput->value(), h = ui.hInput->value();
-	auto img = QTCVUtils::drawRect(&qImg1, x, y, w, h);
-	ui.srcImg1->setPixmap(QPixmap::fromImage(img)); // .scaled(tarImg->size())));
+	auto param = RectParam(x, y, w, h);
+
+	auto img = QTCVUtils::process(ImageProcess::drawRect, qImg1, &param);
+
+	setSrcImg1(&img);
 }
 
 #pragma endregion
 
-void DIPLab2::doFERNS() {
+#pragma region FERN处理
+
+void DIPLab2::doRandFERNS() {
 	int x = ui.xInput->value(), y = ui.yInput->value();
 	int w = ui.wInput->value(), h = ui.hInput->value();
+	auto param = RectParam(x, y, w, h);
 
 	QImage out1, out2;
-	ImageProcess::doFERNS(qImg1, qImg2, out1, out2, x, y, w, h);
+	QTCVUtils::process(ImageProcess::doFERNS,
+		qImg1, qImg2, out1, out2, &param);
 
 	setSrcImg1(&out1); setSrcImg2(&out2);
 }
 
-void DIPLab2::doSIFT() {
-	int x = ui.xInput->value(), y = ui.yInput->value();
-	int w = ui.wInput->value(), h = ui.hInput->value();
+#pragma endregion
 
-	QImage out = ImageProcess::doSIFT(qImg1, qImg2);
+#pragma region 特征检测处理
 
-	setTarImg(&out);
-}
+void DIPLab2::doFeatDet() {
+	int algo = ui.fdAlgoSelect->currentIndex();
+	int rType = ui.rTypeSelect->currentIndex();
+	int mType = ui.mTypeSelect->currentIndex()+1;
+	auto param = FeatDetParam((FeatDetParam::Algo)algo, 
+		(FeatDetParam::RType)rType, (FeatDetParam::MType)mType);
 
-void DIPLab2::doSURF() {
-	int x = ui.xInput->value(), y = ui.yInput->value();
-	int w = ui.wInput->value(), h = ui.hInput->value();
-
-	QImage out = ImageProcess::doSURF(qImg1, qImg2);
-
-	setTarImg(&out);
-}
-
-void DIPLab2::doORB() {
-	int x = ui.xInput->value(), y = ui.yInput->value();
-	int w = ui.wInput->value(), h = ui.hInput->value();
-
-	QImage out = ImageProcess::doORB(qImg1, qImg2);
+	auto out = QTCVUtils::process(
+		ImageProcess::doFeatDet, qImg1, qImg2, &param);
 
 	setTarImg(&out);
 }
 
-void DIPLab2::doFeatureDetect() {
-	int type = ui.fdAlgoSelect->currentIndex();
-	switch (type) {
-	case 0: doSIFT(); break;
-	case 1: doSURF(); break;
-	case 2: doORB(); break;
-	}
-}
+#pragma endregion
 
