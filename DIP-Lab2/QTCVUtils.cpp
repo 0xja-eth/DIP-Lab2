@@ -59,14 +59,14 @@ QImage QTCVUtils::mat2QImage(const Mat& mat) {
 	}
 }
 
-QImage QTCVUtils::process(ProcessFunc1 func, /* 处理函数 */ 
+QImage QTCVUtils::process(ProcessFuncType1 func, /* 处理函数 */ 
 	const QImage &img, /* 输入图片 */ 
 	const ProcessParam* param /*= NULL 参数*/) {
 
 	return mat2QImage(func(qImage2Mat(img), param));
 }
 
-QImage QTCVUtils::process(ProcessFunc2 func, /* 处理函数 */ 
+QImage QTCVUtils::process(ProcessFuncType2 func, /* 处理函数 */ 
 	const QImage &img1, const QImage &img2, /* 输入图片 */ 
 	const ProcessParam* param /*= NULL 参数*/) {
 
@@ -75,7 +75,7 @@ QImage QTCVUtils::process(ProcessFunc2 func, /* 处理函数 */
 	return mat2QImage(func(data1, data2, param));
 }
 
-void QTCVUtils::process(ProcessFunc3 func, /* 处理函数 */ 
+void QTCVUtils::process(ProcessFuncType3 func, /* 处理函数 */ 
 	const QImage &img1, const QImage &img2, /* 输入图片 */ 
 	QImage &out1, QImage &out2, /* 输出图片 */ 
 	const ProcessParam* param /*= NULL 参数*/) {
