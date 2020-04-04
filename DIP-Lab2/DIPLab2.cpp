@@ -1,16 +1,14 @@
 
 #include <cmath>
 
-#include "opencv/mycv.h"
-
 #include "DIPLab2.h"
-
-#include "QTCVUtils.h"
 
 using namespace std;
 
 DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 	ui.setupUi(this);
+
+	DebugUtils::openConsole();
 
 	//重置大小
 	this->resize(620, 500);
@@ -22,16 +20,23 @@ DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 	connect(ui.recoverBtn1, SIGNAL(clicked()), this, SLOT(recover1()));
 	connect(ui.recoverBtn2, SIGNAL(clicked()), this, SLOT(recover2()));
 
-	connect(ui.rectBtn, SIGNAL(clicked()), this, SLOT(setRecting()));
+	connect(ui.openVideo, SIGNAL(clicked()), this, SLOT(openVideo()));
+
+	connect(ui.manualSet, SIGNAL(clicked()), this, SLOT(setRecting()));
 
 	connect(ui.xInput, SIGNAL(valueChanged(int)), this, SLOT(onRectChanged()));
 	connect(ui.yInput, SIGNAL(valueChanged(int)), this, SLOT(onRectChanged()));
 	connect(ui.wInput, SIGNAL(valueChanged(int)), this, SLOT(onRectChanged()));
 	connect(ui.hInput, SIGNAL(valueChanged(int)), this, SLOT(onRectChanged()));
 
-	connect(ui.doFERNS, SIGNAL(clicked()), this, SLOT(doRandFERNS()));
+	connect(ui.doObjDet, SIGNAL(clicked()), this, SLOT(doRandFERNS()));
 
-	connect(ui.doFeatDetect, SIGNAL(clicked()), this, SLOT(doFeatDet()));
+	connect(ui.doFeatDet, SIGNAL(clicked()), this, SLOT(doFeatDet()));
+}
+
+DIPLab2::~DIPLab2() {
+	releaseMedia();
+	DebugUtils::closeConsole();
 }
 
 QImage DIPLab2::srcQImg1() {
@@ -49,35 +54,67 @@ void DIPLab2::setImg(QLabel* tarImg, QImage* qImg) {
 		tarImg->setPixmap(QPixmap::fromImage(*qImg));
 }
 
+void DIPLab2::setImg(QLabel* tarImg, MediaObject* media) {
+	auto image = media->getQImage();
+	setImg(tarImg, &image);
+}
+
 void DIPLab2::setSrcImg1(QImage* qImg) {
 	setImg(ui.srcImg1, qImg);
+}
+
+void DIPLab2::setSrcImg1(MediaObject* media) {
+	auto image = media->getQImage();
+	setSrcImg1(&image);
 }
 
 void DIPLab2::setSrcImg2(QImage* qImg) {
 	setImg(ui.srcImg2, qImg);
 }
 
+void DIPLab2::setSrcImg2(MediaObject* media) {
+	auto image = media->getQImage();
+	setSrcImg2(&image);
+}
+
 void DIPLab2::setTarImg(QImage* qImg) {
 	setImg(ui.tarImg, qImg);
 }
 
-void DIPLab2::openFile(QLabel* tarImg, QImage& qimg) {
-	static QString title = "选择图像";
-	static QString filter = "Images(*.png *.bmp *.jpg *.tif *.gif);; AllFiles(*.*)";
-	QString filename = QFileDialog::getOpenFileName(this, title, "", filter);
-	loadFile(filename, tarImg, qimg);
+void DIPLab2::setTarImg(MediaObject* media) {
+	auto image = media->getQImage();
+	setTarImg(&image);
 }
 
-void DIPLab2::loadFile(QString filename, QLabel* tarImg, QImage& qimg) {
-	static QString failText = "打开图像失败！";
-	if (filename.isEmpty()) return;
-	else {
-		if (!(qimg.load(filename)))
-			//加载图像
-			QMessageBox::information(this, failText, failText);
-		else
-			setImg(tarImg, &qimg);
-	}
+const QString DIPLab2::PictureTitle = "选择图片";
+const QString DIPLab2::VideoTitle = "选择视频";
+
+const QString DIPLab2::PictureFilter = "Images(*.png *.bmp *.jpg *.tif *.gif);; AllFiles(*.*)";
+const QString DIPLab2::VideoFilter = "Videos(*.mp4 *.mov *.avi);; AllFiles(*.*)";
+
+const QString DIPLab2::OpenFaileText = "文件打开失败！";
+
+void DIPLab2::openFile(QLabel* tarImg, MediaObject*& media, bool isVideo) {
+	QString title = isVideo ? VideoTitle : PictureTitle;
+	QString filter = isVideo ? VideoFilter : PictureFilter;
+	QString filename = QFileDialog::getOpenFileName(this, title, "", filter);
+	loadFile(filename, tarImg, media, isVideo);
+}
+
+void DIPLab2::loadFile(QString filename, QLabel* tarImg, 
+	MediaObject*& media, bool isVideo) {
+	if (filename.isEmpty()) return; // 空文件
+
+	delete media;
+	media = new MediaObject(filename, isVideo);
+	if (media->isEmpty())
+		QMessageBox::information(this, OpenFaileText, OpenFaileText);
+	else
+		setImg(tarImg, media);
+}
+
+void DIPLab2::releaseMedia() {
+	delete media1, media2;
 }
 
 #pragma region 矩形设置
@@ -152,25 +189,27 @@ void DIPLab2::onRectChanged() {
 	int w = ui.wInput->value(), h = ui.hInput->value();
 	auto param = RectParam(x, y, w, h);
 
-	auto img = QTCVUtils::process(ImageProcess::drawRect, qImg1, &param);
+	auto img = QTCVUtils::process(ImageProcess::drawRect, media1, &param);
 
-	setSrcImg1(&img);
+	setSrcImg1(img);
+	delete img;
 }
 
 #pragma endregion
 
 #pragma region FERN处理
 
-void DIPLab2::doRandFERNS() {
+void DIPLab2::doObjDet() {
 	int x = ui.xInput->value(), y = ui.yInput->value();
 	int w = ui.wInput->value(), h = ui.hInput->value();
 	auto param = RectParam(x, y, w, h);
 
-	QImage out1, out2;
+	MediaObject *out1, *out2;
 	QTCVUtils::process(ImageProcess::doFERNS,
-		qImg1, qImg2, out1, out2, &param);
+		media1, media2, out1, out2, &param);
 
-	setSrcImg1(&out1); setSrcImg2(&out2);
+	setSrcImg1(out1); setSrcImg2(out2);
+	delete out1, out2;
 }
 
 #pragma endregion
@@ -185,9 +224,10 @@ void DIPLab2::doFeatDet() {
 		(FeatDetParam::RType)rType, (FeatDetParam::MType)mType);
 
 	auto out = QTCVUtils::process(
-		ImageProcess::doFeatDet, qImg1, qImg2, &param);
+		ImageProcess::doFeatDet, media1, media2, &param);
 
-	setTarImg(&out);
+	setTarImg(out);
+	delete out;
 }
 
 #pragma endregion

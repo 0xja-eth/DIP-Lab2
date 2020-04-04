@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>800</height>
+    <width>632</width>
+    <height>844</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>640</width>
-    <height>800</height>
+    <width>632</width>
+    <height>844</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>640</width>
-    <height>800</height>
+    <width>632</width>
+    <height>844</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -32,7 +32,7 @@
       <x>12</x>
       <y>12</y>
       <width>616</width>
-      <height>798</height>
+      <height>821</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -50,222 +50,28 @@
     <widget class="QPushButton" name="openBtn1">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>0</x>
        <y>0</y>
        <width>76</width>
        <height>24</height>
       </rect>
      </property>
      <property name="text">
-      <string>打开</string>
+      <string>打开图片</string>
      </property>
     </widget>
     <widget class="QPushButton" name="openBtn2">
      <property name="geometry">
       <rect>
-       <x>352</x>
+       <x>310</x>
        <y>0</y>
        <width>75</width>
        <height>23</height>
       </rect>
      </property>
      <property name="text">
-      <string>打开</string>
+      <string>打开图片</string>
      </property>
-    </widget>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>6</y>
-       <width>54</width>
-       <height>12</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>图片1</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_2">
-     <property name="geometry">
-      <rect>
-       <x>314</x>
-       <y>6</y>
-       <width>54</width>
-       <height>12</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>图片2</string>
-     </property>
-    </widget>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>340</y>
-       <width>271</width>
-       <height>108</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>随机厥算法(Random FERNS)</string>
-     </property>
-     <widget class="QLabel" name="label_3">
-      <property name="geometry">
-       <rect>
-        <x>12</x>
-        <y>24</y>
-        <width>54</width>
-        <height>12</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>设置矩形</string>
-      </property>
-     </widget>
-     <widget class="QSpinBox" name="xInput">
-      <property name="geometry">
-       <rect>
-        <x>42</x>
-        <y>50</y>
-        <width>48</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="maximum">
-       <number>9999</number>
-      </property>
-     </widget>
-     <widget class="QLabel" name="xLabel">
-      <property name="geometry">
-       <rect>
-        <x>12</x>
-        <y>54</y>
-        <width>24</width>
-        <height>12</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>X</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QSpinBox" name="wInput">
-      <property name="geometry">
-       <rect>
-        <x>42</x>
-        <y>76</y>
-        <width>48</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="maximum">
-       <number>9999</number>
-      </property>
-     </widget>
-     <widget class="QLabel" name="wLabel">
-      <property name="geometry">
-       <rect>
-        <x>12</x>
-        <y>80</y>
-        <width>24</width>
-        <height>12</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>W</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="yLabel">
-      <property name="geometry">
-       <rect>
-        <x>96</x>
-        <y>54</y>
-        <width>24</width>
-        <height>12</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Y</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QSpinBox" name="hInput">
-      <property name="geometry">
-       <rect>
-        <x>122</x>
-        <y>76</y>
-        <width>48</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="maximum">
-       <number>9999</number>
-      </property>
-     </widget>
-     <widget class="QSpinBox" name="yInput">
-      <property name="geometry">
-       <rect>
-        <x>122</x>
-        <y>48</y>
-        <width>48</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="maximum">
-       <number>9999</number>
-      </property>
-     </widget>
-     <widget class="QLabel" name="hLabel">
-      <property name="geometry">
-       <rect>
-        <x>96</x>
-        <y>80</y>
-        <width>24</width>
-        <height>12</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>H</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="rectBtn">
-      <property name="geometry">
-       <rect>
-        <x>96</x>
-        <y>18</y>
-        <width>75</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>手动选取</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="doFERNS">
-      <property name="geometry">
-       <rect>
-        <x>182</x>
-        <y>18</y>
-        <width>75</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>执行</string>
-      </property>
-     </widget>
     </widget>
     <widget class="QLabel" name="pointPos">
      <property name="geometry">
@@ -369,7 +175,7 @@
     <widget class="QScrollArea" name="scrollArea2">
      <property name="geometry">
       <rect>
-       <x>314</x>
+       <x>310</x>
        <y>30</y>
        <width>300</width>
        <height>300</height>
@@ -453,7 +259,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>480</y>
+       <y>520</y>
        <width>611</width>
        <height>300</height>
       </rect>
@@ -535,150 +341,20 @@
     <widget class="QLabel" name="label_4">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>460</y>
+       <x>0</x>
+       <y>496</y>
        <width>80</width>
        <height>12</height>
       </rect>
      </property>
      <property name="text">
-      <string>输出结果：</string>
+      <string>处理结果</string>
      </property>
-    </widget>
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="geometry">
-      <rect>
-       <x>280</x>
-       <y>340</y>
-       <width>251</width>
-       <height>108</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>特征检测</string>
-     </property>
-     <widget class="QComboBox" name="fdAlgoSelect">
-      <property name="geometry">
-       <rect>
-        <x>72</x>
-        <y>18</y>
-        <width>69</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>SIFT</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>SURF</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>ORB</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QLabel" name="label_5">
-      <property name="geometry">
-       <rect>
-        <x>12</x>
-        <y>24</y>
-        <width>54</width>
-        <height>12</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>算法</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="doFeatDetect">
-      <property name="geometry">
-       <rect>
-        <x>160</x>
-        <y>18</y>
-        <width>75</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>执行</string>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="mTypeSelect">
-      <property name="geometry">
-       <rect>
-        <x>72</x>
-        <y>48</y>
-        <width>69</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>FLANN</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>BruteForce</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QLabel" name="label_6">
-      <property name="geometry">
-       <rect>
-        <x>12</x>
-        <y>54</y>
-        <width>54</width>
-        <height>12</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>匹配算法</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_7">
-      <property name="geometry">
-       <rect>
-        <x>12</x>
-        <y>84</y>
-        <width>54</width>
-        <height>12</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>野点去除</string>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="rTypeSelect">
-      <property name="geometry">
-       <rect>
-        <x>72</x>
-        <y>78</y>
-        <width>69</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>无</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>2NN</string>
-       </property>
-      </item>
-     </widget>
     </widget>
     <widget class="QPushButton" name="recoverBtn1">
      <property name="geometry">
       <rect>
-       <x>128</x>
+       <x>90</x>
        <y>0</y>
        <width>76</width>
        <height>24</height>
@@ -691,7 +367,7 @@
     <widget class="QPushButton" name="recoverBtn2">
      <property name="geometry">
       <rect>
-       <x>440</x>
+       <x>400</x>
        <y>0</y>
        <width>76</width>
        <height>24</height>
@@ -700,6 +376,455 @@
      <property name="text">
       <string>恢复原图</string>
      </property>
+    </widget>
+    <widget class="QPushButton" name="save">
+     <property name="geometry">
+      <rect>
+       <x>536</x>
+       <y>490</y>
+       <width>76</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>另存为</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="openVideo">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>0</y>
+       <width>76</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>打开视频</string>
+     </property>
+    </widget>
+    <widget class="QProgressBar" name="processBar">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>490</y>
+       <width>451</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="value">
+      <number>24</number>
+     </property>
+    </widget>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>340</y>
+       <width>611</width>
+       <height>138</height>
+      </rect>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab_5">
+      <attribute name="title">
+       <string>目标检测与跟踪</string>
+      </attribute>
+      <widget class="QSpinBox" name="wInput">
+       <property name="geometry">
+        <rect>
+         <x>200</x>
+         <y>80</y>
+         <width>48</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <number>9999</number>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="yInput">
+       <property name="geometry">
+        <rect>
+         <x>120</x>
+         <y>80</y>
+         <width>48</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <number>9999</number>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="xInput">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>80</y>
+         <width>48</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <number>9999</number>
+       </property>
+      </widget>
+      <widget class="QLabel" name="wLabel">
+       <property name="geometry">
+        <rect>
+         <x>174</x>
+         <y>84</y>
+         <width>24</width>
+         <height>12</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>W</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_3">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>52</y>
+         <width>54</width>
+         <height>12</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>设置矩形</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="odtAlgoSelect">
+       <property name="geometry">
+        <rect>
+         <x>70</x>
+         <y>12</y>
+         <width>151</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <item>
+        <property name="text">
+         <string>随机厥(FERNS)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>BOOSTING</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>MIL</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>KCF</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>TLD</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>MEDIANFLOW</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>GOTURN</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>MOSSE</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QLabel" name="yLabel">
+       <property name="geometry">
+        <rect>
+         <x>94</x>
+         <y>84</y>
+         <width>24</width>
+         <height>12</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Y</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="hInput">
+       <property name="geometry">
+        <rect>
+         <x>280</x>
+         <y>80</y>
+         <width>48</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <number>9999</number>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="doObjDet">
+       <property name="geometry">
+        <rect>
+         <x>240</x>
+         <y>12</y>
+         <width>75</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>执行</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="xLabel">
+       <property name="geometry">
+        <rect>
+         <x>14</x>
+         <y>84</y>
+         <width>24</width>
+         <height>12</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>X</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="manualSet">
+       <property name="geometry">
+        <rect>
+         <x>70</x>
+         <y>46</y>
+         <width>75</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>手动选取</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_8">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>18</y>
+         <width>54</width>
+         <height>12</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>跟踪算法</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="hLabel">
+       <property name="geometry">
+        <rect>
+         <x>254</x>
+         <y>84</y>
+         <width>24</width>
+         <height>12</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>H</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label">
+       <property name="geometry">
+        <rect>
+         <x>340</x>
+         <y>0</y>
+         <width>261</width>
+         <height>111</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;说明：&lt;/span&gt;&lt;br/&gt;该算法可对视频进行操作。&lt;br/&gt;打开视频后，图片里显示视频的第一帧，从中选择一个矩形或者勾选人脸识别进行自动识别。&lt;br/&gt;设置完毕后点击执行将自动对视频对设定的目标进行追踪操作。&lt;br/&gt;另存为操作可以保存整个视频。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_9">
+       <property name="geometry">
+        <rect>
+         <x>160</x>
+         <y>52</y>
+         <width>54</width>
+         <height>12</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>自动识别</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="adTypeSelect">
+       <property name="geometry">
+        <rect>
+         <x>220</x>
+         <y>46</y>
+         <width>111</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <item>
+        <property name="text">
+         <string>无</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>人脸识别</string>
+        </property>
+       </item>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_6">
+      <attribute name="title">
+       <string>点对映射</string>
+      </attribute>
+      <widget class="QComboBox" name="rTypeSelect">
+       <property name="geometry">
+        <rect>
+         <x>70</x>
+         <y>74</y>
+         <width>69</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <item>
+        <property name="text">
+         <string>无</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>2NN</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QLabel" name="label_6">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>50</y>
+         <width>54</width>
+         <height>12</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>匹配算法</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_7">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>80</y>
+         <width>54</width>
+         <height>12</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>野点去除</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_5">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>54</width>
+         <height>12</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>算法</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="fdAlgoSelect">
+       <property name="geometry">
+        <rect>
+         <x>70</x>
+         <y>14</y>
+         <width>69</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <item>
+        <property name="text">
+         <string>SIFT</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>SURF</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>ORB</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QPushButton" name="doFeatDet">
+       <property name="geometry">
+        <rect>
+         <x>158</x>
+         <y>14</y>
+         <width>75</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>执行</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="mTypeSelect">
+       <property name="geometry">
+        <rect>
+         <x>70</x>
+         <y>44</y>
+         <width>69</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <item>
+        <property name="text">
+         <string>FLANN</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>BruteForce</string>
+        </property>
+       </item>
+      </widget>
+     </widget>
     </widget>
    </widget>
   </widget>

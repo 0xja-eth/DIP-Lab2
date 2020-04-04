@@ -8,7 +8,7 @@
 // 处理参数父类
 class ProcessParam {};
 
-// 随机厥参数
+// 矩形参数
 class RectParam : public ProcessParam {
 public:
 	int x, y, w, h;
@@ -19,20 +19,46 @@ public:
 		x(x), y(y), w(w), h(h), color(color) {}
 };
 
+// 目标检测跟踪参数
+class ObjDetTrackParam : public RectParam {
+public:
+	// 目标跟踪算法
+	enum Algo {
+		FERNS, BOOSTING, MIL, KCF, TLD,
+		MEDIANFLOW, GOTURN, MOSSE
+	};
+	// 自动检测方式(Auto Detect Type)
+	enum ADType {
+		None, Face
+	};
+
+	Algo algo; // 目标跟踪算法
+	ADType adType; // 自动检测方式
+
+	ObjDetTrackParam(int x = 0, int y = 0, int w = 0, int h = 0,
+		Algo algo = FERNS, ADType adType = None,
+		Scalar color = Scalar::all(255)) :
+		RectParam(x, y, w, h, color), 
+		algo(algo), adType(adType) {}
+};
+
 // 特征检测参数
 class FeatDetParam : public ProcessParam {
 public:
+	// 特征检测算法 
 	enum Algo { 
 		SIFT, SURF, ORB 
 	};
+	// 野点去除方式(Remove Type)
 	enum RType {
 		None, TwoNN
 	};
+	// 特征点匹配方式(Matcher Type)
 	typedef DescriptorMatcher::MatcherType MType;
 
 	Algo algo; // 特征检测算法
-	RType rType; // 野点去除模式
-	MType mType; // 特征匹配模式
+	RType rType; // 野点去除方式
+	MType mType; // 特征匹配方式
 
 	FeatDetParam(Algo algo = SIFT, RType rType = None, 
 		MType mType = DescriptorMatcher::BRUTEFORCE) :

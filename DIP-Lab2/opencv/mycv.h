@@ -16,4 +16,3 @@
 
 using namespace std;
 using namespace mycv;
-using namespace cv;

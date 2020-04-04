@@ -98,6 +98,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Debug.cpp" />
     <ClCompile Include="DIPLab2.cpp" />
     <ClCompile Include="ImageProcess.cpp" />
     <ClCompile Include="main.cpp" />
@@ -131,6 +132,7 @@
     <QtRcc Include="DIPLab2.qrc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Debug.h" />
     <ClInclude Include="ImageProcess.h" />
     <ClInclude Include="opencv\lib\PatchGenerator.h" />
     <ClInclude Include="opencv\mycv.h" />
