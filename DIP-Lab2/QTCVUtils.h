@@ -5,6 +5,8 @@
 
 #include <opencv2/videoio.hpp>
 
+#include <thread>
+
 #include "ImageProcess.h"
 #include "opencv/mycv.h"
 
@@ -101,25 +103,45 @@ public:
 	typedef void(*ProcessFuncType4)( // 处理视频，输出视频的函数签名
 		const Mat*, long, Mat*&, long&, ProcessParam*);
 
-	static double progress() { return ImageProcess::progress; }
+	static void update();
+
+	static double progress();
+	static bool isProcessing();
+	static bool isProcessStatusChanged();
 
 	static Mat qImage2Mat(const QImage& image);
 	static QImage mat2QImage(const Mat& mat);
 	static Mat qImage2Mat(const QImage* image);
 	static QImage mat2QImage(const Mat* mat);
 
-	static MediaObject* process(ProcessFuncType1 func, // 处理函数
-		const MediaObject* img, // 输入图片
+	// 异步处理
+	static void process(ProcessFuncType1 func, // 处理函数
+		const MediaObject* inImg, // 输入图片
+		MediaObject* &outImg, // 输出图片
 		ProcessParam* param = NULL); // 参数
-	static MediaObject* process(ProcessFuncType2 func, // 处理函数
-		const MediaObject* img1, const MediaObject* img2, // 输入图片
+	static void process(ProcessFuncType2 func, // 处理函数
+		const MediaObject* inImg1, const MediaObject* inImg2, // 输入图片
+		MediaObject* &outImg, // 输出图片
 		ProcessParam* param = NULL); // 参数
 	static void process(ProcessFuncType3 func, // 处理函数
-		const MediaObject* img1, const MediaObject* img2, // 输入图片
-		MediaObject* &out1, MediaObject* &out2, // 输出图片
+		const MediaObject* inImg1, const MediaObject* inImg2, // 输入图片
+		MediaObject* &outImg1, MediaObject* &outImg2, // 输出图片
 		ProcessParam* param = NULL); // 参数
-	static MediaObject* process(ProcessFuncType4 func, // 处理函数
-		const MediaObject* video, // 输入视频
+	static void process(ProcessFuncType4 func, // 处理函数
+		const MediaObject* inVideo, // 输入视频
+		MediaObject* &outVideo, // 输出视频
 		ProcessParam* param = NULL); // 参数
+
+	// 同步处理
+	static void processSync(ProcessFuncType1 func, // 处理函数
+		const MediaObject* inImg, // 输入图片
+		MediaObject* &outImg, // 输出图片
+		ProcessParam* param = NULL); // 参数
+
+	static std::thread* processThread;
+
+private:
+	static bool processing;
+	static bool lastProcessed;
 };
 

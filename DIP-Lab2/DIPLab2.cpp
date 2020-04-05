@@ -3,8 +3,6 @@
 
 #include "DIPLab2.h"
 
-using namespace std;
-
 DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 	ui.setupUi(this);
 
@@ -36,12 +34,88 @@ DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 	connect(ui.doObjDet, SIGNAL(clicked()), this, SLOT(doObjDetTrack()));
 
 	connect(ui.doFeatDet, SIGNAL(clicked()), this, SLOT(doFeatDet()));
+
+	connect(this, SIGNAL(signalUpdate()), this, SLOT(update()));
+
+	updateThread = new std::thread(requestUpdate, this);
 }
 
 DIPLab2::~DIPLab2() {
 	releaseMedia();
 	releaseTargets();
+	releaseParam();
 	DebugUtils::closeConsole();
+}
+
+const long DIPLab2::UpdateInterval = 10;
+
+void DIPLab2::requestUpdate(DIPLab2* win) {
+	try {
+		while (true) {
+			sleep();
+			emit win->signalUpdate();
+		}
+	} catch (exception e) {
+		LOG("发生错误：" << e.what());
+	}
+}
+
+void DIPLab2::sleep(long ms /*= UpdateInterval*/) {
+	std::this_thread::sleep_for(
+		std::chrono::milliseconds(ms));
+}
+
+void DIPLab2::update() {
+	updateProgress();
+	updateProcessEnable();
+	if (QTCVUtils::isProcessStatusChanged()) {
+		updateProcessResult();
+		updateRectPos();
+	}
+
+	QTCVUtils::update();
+}
+
+void DIPLab2::updateProgress() {
+	setProgress(QTCVUtils::progress());
+}
+
+void DIPLab2::updateProcessEnable() {
+	ui.processTab->setEnabled(isProcessEnable());
+	ui.saveBtn->setEnabled(isProcessEnable());
+}
+
+void DIPLab2::updateProcessResult() {
+	// 如果 target1 为 NULL（此时 target2 必定为 NULL）
+	if (target1 == NULL) {
+		// 绘制原图片
+		setSrcImg1(media1);
+		setSrcImg2(media2);
+		setTarImg((MediaObject*)NULL);
+	} // 如果只有 target2 为 NULL，则只有一个输出
+	else if (target2 == NULL) {
+		if (srcTarget) // 绘制矩形时，需要输出图片到源图
+			setSrcImg1(target1);
+		else setTarImg(target1);
+	} // 否则有两个输出
+	else if (target2 != NULL) {
+		setSrcImg1(target1);
+		setSrcImg2(target2);
+	}
+
+	srcTarget = false;
+}
+
+void DIPLab2::updateRectPos() {
+	if (!needUpdateRect || QTCVUtils::isProcessing()) return;
+	RectParam* rectParam = (RectParam*)param;
+
+	ui.xInput->setValue(rectParam->x);
+	ui.yInput->setValue(rectParam->y);
+	ui.wInput->setValue(rectParam->w);
+	ui.hInput->setValue(rectParam->h);
+
+	needUpdateRect = false;
 }
 
 QImage DIPLab2::srcQImg1() {
@@ -60,8 +134,11 @@ void DIPLab2::setImg(QLabel* tarImg, QImage* qImg) {
 }
 
 void DIPLab2::setImg(QLabel* tarImg, MediaObject* media) {
-	auto image = media->getQImage();
-	setImg(tarImg, &image);
+	if (media == NULL) setImg(tarImg, (QImage*)NULL);
+	else {
+		auto image = media->getQImage();
+		setImg(tarImg, &image);
+	}
 }
 
 void DIPLab2::setSrcImg1(QImage* qImg) {
@@ -69,8 +146,7 @@ void DIPLab2::setSrcImg1(QImage* qImg) {
 }
 
 void DIPLab2::setSrcImg1(MediaObject* media) {
-	auto image = media->getQImage();
-	setSrcImg1(&image);
+	setImg(ui.srcImg1, media);
 }
 
 void DIPLab2::setSrcImg2(QImage* qImg) {
@@ -78,8 +154,7 @@ void DIPLab2::setSrcImg2(QImage* qImg) {
 }
 
 void DIPLab2::setSrcImg2(MediaObject* media) {
-	auto image = media->getQImage();
-	setSrcImg2(&image);
+	setImg(ui.srcImg2, media);
 }
 
 void DIPLab2::setTarImg(QImage* qImg) {
@@ -87,8 +162,17 @@ void DIPLab2::setTarImg(QImage* qImg) {
 }
 
 void DIPLab2::setTarImg(MediaObject* media) {
-	auto image = media->getQImage();
-	setTarImg(&image);
+	setImg(ui.tarImg, media);
+}
+
+void DIPLab2::setProgress(double progress) {
+	ui.progressBar->setValue(progress * 100);
+}
+
+bool DIPLab2::isProcessEnable() {
+	// 非处理中且第一个媒体对象非空
+	return !QTCVUtils::isProcessing() &&
+		media1 != NULL && !media1->isEmpty();
 }
 
 const QString DIPLab2::PictureTitle = "选择图片";
@@ -135,6 +219,11 @@ void DIPLab2::releaseMedia() {
 void DIPLab2::releaseTargets() {
 	delete target1, target2;
 	target1 = target2 = NULL;
+}
+
+void DIPLab2::releaseParam() {
+	delete param;
+	param = NULL;
 }
 
 #pragma region 矩形设置
@@ -206,14 +295,16 @@ void DIPLab2::mouseReleaseEvent(QMouseEvent * e) {
 }
 
 void DIPLab2::onRectChanged() {
+	releaseTargets(); releaseParam();
+
 	int x = ui.xInput->value(), y = ui.yInput->value();
 	int w = ui.wInput->value(), h = ui.hInput->value();
-	auto param = RectParam(x, y, w, h);
+	param = new RectParam(x, y, w, h);
 
-	auto img = QTCVUtils::process(ImageProcess::drawRect, media1, &param);
+	srcTarget = true;
+	QTCVUtils::processSync(ImageProcess::drawRect, media1, target1, param);
 
-	setSrcImg1(img);
-	delete img;
+	updateProcessResult();
 }
 
 #pragma endregion
@@ -221,54 +312,45 @@ void DIPLab2::onRectChanged() {
 #pragma region 目标检测跟踪处理
 
 void DIPLab2::doObjDet() {
+	releaseTargets(); releaseParam();
+
 	int x = ui.xInput->value(), y = ui.yInput->value();
 	int w = ui.wInput->value(), h = ui.hInput->value();
 	int algo = ui.odtAlgoSelect->currentIndex();
 	int adType = ui.adTypeSelect->currentIndex();
-	auto param = ObjDetTrackParam(x, y, w, h, 
+
+	param = new ObjDetTrackParam(x, y, w, h,
 		(ObjDetTrackParam::Algo)algo, 
 		(ObjDetTrackParam::ADType)adType);
 
-	auto out = QTCVUtils::process(
-		ImageProcess::doObjDet, media1, &param);
-
-	ui.xInput->setValue(param.x);
-	ui.yInput->setValue(param.y);
-	ui.wInput->setValue(param.w);
-	ui.hInput->setValue(param.h);
-
-	setSrcImg1(out);
-
-	delete out;
+	srcTarget = needUpdateRect = true;
+	QTCVUtils::process(ImageProcess::doObjDet, media1, target1, param);
 }
 
 void DIPLab2::doObjDetTrack() {
-	releaseTargets();
+	releaseTargets(); releaseParam();
 
 	int x = ui.xInput->value(), y = ui.yInput->value();
 	int w = ui.wInput->value(), h = ui.hInput->value();
 	int algo = ui.odtAlgoSelect->currentIndex();
 	int adType = ui.adTypeSelect->currentIndex();
-	auto param = ObjDetTrackParam(x, y, w, h,
+	
+	param = new ObjDetTrackParam(x, y, w, h,
 		(ObjDetTrackParam::Algo)algo,
 		(ObjDetTrackParam::ADType)adType);
 
-	if (media1->isVideo()) doImageObjDetTrack(&param);
-	else doVideoObjDetTrack(&param);
+	if (media1->isVideo()) doImageObjDetTrack(param);
+	else doVideoObjDetTrack(param);
 }
 
-void DIPLab2::doImageObjDetTrack(ObjDetTrackParam* param) {
-	target1 = QTCVUtils::process(
-		ImageProcess::doObjDetTrack, media1, param);
-
-	setTarImg(target1);
+void DIPLab2::doImageObjDetTrack(ProcessParam* param) {
+	QTCVUtils::process(ImageProcess::doObjDetTrack, 
+		media1, target1, param);
 }
 
-void DIPLab2::doVideoObjDetTrack(ObjDetTrackParam* param) {
+void DIPLab2::doVideoObjDetTrack(ProcessParam* param) {
 	QTCVUtils::process(ImageProcess::doObjTrack,
 		media1, media2, target1, target2, param);
-
-	setSrcImg1(target1); setSrcImg2(target2);
 }
 
 #pragma endregion
@@ -276,18 +358,17 @@ void DIPLab2::doVideoObjDetTrack(ObjDetTrackParam* param) {
 #pragma region 点对匹配处理
 
 void DIPLab2::doFeatDet() {
-	releaseTargets();
+	releaseTargets(); releaseParam();
 
 	int algo = ui.fdAlgoSelect->currentIndex();
 	int rType = ui.rTypeSelect->currentIndex();
 	int mType = ui.mTypeSelect->currentIndex()+1;
-	auto param = FeatDetParam((FeatDetParam::Algo)algo, 
+	
+	param = new FeatDetParam((FeatDetParam::Algo)algo, 
 		(FeatDetParam::RType)rType, (FeatDetParam::MType)mType);
 
-	target1 = QTCVUtils::process(
-		ImageProcess::doFeatDet, media1, media2, &param);
-
-	setTarImg(target1);
+	QTCVUtils::process(ImageProcess::doFeatDet, 
+		media1, media2, target1, param);
 }
 
 #pragma endregion

@@ -87,6 +87,7 @@ public:
 	typedef vector<KeyPoint> KeyPoints;
 	typedef vector<DMatch> DMatches;
 
+	// 处理进度（0-1）
 	static double progress;
 
 	// 绘制矩形

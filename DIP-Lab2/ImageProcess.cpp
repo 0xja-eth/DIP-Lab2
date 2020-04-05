@@ -67,6 +67,8 @@ void ImageProcess::doObjDetTrack(const Mat* inVideo, long inLen,
 
 	// √ø÷°¥¶¿Ì
 	for (int i = 0; i < inLen; ++i, ++duration) {
+		progress = i * 1.0 / inLen;
+
 		Mat frame = inVideo[i];
 		Mat &outFrame = outVideo[i];
 		outFrame = frame;

@@ -4,6 +4,10 @@
 
 const int MediaObject::FOURCC = VideoWriter::fourcc('M', 'J', 'P', 'G');
 
+std::thread* QTCVUtils::processThread = NULL;
+bool QTCVUtils::processing = false;
+bool QTCVUtils::lastProcessed = false;
+
 MediaObject::MediaObject(string filename, bool isVideo) {
 	load(filename, isVideo);
 }
@@ -157,6 +161,23 @@ QImage MediaObject::getQImage(long num) const {
 	return QTCVUtils::mat2QImage(getData(num));
 }
 
+void QTCVUtils::update() {
+	lastProcessed = processing;
+}
+
+double QTCVUtils::progress() {
+	if (!processing) return 1;
+	return ImageProcess::progress;
+}
+
+bool QTCVUtils::isProcessing() {
+	return processing;
+}
+
+bool QTCVUtils::isProcessStatusChanged() {
+	return processing != lastProcessed;
+}
+
 Mat QTCVUtils::qImage2Mat(const QImage& image) {
 	Mat mat;
 	switch (image.format()) {
@@ -224,8 +245,9 @@ QImage QTCVUtils::mat2QImage(const Mat* mat) {
 	return mat2QImage(*mat);
 }
 
-MediaObject* QTCVUtils::process(ProcessFuncType1 func, /* 处理函数 */
-	const MediaObject* img, /* 输入图片 */ ProcessParam* param /*= NULL 参数*/) {
+/*
+MediaObject* QTCVUtils::process(ProcessFuncType1 func,
+	const MediaObject* img, ProcessParam* param) {
 
 	auto data = img->getData();
 	if (data == NULL) return new MediaObject();
@@ -233,9 +255,9 @@ MediaObject* QTCVUtils::process(ProcessFuncType1 func, /* 处理函数 */
 	return new MediaObject(func(*data, param));
 }
 
-MediaObject* QTCVUtils::process(ProcessFuncType2 func, /* 处理函数 */
-	const MediaObject* img1, const MediaObject* img2, /* 输入图片 */
-	ProcessParam* param /*= NULL 参数*/) {
+MediaObject* QTCVUtils::process(ProcessFuncType2 func,
+	const MediaObject* img1, const MediaObject* img2,
+	ProcessParam* param) {
 
 	auto data1 = img1->getData(), data2 = img2->getData();
 	if (data1 == NULL || data2 == NULL) return new MediaObject();
@@ -243,10 +265,10 @@ MediaObject* QTCVUtils::process(ProcessFuncType2 func, /* 处理函数 */
 	return new MediaObject(func(*data1, *data2, param));
 }
 
-void QTCVUtils::process(ProcessFuncType3 func, /* 处理函数 */ 
-	const MediaObject* img1, const MediaObject* img2, /* 输入图片 */
-	MediaObject* &out1, MediaObject* &out2, /* 输出图片 */
-	ProcessParam* param /*= NULL 参数*/) {
+void QTCVUtils::process(ProcessFuncType3 func,
+	const MediaObject* img1, const MediaObject* img2, 
+	MediaObject* &out1, MediaObject* &out2,
+	ProcessParam* param/) {
 
 	auto data1 = img1->getData(), data2 = img2->getData();
 
@@ -257,8 +279,8 @@ void QTCVUtils::process(ProcessFuncType3 func, /* 处理函数 */
 	out2 = new MediaObject(outData2);
 }
 
-MediaObject* QTCVUtils::process(ProcessFuncType4 func, /* 处理函数 */ 
-	const MediaObject* video, /* 输入视频 */ ProcessParam* param /*= NULL 参数*/) {
+MediaObject* QTCVUtils::process(ProcessFuncType4 func,
+	const MediaObject* video, ProcessParam* param ) {
 
 	Mat* inData = video->getVideoData();
 	long inLen = video->getVideoLength();
@@ -267,4 +289,95 @@ MediaObject* QTCVUtils::process(ProcessFuncType4 func, /* 处理函数 */
 	func(inData, inLen, outData, outLen, param);
 
 	return new MediaObject(outData, outLen);
+}
+*/
+
+void QTCVUtils::process(ProcessFuncType1 func, /* 处理函数 */ 
+	const MediaObject* inImg, /* 输入图片 */ 
+	MediaObject* &outImg, /* 输出图片 */ 
+	ProcessParam* param /*= NULL*/) {
+	if (processing || inImg == NULL || inImg->isEmpty()) return;
+
+	auto f = [&func, &inImg, &outImg, &param]() {
+		processing = true;
+
+		auto inData = inImg->getData();
+		auto outData = func(*inData, param);
+		outImg = new MediaObject(outData);
+
+		processing = false;
+	};
+	processThread = new std::thread(f);
+}
+
+void QTCVUtils::process(ProcessFuncType2 func, /* 处理函数 */ 
+	const MediaObject* inImg1, const MediaObject* inImg2, /* 输入图片 */ 
+	MediaObject* &outImg, /* 输出图片 */ 
+	ProcessParam* param /*= NULL*/) {
+	if (processing || inImg1 == NULL || inImg2 == NULL || 
+		inImg1->isEmpty() || inImg2->isEmpty()) return;
+
+	auto f = [&func, &inImg1, &inImg2, &outImg, &param]() {
+		processing = true;
+
+		auto inData1 = inImg1->getData(), inData2 = inImg2->getData();
+		auto outData = func(*inData1, *inData2, param);
+		outImg = new MediaObject(outData);
+
+		processing = false;
+	};
+	processThread = new std::thread(f);
+}
+
+void QTCVUtils::process(ProcessFuncType3 func, /* 处理函数 */ 
+	const MediaObject* inImg1, const MediaObject* inImg2, /* 输入图片 */ 
+	MediaObject* &outImg1, MediaObject* &outImg2, /* 输出图片 */ 
+	ProcessParam* param /*= NULL*/) {
+	if (processing || inImg1 == NULL || inImg2 == NULL ||
+		inImg1->isEmpty() || inImg2->isEmpty()) return;
+
+	auto f = [&func, &inImg1, &inImg2, &outImg1, &outImg2, &param]() {
+		processing = true;
+
+		auto inData1 = inImg1->getData(), inData2 = inImg2->getData();
+		Mat outData1, outData2;
+		func(*inData1, *inData2, outData1, outData2, param);
+
+		outImg1 = new MediaObject(outData1);
+		outImg2 = new MediaObject(outData2);
+
+		processing = false;
+	};
+	processThread = new std::thread(f);
+}
+
+void QTCVUtils::process(ProcessFuncType4 func, /* 处理函数 */ 
+	const MediaObject* inVideo, /* 输入视频 */ 
+	MediaObject* &outVideo, /* 输出视频 */ 
+	ProcessParam* param /*= NULL*/) {
+	if (processing || inVideo == NULL || !inVideo->isVideo()) return;
+
+	auto f = [&func, &inVideo, &outVideo, &param]() {
+		processing = true;
+		auto inData = inVideo->getVideoData();
+		long inLen = inVideo->getVideoLength();
+
+		Mat* outData; long outLen;
+		func(inData, inLen, outData, outLen, param);
+		outVideo = new MediaObject(outData, outLen);
+
+		processing = false;
+	};
+	processThread = new std::thread(f);
+}
+
+void QTCVUtils::processSync(ProcessFuncType1 func, /* 处理函数 */
+	const MediaObject* inImg, /* 输入图片 */ 
+	MediaObject* &outImg, /* 输出图片 */ 
+	ProcessParam* param /*= NULL*/) {
+	if (inImg == NULL || inImg->isEmpty()) return;
+
+	auto inData = inImg->getData();
+
+	outImg = new MediaObject(func(*inData, param));
 }
