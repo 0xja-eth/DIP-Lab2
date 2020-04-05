@@ -1,282 +1,67 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="mycv::Detector&lt;Classifier, FeatureExtractor&gt;" Collapsed="true">
-    <Position X="12.75" Y="0.5" Width="1.5" />
+  <Class Name="DebugUtils" Collapsed="true">
+    <Position X="5.5" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAABgAQAAAAAAAAAAEEAAAAAAAAGAAAAAAAMAAAA=</HashCode>
-      <FileName>opencv\mycv\Detector.cpp</FileName>
+      <HashCode>AAAABAAAAAAgAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Debug.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="mycv::FernClassifier" Collapsed="true">
-    <Position X="14.5" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAIACAgAAAAAEAAAIAAAAAAAAAAAASCAAAAAQ=</HashCode>
-      <FileName>opencv\mycv\FernClassifier.cpp</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="mycv::ForestClassifier&lt;TpTree&gt;" Collapsed="true">
-    <Position X="16.25" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AgAAAAAAIAAAAAAACIAAAAAkAAAAAAAAAAACDAAAAAA=</HashCode>
-      <FileName>opencv\mycv\ForrestClassifier.cpp</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="mycv::HaarFeature" Collapsed="true">
-    <Position X="18" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAgAAAAAAAIAAAAAAAAAAAAAACAAAAAgAQAAAAAAAAA=</HashCode>
-      <FileName>opencv\mycv\HaarFeature.cpp</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="mycv::HaarFeaturesExtractor" Collapsed="true">
-    <Position X="12.75" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAIAACAAAAAAAAAAAAAAQQAAAAAAAAAQAAA=</HashCode>
-      <FileName>opencv\mycv\HaarFeaturesExtractor.cpp</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="mycv::NccClassifier" Collapsed="true">
-    <Position X="14.5" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAIBAQAAgAABAAgAAQAAAEAAAABAAACAAAAAA=</HashCode>
-      <FileName>opencv\mycv\NccClassifier.cpp</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="mycv::NccExtractor" Collapsed="true">
-    <Position X="16.25" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAIIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>opencv\mycv\NccClassifier.cpp</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="mycv::OneBitLBP" Collapsed="true">
-    <Position X="18" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAEAAAAAIAAAAAAAAAAAAAACAAAAAQAAAAAAAAAAA=</HashCode>
-      <FileName>opencv\mycv\OneBitLBP.cpp</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="mycv::OneBitLBPExtractor" Collapsed="true">
-    <Position X="12.75" Y="2.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAIAACAAAAAAAAAAAAAAQAAAAAAgAAAQAAA=</HashCode>
-      <FileName>opencv\mycv\OneBitLBPExtractor.cpp</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="mycv::RandomFern" Collapsed="true">
-    <Position X="16.25" Y="2.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAQBAAAIAAAgAAAAAAAgAIAAAAAAAAAAAACCAAAAAA=</HashCode>
-      <FileName>opencv\mycv\RandomFern.cpp</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="mycv::RandomForest&lt;TreeTp&gt;" Collapsed="true">
-    <Position X="18" Y="2.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AgAAAAAAIAAAAAAACIAAAAAAAAAIAAAAAAACDAAAAAA=</HashCode>
-      <FileName>opencv\mycv\RandomForest.cpp</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="mycv::RandomHaarFeature" Collapsed="true">
-    <Position X="12.75" Y="3.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAIAIAAAAAAAAAAAAAACAAAAAgAQAAAAAAAAA=</HashCode>
-      <FileName>opencv\mycv\RandomHaarFeature.cpp</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="mycv::RandomHaarFeaturesExtractor" Collapsed="true">
-    <Position X="14.5" Y="3.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAIAACAAAAAAAAAAAAAAQAAAAAAAAAAAAQA=</HashCode>
-      <FileName>opencv\mycv\RandomHaarFeatureExtractor.cpp</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="mycv::Scanner" Collapsed="true">
-    <Position X="16.25" Y="3.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAABACBAAAAAABAACABAAiAAAAAAQAAQAAAAIABAA=</HashCode>
-      <FileName>opencv\mycv\Scanner.cpp</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ImageProcess">
-    <Position X="12.75" Y="6" Width="1.5" />
-    <NestedTypes>
-      <Typedef Name="ImageProcess::KeyPoints" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>ImageProcess.h</NewMemberFileName>
-        </TypeIdentifier>
-      </Typedef>
-      <Typedef Name="ImageProcess::DMatches" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>ImageProcess.h</NewMemberFileName>
-        </TypeIdentifier>
-      </Typedef>
-    </NestedTypes>
-    <TypeIdentifier>
-      <HashCode>AARAAAAACIAAAAAAiAAAIQAAQAAIAEBCAAAQAEAAAAA=</HashCode>
-      <FileName>ImageProcess.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="DIPLab2">
-    <Position X="0.5" Y="6" Width="2" />
+  <Class Name="DIPLab2" Collapsed="true">
+    <Position X="7.25" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>EBAEBIEABAABGAITAABAAAAgQAAUCAAAgCAiAAACBAA=</HashCode>
       <FileName>DIPLab2.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="FeatDetParam">
-    <Position X="5.25" Y="0.75" Width="1.5" />
-    <NestedTypes>
-      <Enum Name="FeatDetParam::Algo" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>ImageProcess.h</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-      <Enum Name="FeatDetParam::RType" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>ImageProcess.h</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-      <Typedef Name="FeatDetParam::MType" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>ImageProcess.h</NewMemberFileName>
-        </TypeIdentifier>
-      </Typedef>
-    </NestedTypes>
-    <InheritanceLine Type="ProcessParam" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="4.5" Y="3.188" />
-        <Point X="4.875" Y="3.188" />
-        <Point X="4.875" Y="1.937" />
-        <Point X="5.25" Y="1.937" />
-      </Path>
-    </InheritanceLine>
+  <Class Name="FeatDetParam" Collapsed="true">
+    <Position X="0.75" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAABAAAAAAAAAAAAAAgABABAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ImageProcess.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="cv::PatchGenerator" Collapsed="true">
-    <Position X="14.5" Y="2.5" Width="1.5" />
+  <Class Name="ImageProcess" Collapsed="true">
+    <Position X="9" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>QAAAIAAAAAQAAAEAEAAAAQAkAAAAACCAABAAEAAAUAA=</HashCode>
-      <FileName>opencv\lib\PatchGenerator.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="QTCVUtils">
-    <Position X="5.75" Y="6" Width="6.5" />
-    <Compartments>
-      <Compartment Name="Nested Types" Collapsed="false" />
-    </Compartments>
-    <NestedTypes>
-      <Typedef Name="QTCVUtils::ProcessFuncType1" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>QTCVUtils.h</NewMemberFileName>
-        </TypeIdentifier>
-      </Typedef>
-      <Typedef Name="QTCVUtils::ProcessFuncType2" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>QTCVUtils.h</NewMemberFileName>
-        </TypeIdentifier>
-      </Typedef>
-      <Typedef Name="QTCVUtils::ProcessFuncType3" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>QTCVUtils.h</NewMemberFileName>
-        </TypeIdentifier>
-      </Typedef>
-      <Typedef Name="QTCVUtils::ProcessFuncType4" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>QTCVUtils.h</NewMemberFileName>
-        </TypeIdentifier>
-      </Typedef>
-    </NestedTypes>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAgAAAAAAAAAIAAAAAAAAAAAAAAAAAQAA=</HashCode>
-      <FileName>QTCVUtils.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="RectParam">
-    <Position X="5.25" Y="3.25" Width="1.5" />
-    <InheritanceLine Type="ProcessParam" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="4.5" Y="3.188" />
-        <Point X="4.875" Y="3.188" />
-        <Point X="4.875" Y="4.5" />
-        <Point X="5.25" Y="4.5" />
-      </Path>
-    </InheritanceLine>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAAgAAAAAAAEAAAAAAAACAQAhgAAAAAAA=</HashCode>
+      <HashCode>AARAAAAACIAAAAAAiAAAIQAAQAAIAEBCAIAQAEAAAAA=</HashCode>
       <FileName>ImageProcess.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="ProcessParam">
-    <Position X="3" Y="2.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ImageProcess.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="MediaObject">
-    <Position X="3" Y="6" Width="2.25" />
+  <Class Name="MediaObject" Collapsed="true">
+    <Position X="5.5" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>EABQERBAAIDQAEAIAAQAAAQAkEAFCAAAABRAAAEAQAA=</HashCode>
       <FileName>QTCVUtils.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="ObjDetTrackParam">
-    <Position X="7.5" Y="3.25" Width="1.75" />
-    <NestedTypes>
-      <Enum Name="ObjDetTrackParam::Algo" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>ImageProcess.h</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-      <Enum Name="ObjDetTrackParam::ADType" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>ImageProcess.h</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-    </NestedTypes>
+  <Class Name="ObjDetTrackParam" Collapsed="true">
+    <Position X="3" Y="7.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAEQAABAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ImageProcess.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Struct Name="mycv::HaarSample_" Collapsed="true">
-    <Position X="19.75" Y="0.5" Width="1.5" />
+  <Class Name="ProcessParam" Collapsed="true">
+    <Position X="2" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAQAQAAAAAAA=</HashCode>
-      <FileName>opencv\mycv\HaarFeaturesExtractor.cpp</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ImageProcess.h</FileName>
     </TypeIdentifier>
-  </Struct>
-  <Struct Name="mycv::ImgT_" Collapsed="true">
-    <Position X="19.75" Y="1.5" Width="1.5" />
+  </Class>
+  <Class Name="QTCVUtils" Collapsed="true">
+    <Position X="7.25" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIABAAAIAAAkAAEAAQCAAAAAAABAAAEAABCAAAAABA=</HashCode>
-      <FileName>opencv\mycv\Img.cpp</FileName>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAIAAAAAAAAAAIAAAAAAQAA=</HashCode>
+      <FileName>QTCVUtils.h</FileName>
     </TypeIdentifier>
-  </Struct>
-  <Struct Name="mycv::NccSample_" Collapsed="true">
-    <Position X="19.75" Y="2.5" Width="1.5" />
+  </Class>
+  <Class Name="RectParam" Collapsed="true">
+    <Position X="3" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAQAQAAAAAAA=</HashCode>
-      <FileName>opencv\mycv\NccClassifier.cpp</FileName>
+      <HashCode>AAAAAAAAACAAAgAAAAAAAEAAAAAAAACAQAhgAAAAAAA=</HashCode>
+      <FileName>ImageProcess.h</FileName>
     </TypeIdentifier>
-  </Struct>
-  <Struct Name="mycv::OneBitLBPSample_" Collapsed="true">
-    <Position X="19.75" Y="3.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
-      <FileName>opencv\mycv\OneBitLBPExtractor.cpp</FileName>
-    </TypeIdentifier>
-  </Struct>
-  <Struct Name="mycv::Sample_" Collapsed="true">
-    <Position X="19.75" Y="4.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
-      <FileName>opencv\mycv\Sample.cpp</FileName>
-    </TypeIdentifier>
-  </Struct>
+  </Class>
   <Font Name="Microsoft YaHei UI" Size="9" />
 </ClassDiagram>
