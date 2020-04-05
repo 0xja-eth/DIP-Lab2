@@ -101,7 +101,7 @@ void ImageProcess::doObjDetTrack(const Mat* inVideo, long inLen,
 		if (trackSucc) LOG("µÚ " << i << " Ö¡¸ú×Ù³É¹¦£¡");
 		else LOG("µÚ " << i << " Ö¡¸ú×ÙÊ§°Ü£¡");
 
-		imshow("video", outFrame);
+		if (!outFrame.empty()) imshow("video", outFrame);
 	}
 }
 

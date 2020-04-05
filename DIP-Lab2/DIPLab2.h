@@ -46,6 +46,11 @@ public:
 	void setProgress(double progress);
 
 	bool isProcessEnable();
+	bool isProcessing();
+	bool isDoingMediaIO();
+
+	double getProcessProgress();
+	double getMediaIOProgress();
 
 private:
 	Ui::DIPLab2Class ui;
@@ -58,7 +63,8 @@ private:
 	static const QString PictureFilter;
 	static const QString VideoFilter;
 
-	static const QString OpenFaileText;
+	static const QString OpenFailText;
+	static const QString SaveSuccText;
 
 	static const long UpdateInterval;
 
@@ -86,15 +92,20 @@ private:
 	static void requestUpdate(DIPLab2* win);
 	static void sleep(long ms = UpdateInterval);
 
-private slots:
-	void update();
 	void updateProgress();
 	void updateProcessEnable();
 	void updateProcessResult();
 	void updateRectPos();
 
+private slots:
+	void update();
+	void onLoadCompleted(MediaObject*& media);
+	void onSaveCompleted();
+
 signals:
 	void signalUpdate();
+	void signalLoadCompleted(MediaObject*& media);
+	void signalSaveCompleted();
 
 public slots:
 	void openFile1() { openFile(ui.srcImg1, media1); }

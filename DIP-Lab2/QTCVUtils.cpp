@@ -52,8 +52,10 @@ void MediaObject::load(string filename, bool isVideo) {
 	if (!isEmpty()) release();
 	this->filename = filename;
 	try {
+		progress = 0;
 		if (isVideo) loadVideo();
 		else loadImage();
+		progress = 1;
 	} catch (exception e) {
 		LOG("读取媒体错误：" << e.what());
 		release();
@@ -80,15 +82,19 @@ void MediaObject::loadVideoData() {
 	videoData = new Mat[frameCnt];
 	// 读取每一帧数据
 	long index = 0;
-	while (videoCap->read(videoData[index]))
+	while (videoCap->read(videoData[index])) {
+		progress = index * 1.0 / frameCnt;
 		if (++index >= frameCnt) break;
+	}
 }
 
 void MediaObject::save(string filename) {
 	if (isEmpty()) return;
 	try {
+		progress = 0;
 		if (isVideo()) saveVideo(filename);
 		else saveImage(filename);
+		progress = 1;
 	} catch (exception e) {
 		LOG("保存媒体错误：" << e.what());
 	}
@@ -109,6 +115,7 @@ void MediaObject::saveVideo(string filename) {
 
 	for (int i = 0; i < frameCnt; ++i) {
 		auto data = getVideoData(i);
+		progress = i * 1.0 / frameCnt;
 		if (data == NULL || data->empty()) break;
 		writer.write(*data);
 	}
@@ -134,6 +141,14 @@ bool MediaObject::isVideo() const {
 
 bool MediaObject::isEmpty() const { 
 	return !isVideo() && !isImage(); 
+}
+
+double MediaObject::getProgress() { 
+	return progress; 
+}
+
+bool MediaObject::isLoading() {
+	return progress >= 0 && progress < 1;
 }
 
 string MediaObject::getFilename() const { return filename; }

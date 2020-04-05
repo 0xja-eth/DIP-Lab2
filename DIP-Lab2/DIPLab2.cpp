@@ -1,6 +1,8 @@
 
 #include <cmath>
 
+#include <QMetaType>
+
 #include "DIPLab2.h"
 
 DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
@@ -10,6 +12,8 @@ DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 
 	//重置大小
 	this->resize(620, 500);
+
+	qRegisterMetaType<MediaObject*>("MediaObject*&");
 
 	setMouseTracking(true);
 	//添加关联代码，必须放在 setupUi 函数之后,信号与槽机制
@@ -36,6 +40,9 @@ DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 	connect(ui.doFeatDet, SIGNAL(clicked()), this, SLOT(doFeatDet()));
 
 	connect(this, SIGNAL(signalUpdate()), this, SLOT(update()));
+	connect(this, SIGNAL(signalLoadCompleted(MediaObject*&)), 
+		this, SLOT(onLoadCompleted(MediaObject*&)));
+	connect(this, SIGNAL(signalSaveCompleted()), this, SLOT(onSaveCompleted()));
 
 	updateThread = new std::thread(requestUpdate, this);
 }
@@ -46,6 +53,8 @@ DIPLab2::~DIPLab2() {
 	releaseParam();
 	DebugUtils::closeConsole();
 }
+
+#pragma region 更新设置
 
 const long DIPLab2::UpdateInterval = 10;
 
@@ -68,6 +77,8 @@ void DIPLab2::sleep(long ms /*= UpdateInterval*/) {
 void DIPLab2::update() {
 	updateProgress();
 	updateProcessEnable();
+
+	// 更新状态变化
 	if (QTCVUtils::isProcessStatusChanged()) {
 		updateProcessResult();
 		updateRectPos();
@@ -77,12 +88,18 @@ void DIPLab2::update() {
 }
 
 void DIPLab2::updateProgress() {
-	setProgress(QTCVUtils::progress());
+	double progress = 0; 
+	if (isDoingMediaIO()) 
+		progress = getMediaIOProgress(); 
+	else if (isProcessing())
+		progress = getProcessProgress();
+	setProgress(progress);
 }
 
 void DIPLab2::updateProcessEnable() {
-	ui.processTab->setEnabled(isProcessEnable());
-	ui.saveBtn->setEnabled(isProcessEnable());
+	bool enable = isProcessEnable();
+	ui.processTab->setEnabled(enable);
+	ui.saveBtn->setEnabled(enable);
 }
 
 void DIPLab2::updateProcessResult() {
@@ -117,6 +134,120 @@ void DIPLab2::updateRectPos() {
 
 	needUpdateRect = false;
 }
+
+#pragma endregion
+
+#pragma region 数据释放
+
+void DIPLab2::releaseMedia() {
+	delete media1, media2;
+	media1 = media2 = NULL;
+}
+
+void DIPLab2::releaseTargets() {
+	delete target1, target2;
+	target1 = target2 = NULL;
+}
+
+void DIPLab2::releaseParam() {
+	delete param; param = NULL;
+}
+
+#pragma endregion
+
+#pragma region 状态判断
+
+void DIPLab2::setProgress(double progress) {
+	ui.progressBar->setValue(progress * 100);
+}
+
+bool DIPLab2::isProcessing() {
+	return QTCVUtils::isProcessing();
+}
+
+bool DIPLab2::isDoingMediaIO() {
+	return (media1 != NULL && media1->isLoading()) ||
+		(media2 != NULL && media2->isLoading()) ||
+		(target1 != NULL && target1->isLoading());
+}
+
+bool DIPLab2::isProcessEnable() {
+	// 非处理中且第一个媒体对象非空
+	return !isProcessing() && !isDoingMediaIO() 
+		&& media1 != NULL && !media1->isEmpty();
+}
+
+double DIPLab2::getProcessProgress() {
+	return QTCVUtils::progress();
+}
+
+double DIPLab2::getMediaIOProgress() {
+	if (media1 != NULL && media1->isLoading())
+		return media1->getProgress();
+	if (media2 != NULL && media2->isLoading())
+		return media2->getProgress();
+	if (target1 != NULL && target1->isLoading())
+		return target1->getProgress();
+	return 0;
+}
+
+#pragma endregion
+
+#pragma region 文件操作
+
+const QString DIPLab2::PictureTitle = "选择图片";
+const QString DIPLab2::VideoTitle = "选择视频";
+
+const QString DIPLab2::SaveTitle = "选择保存位置";
+
+const QString DIPLab2::PictureFilter = "Images(*.png *.bmp *.jpg *.tif *.gif);; AllFiles(*.*)";
+const QString DIPLab2::VideoFilter = "Videos(*.mp4 *.mov *.avi);; AllFiles(*.*)";
+
+const QString DIPLab2::OpenFailText = "文件打开失败！";
+
+const QString DIPLab2::SaveSuccText = "文件保存成功！";
+
+void DIPLab2::openFile(QLabel* tarImg, MediaObject*& media, bool isVideo) {
+	QString title = isVideo ? VideoTitle : PictureTitle;
+	QString filter = isVideo ? VideoFilter : PictureFilter;
+	QString filename = QFileDialog::getOpenFileName(this, title, "", filter);
+	new std::thread([this, &filename, &tarImg, &media, &isVideo]() {
+		this->loadFile(filename, tarImg, media, isVideo); 
+	});
+}
+
+void DIPLab2::loadFile(QString filename, QLabel* tarImg,
+	MediaObject*& media, bool isVideo) {
+	if (!filename.isEmpty()) {
+		delete media;
+		media = new MediaObject();
+		media->load(filename, isVideo);
+	}
+	emit signalLoadCompleted(media);
+}
+
+void DIPLab2::saveFile(MediaObject* media) {
+	if (media == NULL) return;
+	QString filter = media->isVideo() ? VideoFilter : PictureFilter;
+	QString filename = QFileDialog::getSaveFileName(this, SaveTitle, "", filter);
+	new std::thread([this, &media, &filename]() { 
+		media->save(filename);
+		emit this->signalSaveCompleted();
+	});
+}
+
+void DIPLab2::onLoadCompleted(MediaObject*& media) {
+	if (media->isEmpty()) QMessageBox::information(this, OpenFailText, OpenFailText);
+	else updateProcessResult();
+}
+
+void DIPLab2::onSaveCompleted() {
+	QMessageBox::information(this, SaveSuccText, SaveSuccText);
+}
+
+#pragma endregion
+
+#pragma region 图像设置
 
 QImage DIPLab2::srcQImg1() {
 	return ui.srcImg1->pixmap()->toImage();
@@ -165,66 +296,7 @@ void DIPLab2::setTarImg(MediaObject* media) {
 	setImg(ui.tarImg, media);
 }
 
-void DIPLab2::setProgress(double progress) {
-	ui.progressBar->setValue(progress * 100);
-}
-
-bool DIPLab2::isProcessEnable() {
-	// 非处理中且第一个媒体对象非空
-	return !QTCVUtils::isProcessing() &&
-		media1 != NULL && !media1->isEmpty();
-}
-
-const QString DIPLab2::PictureTitle = "选择图片";
-const QString DIPLab2::VideoTitle = "选择视频";
-
-const QString DIPLab2::SaveTitle = "选择保存位置";
-
-const QString DIPLab2::PictureFilter = "Images(*.png *.bmp *.jpg *.tif *.gif);; AllFiles(*.*)";
-const QString DIPLab2::VideoFilter = "Videos(*.mp4 *.mov *.avi);; AllFiles(*.*)";
-
-const QString DIPLab2::OpenFaileText = "文件打开失败！";
-
-void DIPLab2::openFile(QLabel* tarImg, MediaObject*& media, bool isVideo) {
-	QString title = isVideo ? VideoTitle : PictureTitle;
-	QString filter = isVideo ? VideoFilter : PictureFilter;
-	QString filename = QFileDialog::getOpenFileName(this, title, "", filter);
-	loadFile(filename, tarImg, media, isVideo);
-}
-
-void DIPLab2::loadFile(QString filename, QLabel* tarImg, 
-	MediaObject*& media, bool isVideo) {
-	if (filename.isEmpty()) return; // 空文件
-
-	delete media;
-	media = new MediaObject(filename, isVideo);
-	if (media->isEmpty())
-		QMessageBox::information(this, OpenFaileText, OpenFaileText);
-	else
-		setImg(tarImg, media);
-}
-
-void DIPLab2::saveFile(MediaObject* media) {
-	if (media == NULL) return;
-	QString filter = media->isVideo() ? VideoFilter : PictureFilter;
-	QString filename = QFileDialog::getSaveFileName(this, SaveTitle, "", filter);
-	media->save(filename);
-}
-
-void DIPLab2::releaseMedia() {
-	delete media1, media2;
-	media1 = media2 = NULL;
-}
-
-void DIPLab2::releaseTargets() {
-	delete target1, target2;
-	target1 = target2 = NULL;
-}
-
-void DIPLab2::releaseParam() {
-	delete param;
-	param = NULL;
-}
+#pragma endregion
 
 #pragma region 矩形设置
 

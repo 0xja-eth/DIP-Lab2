@@ -52,6 +52,10 @@ public:
 	// 判断是否为空
 	bool isEmpty() const;
 
+	// 获取读取进度
+	double getProgress();
+	bool isLoading();
+
 	// 获取文件名
 	string getFilename() const;
 
@@ -74,6 +78,8 @@ public:
 
 private:
 	static const int FOURCC;
+
+	double progress = -1;
 
 	string filename = ""; // 文件名
 
