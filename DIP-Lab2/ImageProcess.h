@@ -55,6 +55,10 @@ public:
 	static Mat doFeatDet(const Mat &data1, const Mat &data2,
 		const ProcessParam* _param = NULL);
 
+	static Mat comMatR(Mat Matrix1, Mat Matrix2, Mat &);//按行合并矩阵
+	static Mat comMatC(Mat Matrix1, Mat Matrix2, Mat &);//按列合并矩阵
+
+
 private:
 	static Mat _featureDectect(Ptr<Feature2D> algo,
 		const Mat &data1, const Mat &data2,

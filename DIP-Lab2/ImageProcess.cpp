@@ -163,3 +163,29 @@ ImageProcess::DMatches ImageProcess::_defaultMatch(
 
 	return goodMatches;
 }
+
+
+//comMatR(conbine matrix as row):combine  Matrix1 and Matrix2 to MatrixCom as row ,just as the matlab expression :MatrixCom=[Matrix1 Matrix1]
+Mat ImageProcess::comMatR(Mat Matrix1, Mat Matrix2, Mat &MatrixCom)
+{
+
+	CV_Assert(Matrix1.rows == Matrix2.rows);//行数不相等，出现错误中断    
+	MatrixCom.create(Matrix1.rows, Matrix1.cols + Matrix2.cols, Matrix1.type());
+	Mat temp = MatrixCom.colRange(0, Matrix1.cols);
+	Matrix1.copyTo(temp);
+	Mat temp1 = MatrixCom.colRange(Matrix1.cols, Matrix1.cols + Matrix2.cols);
+	Matrix2.copyTo(temp1);
+	return MatrixCom;
+}
+
+//comMatR(conbine matrix as col):combine  Matrix1 and Matrix2 to MatrixCom as rows ,just as the matlab expression :MatrixCom=[Matrix1;Matrix1]
+Mat ImageProcess::comMatC(Mat Matrix1, Mat Matrix2, Mat &MatrixCom)
+{
+	CV_Assert(Matrix1.cols == Matrix2.cols);//列数不相等，出现错误中断    
+	MatrixCom.create(Matrix1.rows + Matrix2.rows, Matrix1.cols, Matrix1.type());
+	Mat temp = MatrixCom.rowRange(0, Matrix1.rows);
+	Matrix1.copyTo(temp);
+	Mat temp1 = MatrixCom.rowRange(Matrix1.rows, Matrix1.rows + Matrix2.rows);
+	Matrix2.copyTo(temp1);
+	return MatrixCom;
+}
