@@ -1,13 +1,14 @@
 
 #pragma once
+#include <cstring>
 #include <iostream>
 
 #define USE_CONSOLE
 
 #ifdef USE_CONSOLE
-#define LOG(x) cout<<x<<endl;
+#define LOG(x) cout<<x<<endl
 #else
-#define LOG(x) ;
+#define LOG(x) ()
 #endif
 
 using namespace std;

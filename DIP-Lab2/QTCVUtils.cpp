@@ -2,12 +2,14 @@
 
 #include "QTCVUtils.h"
 
+const int MediaObject::FOURCC = VideoWriter::fourcc('M', 'J', 'P', 'G');
+
 MediaObject::MediaObject(string filename, bool isVideo) {
 	load(filename, isVideo);
 }
 
 MediaObject::MediaObject(QString filename, bool isVideo /*= false*/) {
-	load(filename.toStdString(), isVideo);
+	load(filename, isVideo);
 }
 
 MediaObject::MediaObject(Mat image) {
@@ -22,13 +24,13 @@ MediaObject::MediaObject(Mat* image) {
 
 MediaObject::MediaObject(VideoCapture video) {
 	release();
-	this->video = new VideoCapture(video);
+	this->videoCap = new VideoCapture(video);
 	loadVideoData();
 }
 
 MediaObject::MediaObject(VideoCapture* video) {
 	release();
-	this->video = video;
+	this->videoCap = video;
 	loadVideoData();
 }
 
@@ -43,7 +45,7 @@ MediaObject::~MediaObject() {
 }
 
 void MediaObject::load(string filename, bool isVideo) {
-	if (!isImage()) release();
+	if (!isEmpty()) release();
 	this->filename = filename;
 	try {
 		if (isVideo) loadVideo();
@@ -54,34 +56,69 @@ void MediaObject::load(string filename, bool isVideo) {
 	}
 }
 
-void MediaObject::release() {
-	delete image, video;
-	delete[] videoData;
-
-	filename = "";
-	image = NULL;
-	video = NULL;
-	videoData = NULL;
-	frameCnt = 0;
+void MediaObject::load(QString filename, bool isVideo) {
+	load(filename.toStdString(), isVideo);
 }
 
 void MediaObject::loadImage() {
 	image = new Mat(imread(filename));
 }
 void MediaObject::loadVideo() {
-	video = new VideoCapture(filename);
+	videoCap = new VideoCapture(filename);
 	loadVideoData();
 }
 
 void MediaObject::loadVideoData() {
-	if (video == NULL) return;
+	if (videoCap == NULL) return;
 
-	frameCnt = video->get(CAP_PROP_FRAME_COUNT);
+	frameCnt = videoCap->get(CAP_PROP_FRAME_COUNT);
+	fps = videoCap->get(CAP_PROP_FPS);
 	videoData = new Mat[frameCnt];
 	// 读取每一帧数据
 	long index = 0;
-	while (video->read(videoData[index]))
+	while (videoCap->read(videoData[index]))
 		if (++index >= frameCnt) break;
+}
+
+void MediaObject::save(string filename) {
+	if (isEmpty()) return;
+	try {
+		if (isVideo()) saveVideo(filename);
+		else saveImage(filename);
+	} catch (exception e) {
+		LOG("保存媒体错误：" << e.what());
+	}
+}
+
+void MediaObject::save(QString filename) {
+	save(filename.toStdString());
+}
+
+void MediaObject::saveImage(string filename) {
+	imwrite(filename, *image);
+}
+
+void MediaObject::saveVideo(string filename) {
+	Mat* first = getVideoData(0);
+	Size size(first->cols, first->rows);
+	VideoWriter writer(filename, FOURCC, fps, size, 1);
+
+	for (int i = 0; i < frameCnt; ++i) {
+		auto data = getVideoData(i);
+		if (data == NULL || data->empty()) break;
+		writer.write(*data);
+	}
+}
+
+void MediaObject::release() {
+	delete image, videoCap;
+	delete[] videoData;
+
+	filename = "";
+	image = NULL;
+	videoCap = NULL;
+	videoData = NULL;
+	frameCnt = 0;
 }
 
 bool MediaObject::isImage() const { 
@@ -97,11 +134,18 @@ bool MediaObject::isEmpty() const {
 
 string MediaObject::getFilename() const { return filename; }
 
-Mat* MediaObject::getData() const { return image; }
+Mat* MediaObject::getData(long num) const {
+	if (isVideo()) return getVideoData(num);
+	else if (isImage()) return image;
+	else return NULL;
+}
 
-VideoCapture* MediaObject::getVideo() const { return video; }
+VideoCapture* MediaObject::getVideoCap() const { return videoCap; }
 
 long MediaObject::getVideoLength() const { return frameCnt; }
+
+double MediaObject::getVideoFPS() const { return fps; }
+
 Mat* MediaObject::getVideoData() const { return videoData; }
 
 Mat* MediaObject::getVideoData(long num) const {
@@ -110,11 +154,7 @@ Mat* MediaObject::getVideoData(long num) const {
 }
 
 QImage MediaObject::getQImage(long num) const {
-	if (isVideo())
-		return QTCVUtils::mat2QImage(getVideoData(num));
-	else if (isImage())
-		return QTCVUtils::mat2QImage(image);
-	else return QImage();
+	return QTCVUtils::mat2QImage(getData(num));
 }
 
 Mat QTCVUtils::qImage2Mat(const QImage& image) {
@@ -185,17 +225,20 @@ QImage QTCVUtils::mat2QImage(const Mat* mat) {
 }
 
 MediaObject* QTCVUtils::process(ProcessFuncType1 func, /* 处理函数 */
-	const MediaObject* img, /* 输入图片 */
-	const ProcessParam* param /*= NULL 参数*/) {
+	const MediaObject* img, /* 输入图片 */ ProcessParam* param /*= NULL 参数*/) {
 
-	return new MediaObject(func(*img->getData(), param));
+	auto data = img->getData();
+	if (data == NULL) return new MediaObject();
+
+	return new MediaObject(func(*data, param));
 }
 
 MediaObject* QTCVUtils::process(ProcessFuncType2 func, /* 处理函数 */
 	const MediaObject* img1, const MediaObject* img2, /* 输入图片 */
-	const ProcessParam* param /*= NULL 参数*/) {
+	ProcessParam* param /*= NULL 参数*/) {
 
 	auto data1 = img1->getData(), data2 = img2->getData();
+	if (data1 == NULL || data2 == NULL) return new MediaObject();
 
 	return new MediaObject(func(*data1, *data2, param));
 }
@@ -203,7 +246,7 @@ MediaObject* QTCVUtils::process(ProcessFuncType2 func, /* 处理函数 */
 void QTCVUtils::process(ProcessFuncType3 func, /* 处理函数 */ 
 	const MediaObject* img1, const MediaObject* img2, /* 输入图片 */
 	MediaObject* &out1, MediaObject* &out2, /* 输出图片 */
-	const ProcessParam* param /*= NULL 参数*/) {
+	ProcessParam* param /*= NULL 参数*/) {
 
 	auto data1 = img1->getData(), data2 = img2->getData();
 
@@ -215,8 +258,7 @@ void QTCVUtils::process(ProcessFuncType3 func, /* 处理函数 */
 }
 
 MediaObject* QTCVUtils::process(ProcessFuncType4 func, /* 处理函数 */ 
-	const MediaObject* video, /* 输入视频 */ 
-	const ProcessParam* param /*= NULL*/) {
+	const MediaObject* video, /* 输入视频 */ ProcessParam* param /*= NULL 参数*/) {
 
 	Mat* inData = video->getVideoData();
 	long inLen = video->getVideoLength();

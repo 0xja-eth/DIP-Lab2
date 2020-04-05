@@ -46,6 +46,8 @@ private:
 	static const QString PictureTitle;
 	static const QString VideoTitle;
 
+	static const QString SaveTitle;
+
 	static const QString PictureFilter;
 	static const QString VideoFilter;
 
@@ -56,7 +58,10 @@ private:
 	void loadFile(QString filename, QLabel* tarImg, 
 		MediaObject*& media, bool isVideo = false);
 
+	void saveFile(MediaObject* media);
+
 	void releaseMedia();
+	void releaseTargets();
 
 	void processStartRecting(QPoint pos); // 处理开始选择矩形
 	void processRecting(QPoint pos); // 处理矩形选择
@@ -65,8 +70,8 @@ private:
 	QPoint transferPoint(QPoint pos, QLabel* tarImg);
 	bool pointInRect(QPoint pos, QLabel* tarImg, bool global = true);
 
-	void doImageObjDet();
-	void doVideoObjDet();
+	void doImageObjDetTrack(ObjDetTrackParam* param);
+	void doVideoObjDetTrack(ObjDetTrackParam* param);
 
 public slots:
 	void openFile1() { openFile(ui.srcImg1, media1); }
@@ -76,25 +81,25 @@ public slots:
 
 	void openVideo() { openFile(ui.srcImg1, media1, true); }
 
+	void saveTarget() { saveFile(media1); }
+
 	void setRecting() { recting = true; }
 	
 	void onRectChanged();
 
 	void doObjDet();
+	void doObjDetTrack();
 	void doFeatDet();
 
 protected:
-
 	void mousePressEvent(QMouseEvent * e);
 	void mouseMoveEvent(QMouseEvent *e);
 	void mouseReleaseEvent(QMouseEvent * e);
 
 private:
 	MediaObject *media1 = NULL, *media2 = NULL;
+	MediaObject *target1 = NULL, *target2 = NULL;
 
 	bool recting = false; // 是否处于选择矩形状态下
 	QPoint startPos;
-
-//signals:
-//	void sendMessageSignal(QString str);
 };

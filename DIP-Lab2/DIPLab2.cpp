@@ -22,6 +22,8 @@ DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 
 	connect(ui.openVideo, SIGNAL(clicked()), this, SLOT(openVideo()));
 
+	connect(ui.saveBtn, SIGNAL(clicked()), this, SLOT(saveTarget()));
+
 	connect(ui.manualSet, SIGNAL(clicked()), this, SLOT(setRecting()));
 
 	connect(ui.xInput, SIGNAL(valueChanged(int)), this, SLOT(onRectChanged()));
@@ -29,13 +31,16 @@ DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 	connect(ui.wInput, SIGNAL(valueChanged(int)), this, SLOT(onRectChanged()));
 	connect(ui.hInput, SIGNAL(valueChanged(int)), this, SLOT(onRectChanged()));
 
-	connect(ui.doObjDet, SIGNAL(clicked()), this, SLOT(doRandFERNS()));
+	connect(ui.adTypeSelect, SIGNAL(currentIndexChanged(int)), this, SLOT(doObjDet()));
+
+	connect(ui.doObjDet, SIGNAL(clicked()), this, SLOT(doObjDetTrack()));
 
 	connect(ui.doFeatDet, SIGNAL(clicked()), this, SLOT(doFeatDet()));
 }
 
 DIPLab2::~DIPLab2() {
 	releaseMedia();
+	releaseTargets();
 	DebugUtils::closeConsole();
 }
 
@@ -89,6 +94,8 @@ void DIPLab2::setTarImg(MediaObject* media) {
 const QString DIPLab2::PictureTitle = "选择图片";
 const QString DIPLab2::VideoTitle = "选择视频";
 
+const QString DIPLab2::SaveTitle = "选择保存位置";
+
 const QString DIPLab2::PictureFilter = "Images(*.png *.bmp *.jpg *.tif *.gif);; AllFiles(*.*)";
 const QString DIPLab2::VideoFilter = "Videos(*.mp4 *.mov *.avi);; AllFiles(*.*)";
 
@@ -113,8 +120,21 @@ void DIPLab2::loadFile(QString filename, QLabel* tarImg,
 		setImg(tarImg, media);
 }
 
+void DIPLab2::saveFile(MediaObject* media) {
+	if (media == NULL) return;
+	QString filter = media->isVideo() ? VideoFilter : PictureFilter;
+	QString filename = QFileDialog::getSaveFileName(this, SaveTitle, "", filter);
+	media->save(filename);
+}
+
 void DIPLab2::releaseMedia() {
 	delete media1, media2;
+	media1 = media2 = NULL;
+}
+
+void DIPLab2::releaseTargets() {
+	delete target1, target2;
+	target1 = target2 = NULL;
 }
 
 #pragma region 矩形设置
@@ -131,6 +151,7 @@ void DIPLab2::processRecting(QPoint pos) {
 	int x2 = pos.x(), y2 = pos.y();
 	int minx = min(x1, x2), miny = min(y1, y2);
 	int maxx = max(x1, x2), maxy = max(y1, y2);
+
 	ui.xInput->setValue(minx);
 	ui.yInput->setValue(miny);
 	ui.wInput->setValue(maxx - minx);
@@ -197,37 +218,76 @@ void DIPLab2::onRectChanged() {
 
 #pragma endregion
 
-#pragma region FERN处理
+#pragma region 目标检测跟踪处理
 
 void DIPLab2::doObjDet() {
 	int x = ui.xInput->value(), y = ui.yInput->value();
 	int w = ui.wInput->value(), h = ui.hInput->value();
-	auto param = RectParam(x, y, w, h);
+	int algo = ui.odtAlgoSelect->currentIndex();
+	int adType = ui.adTypeSelect->currentIndex();
+	auto param = ObjDetTrackParam(x, y, w, h, 
+		(ObjDetTrackParam::Algo)algo, 
+		(ObjDetTrackParam::ADType)adType);
 
-	MediaObject *out1, *out2;
-	QTCVUtils::process(ImageProcess::doFERNS,
-		media1, media2, out1, out2, &param);
+	auto out = QTCVUtils::process(
+		ImageProcess::doObjDet, media1, &param);
 
-	setSrcImg1(out1); setSrcImg2(out2);
-	delete out1, out2;
+	ui.xInput->setValue(param.x);
+	ui.yInput->setValue(param.y);
+	ui.wInput->setValue(param.w);
+	ui.hInput->setValue(param.h);
+
+	setSrcImg1(out);
+
+	delete out;
+}
+
+void DIPLab2::doObjDetTrack() {
+	releaseTargets();
+
+	int x = ui.xInput->value(), y = ui.yInput->value();
+	int w = ui.wInput->value(), h = ui.hInput->value();
+	int algo = ui.odtAlgoSelect->currentIndex();
+	int adType = ui.adTypeSelect->currentIndex();
+	auto param = ObjDetTrackParam(x, y, w, h,
+		(ObjDetTrackParam::Algo)algo,
+		(ObjDetTrackParam::ADType)adType);
+
+	if (media1->isVideo()) doImageObjDetTrack(&param);
+	else doVideoObjDetTrack(&param);
+}
+
+void DIPLab2::doImageObjDetTrack(ObjDetTrackParam* param) {
+	target1 = QTCVUtils::process(
+		ImageProcess::doObjDetTrack, media1, param);
+
+	setTarImg(target1);
+}
+
+void DIPLab2::doVideoObjDetTrack(ObjDetTrackParam* param) {
+	QTCVUtils::process(ImageProcess::doObjTrack,
+		media1, media2, target1, target2, param);
+
+	setSrcImg1(target1); setSrcImg2(target2);
 }
 
 #pragma endregion
 
-#pragma region 特征检测处理
+#pragma region 点对匹配处理
 
 void DIPLab2::doFeatDet() {
+	releaseTargets();
+
 	int algo = ui.fdAlgoSelect->currentIndex();
 	int rType = ui.rTypeSelect->currentIndex();
 	int mType = ui.mTypeSelect->currentIndex()+1;
 	auto param = FeatDetParam((FeatDetParam::Algo)algo, 
 		(FeatDetParam::RType)rType, (FeatDetParam::MType)mType);
 
-	auto out = QTCVUtils::process(
+	target1 = QTCVUtils::process(
 		ImageProcess::doFeatDet, media1, media2, &param);
 
-	setTarImg(out);
-	delete out;
+	setTarImg(target1);
 }
 
 #pragma endregion

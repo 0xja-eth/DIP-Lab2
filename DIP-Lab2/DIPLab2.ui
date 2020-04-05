@@ -377,7 +377,7 @@
       <string>恢复原图</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="save">
+    <widget class="QPushButton" name="saveBtn">
      <property name="geometry">
       <rect>
        <x>536</x>
@@ -511,12 +511,12 @@
        </property>
        <item>
         <property name="text">
-         <string>随机厥(FERNS)</string>
+         <string>随机厥算法（仅支持图片）</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>BOOSTING</string>
+         <string>BOOSTING（速度较慢）</string>
         </property>
        </item>
        <item>

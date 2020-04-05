@@ -3,51 +3,108 @@
 
 const float ImageProcess::TwoNNRatio = 1.0 / 1.5;
 
-Mat ImageProcess::drawRect(const Mat &data, const ProcessParam* _param /*= NULL*/) {
+double ImageProcess::progress = 0;
+
+Mat ImageProcess::drawRect(const Mat &data, ProcessParam* _param /*= NULL*/) {
 	if (_param == NULL) return data;
 	auto param = (RectParam*)_param;
 
 	Mat out = data.clone();
-	Rect rect(param->x, param->y, param->w, param->h);
-	rectangle(out, rect, param->color);
+	Rect rect = param->getRect();
+	
+	if (!rect.empty()) rectangle(out, rect, param->color);
 
 	return out;
 }
 
-void ImageProcess::doFERNS(const Mat &data1, const Mat &data2, 
-	Mat &out1, Mat &out2, const ProcessParam* _param /*= NULL*/) {
+Mat ImageProcess::doObjDet(const Mat &data, ProcessParam* _param /*= NULL*/) {
+	if (_param == NULL) return data;
+	auto param = (ObjDetTrackParam*)_param;
+
+	Rect rect = param->getRect();
+
+	switch (param->adType) {
+	case ObjDetTrackParam::Face:
+		rect = _faceDet(data); break;
+	}
+
+	param->setRect(rect);
+
+	return drawRect(data, param);
+}
+
+void ImageProcess::doObjTrack(const Mat &data1, const Mat &data2,
+	Mat &out1, Mat &out2, ProcessParam* _param /*= NULL*/) {
 	out1 = data1.clone(); out2 = data2.clone();
 
 	if (_param == NULL) return;
-	auto param = (RectParam*)_param;
+	auto param = (ObjDetTrackParam*)_param;
 
-	cvtColor(out1, out1, COLOR_BGR2GRAY);
-	cvtColor(out2, out2, COLOR_BGR2GRAY);
-
-	auto tmplImg1 = ImgT(out1), tmplImg2 = ImgT(out2);
-	auto tmplBB = BB(param->x, param->y, param->w, param->h);
-
-	rectangle(out1, tmplBB, param->color);
-
-	auto featuresExtractor = make_shared<HaarFeaturesExtractor>(5, 10);
-	auto classifier = make_shared<ForestClassifier<FernClassifier> >(10, 5);
-	auto scanner = make_shared<Scanner>(Size(24, 24), Size(320, 240), 0.25, 1.2);
-	auto detector = Detector<ForestClassifier<FernClassifier>,
-		HaarFeaturesExtractor>(scanner, classifier, featuresExtractor);
-
-	detector.learn(tmplImg1, tmplBB, true);
-
-	vector<BB> objs;
-	vector<float> probs;
-
-	detector.detect(tmplImg2, objs, probs);
-
-	for_each(begin(objs), end(objs), [&out2, &param](BBRefC obj) {
-		rectangle(out2, obj, param->color);
-	});
+	switch (param->algo) {
+	case ObjDetTrackParam::FERNS: 
+		_FERNSTrack(data1, data2, out1, out2, param); break;
+	default: 
+		_trackerTrack(data1, data2, out1, out2, param); break;
+	}
 }
 
-Mat ImageProcess::doFeatDet(const Mat &data1, const Mat &data2, const ProcessParam* _param /*= NULL*/) {
+const int ImageProcess::DetDuration = 60;
+
+void ImageProcess::doObjDetTrack(const Mat* inVideo, long inLen, 
+	Mat* &outVideo, long &outLen, ProcessParam* _param /*= NULL*/) {
+
+	if (_param == NULL) return;
+
+	outVideo = new Mat[outLen = inLen];
+
+	auto param = (ObjDetTrackParam*)_param;
+
+	bool trackSucc = false, newDet = false;
+	bool auto_ = param->adType != ObjDetTrackParam::None; // 是否自动监测
+	int duration = 0;
+
+	Ptr<Tracker> tracker = NULL;
+
+	// 每帧处理
+	for (int i = 0; i < inLen; ++i, ++duration) {
+		Mat frame = inVideo[i];
+		Mat &outFrame = outVideo[i];
+		outFrame = frame;
+
+		// 如果为第一帧或者需要自动检测并且上一帧没有跟踪到或者间隔帧数大于指定数目
+		// 当没有检测算法时，第一帧也要进行一次 doObjDet 操作，用于绘制矩形
+		if (i == 0 || (auto_ && (trackSucc == false || duration >= DetDuration))) {
+			duration = 0;
+			outFrame = doObjDet(frame, param);
+			newDet = !param->getRect().empty();
+		}
+
+		if (i == 0) continue; // 如果是第一帧，不进行跟踪
+
+		Mat lastFrame = inVideo[i - 1];
+
+		switch (param->algo) {
+		case ObjDetTrackParam::FERNS:
+			trackSucc = false;
+			/*
+			_FERNSTrack(lastFrame, frame, outFrame, param);
+			trackSucc = !param->getRect().empty();
+			*/
+			break;
+		default:
+			trackSucc = _trackerTrack(tracker, newDet, 
+				frame, outFrame, param);
+			break;
+		}
+		if (trackSucc) LOG("第 " << i << " 帧跟踪成功！");
+		else LOG("第 " << i << " 帧跟踪失败！");
+
+		imshow("video", outFrame);
+	}
+}
+
+Mat ImageProcess::doFeatDet(const Mat &data1, const Mat &data2, 
+	ProcessParam* _param /*= NULL*/) {
 
 	if (_param == NULL) return data1;
 	auto param = (FeatDetParam*)_param;
@@ -60,6 +117,121 @@ Mat ImageProcess::doFeatDet(const Mat &data1, const Mat &data2, const ProcessPar
 	default: return data1;
 	}
 	return _featureDectect(algo, data1, data2, param->rType, param->mType);
+}
+
+const std::string ImageProcess::FaceDetPath = "./xml/haarcascade_frontalface_alt.xml";
+
+Rect ImageProcess::_faceDet(const Mat &data) {
+	// 加载
+	static CascadeClassifier cascade;
+	if (cascade.empty()) 
+		// 加载训练好的 人脸检测器（.xml）
+		if (!cascade.load(FaceDetPath)) LOG("人脸检测器加载失败");
+
+	if (cascade.empty()) return Rect(0, 0, 0, 0);
+	
+	vector<Rect> faces(0);
+	cascade.detectMultiScale(data, faces, 1.1, 2, 0, Size(30, 30));
+
+	if (faces.size() > 0) {
+		LOG("检测到 " << faces.size() << "个人脸，返回第一个");
+		return faces[0];
+	}
+	
+	cout << "未检测到人脸" << endl;
+	return Rect(0, 0, 0, 0);
+}
+
+void ImageProcess::_FERNSTrack(const Mat &data1, const Mat &data2, 
+	Mat &out1, Mat &out2, ObjDetTrackParam* param /*= NULL*/) {
+
+	Rect tmplBB = param->getRect();
+	rectangle(out1, tmplBB, param->color);
+
+	_FERNSTrack(data1, data2, out2, param);
+}
+
+void ImageProcess::_FERNSTrack(const Mat &data1, const Mat &data2, Mat &out, 
+	ObjDetTrackParam* param /*= NULL*/) {
+	Mat tmp = data1.clone();
+	
+	cvtColor(tmp, tmp, COLOR_BGR2GRAY);
+	cvtColor(out, out, COLOR_BGR2GRAY);
+
+	auto tmplImg1 = ImgT(tmp), tmplImg2 = ImgT(out);
+	BB tmplBB = param->getRect();
+
+	auto featuresExtractor = make_shared<HaarFeaturesExtractor>(5, 10);
+	auto classifier = make_shared<ForestClassifier<FernClassifier> >(10, 5);
+	auto scanner = make_shared<Scanner>(Size(24, 24), Size(320, 240), 0.25, 1.2);
+	auto detector = mycv::Detector<ForestClassifier<FernClassifier>,
+		HaarFeaturesExtractor>(scanner, classifier, featuresExtractor);
+
+	detector.learn(tmplImg1, tmplBB, true);
+
+	vector<BB> objs;
+	vector<float> probs;
+
+	detector.detect(tmplImg2, objs, probs);
+
+	BB avgRect; // 若有多个匹配，求均值
+	for_each(begin(objs), end(objs), [&out, &param, &avgRect](BBRefC obj) {
+		rectangle(out, obj, param->color);
+		avgRect.x += obj.x; avgRect.y += obj.y;
+		avgRect.width += obj.width; 
+		avgRect.height += obj.height;
+	});
+
+	avgRect.x /= objs.size();
+	avgRect.y /= objs.size();
+	avgRect.width /= objs.size();
+	avgRect.height /= objs.size();
+
+	param->setRect(avgRect);
+}
+
+void ImageProcess::_trackerTrack(const Mat &data1, const Mat &data2, Mat &out1, Mat &out2, 
+	ObjDetTrackParam* param /*= NULL*/) {
+	auto tracker = _getTracker(param->algo);
+	
+	Rect2d rect = param->getRect();
+
+	rectangle(out1, rect, param->color);
+	
+	tracker->init(data1, rect);
+	bool ok = tracker->update(data2, rect);
+
+	if (ok) rectangle(out2, rect, param->color);
+	else LOG("跟踪失败！");
+}
+
+bool ImageProcess::_trackerTrack(Ptr<Tracker> &tracker, bool &newDet,
+	const Mat &frame, Mat &out, ObjDetTrackParam* param) {
+	Rect2d rect = param->getRect();
+
+	if (newDet) { // 重新加载跟踪器
+		tracker = _getTracker(param->algo);
+		tracker->init(frame, rect);
+		newDet = false;
+	}
+
+	bool succ = (!tracker.empty() && tracker->update(frame, rect));
+	if (succ) rectangle(out, rect, param->color);
+
+	param->setRect(rect);
+	return succ;
+}
+
+Ptr<Tracker> ImageProcess::_getTracker(ObjDetTrackParam::Algo algo) {
+	switch (algo) {
+	case ObjDetTrackParam::BOOSTING: return TrackerBoosting::create();
+	case ObjDetTrackParam::MIL: return TrackerMIL::create();
+	case ObjDetTrackParam::KCF: return TrackerKCF::create();
+	case ObjDetTrackParam::TLD: return TrackerTLD::create();
+	case ObjDetTrackParam::MEDIANFLOW: return TrackerMedianFlow::create();
+	case ObjDetTrackParam::GOTURN: return TrackerGOTURN::create();
+	case ObjDetTrackParam::MOSSE: return TrackerMOSSE::create();
+	}
 }
 
 Mat ImageProcess::_featureDectect(Ptr<Feature2D> algo,
