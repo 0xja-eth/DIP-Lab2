@@ -27,6 +27,9 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QFrame" name="frame">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>12</x>
@@ -524,11 +527,6 @@
        </item>
        <item>
         <property name="text">
-         <string>MIL</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
          <string>KCF</string>
         </property>
        </item>
@@ -540,16 +538,6 @@
        <item>
         <property name="text">
          <string>MEDIANFLOW</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>GOTURN</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>MOSSE</string>
         </property>
        </item>
       </widget>
@@ -663,7 +651,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;说明：&lt;/span&gt;&lt;br/&gt;该算法可对视频进行操作。&lt;br/&gt;打开视频后，图片里显示视频的第一帧，从中选择一个矩形或者勾选人脸识别进行自动识别。&lt;br/&gt;设置完毕后点击执行将自动对视频对设定的目标进行追踪操作。&lt;br/&gt;另存为操作可以保存整个视频。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;说明：&lt;/span&gt;&lt;br/&gt;该算法可对视频进行操作。&lt;br/&gt;打开视频后，图片里显示视频的第一帧，从中选择一个矩形或者勾选人脸识别进行自动识别。&lt;br/&gt;设置完毕后点击执行将自动对视频对设定的目标进行追踪操作。&lt;br/&gt;另存为后才可以对输出视频进行查看。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

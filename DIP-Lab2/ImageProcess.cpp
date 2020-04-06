@@ -71,7 +71,7 @@ void ImageProcess::doObjDetTrack(const Mat* inVideo, long inLen,
 
 		Mat frame = inVideo[i];
 		Mat &outFrame = outVideo[i];
-		outFrame = frame;
+		outFrame = frame.clone();
 
 		// 如果为第一帧或者需要自动检测并且上一帧没有跟踪到或者间隔帧数大于指定数目
 		// 当没有检测算法时，第一帧也要进行一次 doObjDet 操作，用于绘制矩形
@@ -227,12 +227,12 @@ bool ImageProcess::_trackerTrack(Ptr<Tracker> &tracker, bool &newDet,
 Ptr<Tracker> ImageProcess::_getTracker(ObjDetTrackParam::Algo algo) {
 	switch (algo) {
 	case ObjDetTrackParam::BOOSTING: return TrackerBoosting::create();
-	case ObjDetTrackParam::MIL: return TrackerMIL::create();
+	//case ObjDetTrackParam::MIL: return TrackerMIL::create();
 	case ObjDetTrackParam::KCF: return TrackerKCF::create();
 	case ObjDetTrackParam::TLD: return TrackerTLD::create();
 	case ObjDetTrackParam::MEDIANFLOW: return TrackerMedianFlow::create();
-	case ObjDetTrackParam::GOTURN: return TrackerGOTURN::create();
-	case ObjDetTrackParam::MOSSE: return TrackerMOSSE::create();
+	//case ObjDetTrackParam::GOTURN: return TrackerGOTURN::create();
+	//case ObjDetTrackParam::MOSSE: return TrackerMOSSE::create();
 	}
 }
 

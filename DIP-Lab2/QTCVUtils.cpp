@@ -38,9 +38,10 @@ MediaObject::MediaObject(VideoCapture* video) {
 	loadVideoData();
 }
 
-MediaObject::MediaObject(Mat* videoData, long length) {
+MediaObject::MediaObject(Mat* videoData, long length, double fps) {
 	release();
 	this->videoData = videoData;
+	this->fps = fps;
 	frameCnt = length;
 }
 
@@ -376,10 +377,11 @@ void QTCVUtils::process(ProcessFuncType4 func, /* ´¦Àíº¯Êý */
 		processing = true;
 		auto inData = inVideo->getVideoData();
 		long inLen = inVideo->getVideoLength();
+		double fps = inVideo->getVideoFPS();
 
 		Mat* outData; long outLen;
 		func(inData, inLen, outData, outLen, param);
-		outVideo = new MediaObject(outData, outLen);
+		outVideo = new MediaObject(outData, outLen, fps);
 
 		processing = false;
 	};

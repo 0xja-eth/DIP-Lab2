@@ -32,7 +32,7 @@ public:
 	MediaObject(VideoCapture* video);
 
 	// 从视频数据中读取
-	MediaObject(Mat* videoData, long length);
+	MediaObject(Mat* videoData, long length, double fps);
 
 	~MediaObject();
 

@@ -115,7 +115,7 @@ public slots:
 
 	void openVideo() { openFile(ui.srcImg1, media1, true); }
 
-	void saveTarget() { saveFile(media1); }
+	void saveTarget() { saveFile(target1); }
 
 	void setRecting() { recting = true; }
 	

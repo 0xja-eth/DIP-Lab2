@@ -37,8 +37,8 @@ class ObjDetTrackParam : public RectParam {
 public:
 	// 目标跟踪算法
 	enum Algo {
-		FERNS, BOOSTING, MIL, KCF, TLD,
-		MEDIANFLOW, GOTURN, MOSSE
+		FERNS, BOOSTING, KCF, TLD,
+		MEDIANFLOW
 	};
 	// 自动检测方式(Auto Detect Type)
 	enum ADType {
