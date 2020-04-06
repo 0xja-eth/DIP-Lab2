@@ -188,8 +188,8 @@ Mat ImageProcess::comMatR(const Mat &Matrix1, const Mat &Matrix2, const ProcessP
 
 	//灰度图转换  
 	Mat image1, image2;
-	cvtColor(Matrix1, image1, CV_RGB2GRAY);
-	cvtColor(Matrix2, image2, CV_RGB2GRAY);
+	cvtColor(Matrix2, image1, CV_RGB2GRAY);
+	cvtColor(Matrix1, image2, CV_RGB2GRAY);
 
 
 	//提取特征点    
@@ -221,7 +221,7 @@ Mat ImageProcess::comMatR(const Mat &Matrix1, const Mat &Matrix2, const ProcessP
 	}
 
 	Mat first_match;
-	drawMatches(Matrix2, keyPoint2, Matrix1, keyPoint1, GoodMatchePoints, first_match);
+	drawMatches(Matrix1, keyPoint2, Matrix2, keyPoint1, GoodMatchePoints, first_match);
 	vector<Point2f> imagePoints1, imagePoints2;
 
 	for (int i = 0; i < GoodMatchePoints.size(); i++)
@@ -238,17 +238,17 @@ Mat ImageProcess::comMatR(const Mat &Matrix1, const Mat &Matrix2, const ProcessP
 	//Mat   homo=getPerspectiveTransform(imagePoints1,imagePoints2);  
 
    //计算配准图的四个顶点坐标
-	CalcCorners(homo, Matrix1);
+	CalcCorners(homo, Matrix2);
 
 	//图像配准  
 	Mat imageTransform1, imageTransform2;
-	warpPerspective(Matrix1, imageTransform1, homo, Size(MAX(corners.right_top.x, corners.right_bottom.x), Matrix2.rows));
+	warpPerspective(Matrix2, imageTransform1, homo, Size(MAX(corners.right_top.x, corners.right_bottom.x), Matrix1.rows));
 	//warpPerspective(Matrix1, imageTransform2, adjustMat*homo, Size(Matrix2.cols*1.3, Matrix2.rows*1.8));
 	//创建拼接后的图,需提前计算图的大小
 	/*int dst_width = Matrix1.cols + Matrix2.cols - imageTransform1.cols;  //取最右点的长度为拼接图的长度
 	int dst_height = Matrix1.rows + Matrix2.rows - imageTransform1.rows;*/
 	int dst_width = imageTransform1.cols;  //取最右点的长度为拼接图的长度
-	int dst_height = Matrix2.rows;
+	int dst_height = Matrix1.rows;
 
 	Mat dst(dst_height, dst_width, CV_8UC4);
 	dst.setTo(0);
@@ -256,9 +256,9 @@ Mat ImageProcess::comMatR(const Mat &Matrix1, const Mat &Matrix2, const ProcessP
 		imageTransform1.cols, imageTransform1.rows)));*/
 	imageTransform1.copyTo(dst(Rect(0, 0,
 		imageTransform1.cols, imageTransform1.rows)));
-	Matrix2.copyTo(dst(Rect(0, 0, Matrix2.cols, Matrix2.rows)));
+	Matrix1.copyTo(dst(Rect(0, 0, Matrix1.cols, Matrix1.rows)));
 
-	//OptimizeSeam(Matrix2, imageTransform1, dst);
+	OptimizeSeam(Matrix1, imageTransform1, dst);
 	waitKey();
 
 	return dst;
