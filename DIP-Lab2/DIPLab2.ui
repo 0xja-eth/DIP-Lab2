@@ -701,6 +701,19 @@
       <string>恢复原图</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="doCombineImage">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>450</y>
+       <width>93</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>合并</string>
+     </property>
+    </widget>
    </widget>
   </widget>
  </widget>

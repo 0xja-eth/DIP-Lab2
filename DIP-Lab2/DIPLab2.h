@@ -57,6 +57,7 @@ public slots:
 
 	void doRandFERNS();
 	void doFeatDet();
+	void doCombineImage();
 
 protected:
 
