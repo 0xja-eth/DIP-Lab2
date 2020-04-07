@@ -264,7 +264,7 @@
        <x>0</x>
        <y>520</y>
        <width>611</width>
-       <height>300</height>
+       <height>301</height>
       </rect>
      </property>
      <property name="frameShape">
@@ -285,7 +285,7 @@
         <x>0</x>
         <y>0</y>
         <width>609</width>
-        <height>298</height>
+        <height>299</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -432,7 +432,7 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_5">
       <attribute name="title">
@@ -698,95 +698,11 @@
       <attribute name="title">
        <string>点对映射</string>
       </attribute>
-      <widget class="QComboBox" name="rTypeSelect">
-       <property name="geometry">
-        <rect>
-         <x>70</x>
-         <y>74</y>
-         <width>69</width>
-         <height>22</height>
-        </rect>
-       </property>
-       <item>
-        <property name="text">
-         <string>无</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>2NN</string>
-        </property>
-       </item>
-      </widget>
-      <widget class="QLabel" name="label_6">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>50</y>
-         <width>54</width>
-         <height>12</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>匹配算法</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_7">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>80</y>
-         <width>54</width>
-         <height>12</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>野点去除</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_5">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>20</y>
-         <width>54</width>
-         <height>12</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>算法</string>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="fdAlgoSelect">
-       <property name="geometry">
-        <rect>
-         <x>70</x>
-         <y>14</y>
-         <width>69</width>
-         <height>22</height>
-        </rect>
-       </property>
-       <item>
-        <property name="text">
-         <string>SIFT</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>SURF</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>ORB</string>
-        </property>
-       </item>
-      </widget>
       <widget class="QPushButton" name="doFeatDet">
        <property name="geometry">
         <rect>
-         <x>158</x>
-         <y>14</y>
+         <x>210</x>
+         <y>0</y>
          <width>75</width>
          <height>23</height>
         </rect>
@@ -795,25 +711,126 @@
         <string>执行</string>
        </property>
       </widget>
-      <widget class="QComboBox" name="mTypeSelect">
+      <widget class="QWidget" name="gridLayoutWidget">
        <property name="geometry">
         <rect>
-         <x>70</x>
-         <y>44</y>
-         <width>69</width>
-         <height>22</height>
+         <x>0</x>
+         <y>0</y>
+         <width>192</width>
+         <height>111</height>
         </rect>
        </property>
-       <item>
-        <property name="text">
-         <string>FLANN</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>BruteForce</string>
-        </property>
-       </item>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="1">
+         <widget class="QComboBox" name="fdAlgoSelect">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <item>
+           <property name="text">
+            <string>SIFT</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>SURF</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>ORB</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="mTypeSelect">
+          <item>
+           <property name="text">
+            <string>BruteForce</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>BruteForce-L1</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>FLANN</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>RANSAC</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QComboBox" name="rTypeSelect">
+          <item>
+           <property name="text">
+            <string>NN</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>NNRD</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Homography</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>算法</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>匹配算法</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>匹配过滤</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string>去除野点</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QCheckBox" name="rANMSSelect">
+          <property name="text">
+           <string>ANMS去除野点</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
     </widget>

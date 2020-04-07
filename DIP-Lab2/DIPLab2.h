@@ -16,6 +16,8 @@
 #include <QImage>
 #include <QThread>
 
+#include <QCheckBox>
+
 #include "ImageProcess.h"
 #include "QTCVUtils.h"
 
@@ -79,9 +81,9 @@ private:
 	void releaseTargets();
 	void releaseParam();
 
-	void processStartRecting(QPoint pos); // ´¦Àí¿ªÊ¼Ñ¡Ôñ¾ØÐÎ
-	void processRecting(QPoint pos); // ´¦Àí¾ØÐÎÑ¡Ôñ
-	void processEndRecting(); // ´¦Àí½áÊøÑ¡Ôñ¾ØÐÎ
+	void processStartRecting(QPoint pos); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½
+	void processRecting(QPoint pos); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½
+	void processEndRecting(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	QPoint transferPoint(QPoint pos, QLabel* tarImg);
 	bool pointInRect(QPoint pos, QLabel* tarImg, bool global = true);
@@ -134,8 +136,8 @@ private:
 	MediaObject *media1 = NULL, *media2 = NULL;
 	MediaObject *target1 = NULL, *target2 = NULL;
 
-	/* ¾ØÐÎÑ¡ÔñÏà¹ØÊôÐÔ */
-	bool recting = false; // ÊÇ·ñ´¦ÓÚÑ¡Ôñ¾ØÐÎ×´Ì¬ÏÂ
+	/* ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
+	bool recting = false; // ï¿½Ç·ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½
 	QPoint startPos;
 
 	bool srcTarget = false;
