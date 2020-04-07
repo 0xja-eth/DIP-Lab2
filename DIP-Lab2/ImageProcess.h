@@ -108,6 +108,10 @@ public:
 	static Mat doFeatDet(const Mat &data1, const Mat &data2,
 		ProcessParam* _param = NULL);
 
+	//ORB特征检测（视频）
+	static void doVideoFeatDet(const Mat *inVideo, long inLen,
+		Mat* outVideo, long &outLen, ProcessParam* _param = NULL);
+
 private:
 	// 人脸检测
 	static const string FaceDetPath; // 模型路径
