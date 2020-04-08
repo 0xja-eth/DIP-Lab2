@@ -436,10 +436,11 @@ void DIPLab2::doFeatDet() {
 
 	int algo = ui.fdAlgoSelect->currentIndex();
 	int rType = ui.rTypeSelect->currentIndex();
-	int mType = ui.mTypeSelect->currentIndex() + 1;
-
-	param = new FeatDetParam((FeatDetParam::Algo)algo,
-		(FeatDetParam::RType)rType, (FeatDetParam::MType)mType);
+	int mType = ui.mTypeSelect->currentIndex();
+	bool isANMSRemove = ui.rANMSSelect->isChecked();
+	
+	param = new FeatDetParam((FeatDetParam::Algo)algo, 
+		(FeatDetParam::RType)rType, (FeatDetParam::MType)mType, isANMSRemove);
 
 	QTCVUtils::process(ImageProcess::doFeatDet,
 		media1, media2, target1, param);
