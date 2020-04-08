@@ -1,0 +1,348 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3E7489D1243D65ED00477A35 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3E7489D0243D65ED00477A35 /* main.cpp */; };
+		3E7489D9243D685F00477A35 /* ImageProcess.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3E7489D7243D685F00477A35 /* ImageProcess.cpp */; };
+		3E7489DC243D68A600477A35 /* LabRun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3E7489DA243D68A600477A35 /* LabRun.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3E7489CB243D65ED00477A35 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		3E7489CD243D65ED00477A35 /* CV-Lab2-Lab */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "CV-Lab2-Lab"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E7489D0243D65ED00477A35 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		3E7489D7243D685F00477A35 /* ImageProcess.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ImageProcess.cpp; sourceTree = "<group>"; };
+		3E7489D8243D685F00477A35 /* ImageProcess.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ImageProcess.hpp; sourceTree = "<group>"; };
+		3E7489DA243D68A600477A35 /* LabRun.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LabRun.cpp; sourceTree = "<group>"; };
+		3E7489DB243D68A600477A35 /* LabRun.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LabRun.hpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3E7489CA243D65ED00477A35 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3E7489C4243D65ED00477A35 = {
+			isa = PBXGroup;
+			children = (
+				3E7489CF243D65ED00477A35 /* CV-Lab2-Lab */,
+				3E7489CE243D65ED00477A35 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3E7489CE243D65ED00477A35 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3E7489CD243D65ED00477A35 /* CV-Lab2-Lab */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3E7489CF243D65ED00477A35 /* CV-Lab2-Lab */ = {
+			isa = PBXGroup;
+			children = (
+				3E7489D0243D65ED00477A35 /* main.cpp */,
+				3E7489D7243D685F00477A35 /* ImageProcess.cpp */,
+				3E7489D8243D685F00477A35 /* ImageProcess.hpp */,
+				3E7489DA243D68A600477A35 /* LabRun.cpp */,
+				3E7489DB243D68A600477A35 /* LabRun.hpp */,
+			);
+			path = "CV-Lab2-Lab";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3E7489CC243D65ED00477A35 /* CV-Lab2-Lab */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3E7489D4243D65ED00477A35 /* Build configuration list for PBXNativeTarget "CV-Lab2-Lab" */;
+			buildPhases = (
+				3E7489C9243D65ED00477A35 /* Sources */,
+				3E7489CA243D65ED00477A35 /* Frameworks */,
+				3E7489CB243D65ED00477A35 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "CV-Lab2-Lab";
+			productName = "CV-Lab2-Lab";
+			productReference = 3E7489CD243D65ED00477A35 /* CV-Lab2-Lab */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3E7489C5243D65ED00477A35 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1140;
+				ORGANIZATIONNAME = FoBird;
+				TargetAttributes = {
+					3E7489CC243D65ED00477A35 = {
+						CreatedOnToolsVersion = 11.4;
+					};
+				};
+			};
+			buildConfigurationList = 3E7489C8243D65ED00477A35 /* Build configuration list for PBXProject "CV-Lab2-Lab" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 3E7489C4243D65ED00477A35;
+			productRefGroup = 3E7489CE243D65ED00477A35 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3E7489CC243D65ED00477A35 /* CV-Lab2-Lab */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3E7489C9243D65ED00477A35 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3E7489D1243D65ED00477A35 /* main.cpp in Sources */,
+				3E7489DC243D68A600477A35 /* LabRun.cpp in Sources */,
+				3E7489D9243D685F00477A35 /* ImageProcess.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3E7489D2243D65ED00477A35 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		3E7489D3243D65ED00477A35 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		3E7489D5243D65ED00477A35 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include,
+					/usr/local/include/opencv4,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
+				OTHER_LDFLAGS = (
+					"-lopencv_aruco",
+					"-lopencv_bgsegm",
+					"-lopencv_bioinspired",
+					"-lopencv_calib3d",
+					"-lopencv_ccalib",
+					"-lopencv_core",
+					"-lopencv_datasets",
+					"-lopencv_dnn",
+					"-lopencv_dnn_objdetect",
+					"-lopencv_dpm",
+					"-lopencv_face",
+					"-lopencv_features2d",
+					"-lopencv_flann",
+					"-lopencv_fuzzy",
+					"-lopencv_highgui",
+					"-lopencv_gapi",
+					"-lopencv_hfs",
+					"-lopencv_highgui",
+					"-lopencv_imgcodecs",
+					"-lopencv_imgproc",
+					"-lopencv_img_hash",
+					"-lopencv_line_descriptor",
+					"-lopencv_ml",
+					"-lopencv_objdetect",
+					"-lopencv_optflow",
+					"-lopencv_phase_unwrapping",
+					"-lopencv_photo",
+					"-lopencv_plot",
+					"-lopencv_reg",
+					"-lopencv_rgbd",
+					"-lopencv_saliency",
+					"-lopencv_shape",
+					"-lopencv_stereo",
+					"-lopencv_structured_light",
+					"-lopencv_stitching",
+					"-lopencv_superres",
+					"-lopencv_surface_matching",
+					"-lopencv_text",
+					"-lopencv_tracking",
+					"-lopencv_video",
+					"-lopencv_videoio",
+					"-lopencv_videostab",
+					"-lopencv_xfeatures2d",
+					"-lopencv_ximgproc",
+					"-lopencv_xobjdetect",
+					"-lopencv_xphoto",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		3E7489D6243D65ED00477A35 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include,
+					/usr/local/include/opencv4,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3E7489C8243D65ED00477A35 /* Build configuration list for PBXProject "CV-Lab2-Lab" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3E7489D2243D65ED00477A35 /* Debug */,
+				3E7489D3243D65ED00477A35 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3E7489D4243D65ED00477A35 /* Build configuration list for PBXNativeTarget "CV-Lab2-Lab" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3E7489D5243D65ED00477A35 /* Debug */,
+				3E7489D6243D65ED00477A35 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3E7489C5243D65ED00477A35 /* Project object */;
+}
