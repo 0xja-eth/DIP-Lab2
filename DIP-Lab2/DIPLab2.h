@@ -124,6 +124,7 @@ public slots:
 	void doObjDet();
 	void doObjDetTrack();
 	void doFeatDet();
+	void doCombineImage();
 
 protected:
 	void mousePressEvent(QMouseEvent * e);

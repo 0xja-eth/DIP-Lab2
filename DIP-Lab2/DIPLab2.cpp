@@ -38,6 +38,7 @@ DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 	connect(ui.doObjDet, SIGNAL(clicked()), this, SLOT(doObjDetTrack()));
 
 	connect(ui.doFeatDet, SIGNAL(clicked()), this, SLOT(doFeatDet()));
+	connect(ui.doCombineImage, SIGNAL(clicked()), this, SLOT(doCombineImage()));
 
 	connect(this, SIGNAL(signalUpdate()), this, SLOT(update()));
 	connect(this, SIGNAL(signalLoadCompleted(MediaObject*&)), 
@@ -445,3 +446,15 @@ void DIPLab2::doFeatDet() {
 
 #pragma endregion
 
+#pragma region Í¼ÏñÆ´½Ó
+void DIPLab2::doCombineImage()
+{
+	int algo = ui.fdAlgoSelect->currentIndex();
+	int rType = ui.rTypeSelect->currentIndex();
+	int mType = ui.mTypeSelect->currentIndex() + 1;
+	auto param = FeatDetParam((FeatDetParam::Algo)algo,
+		(FeatDetParam::RType)rType, (FeatDetParam::MType)mType);
+	auto out = QTCVUtils::process(ImageProcess::comMatR, qImg1, qImg2, &param);
+	setTarImg(&out);
+}
+#pragma endregion
