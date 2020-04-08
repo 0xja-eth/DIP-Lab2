@@ -727,40 +727,68 @@ Mat ImageProcess::comMatR(const Mat &Matrix1, const Mat &Matrix2, ProcessParam* 
 
 	//灰度图转换  
 	Mat image1, image2;
-	cvtColor(Matrix2, image1, CV_RGB2GRAY);
-	cvtColor(Matrix1, image2, CV_RGB2GRAY);
-
-
-	//提取特征点    
-	KeyPoints keyPoint1, keyPoint2;
-	algo->detect(image1, keyPoint1);
-	algo->detect(image2, keyPoint2);
-	//特征点描述，为下边的特征点匹配做准备    
+	cvtColor(Matrix2, image1, CV_BGR2GRAY);
+	cvtColor(Matrix1, image2, CV_BGR2GRAY);
 	Mat imageDesc1, imageDesc2;
-	algo->detectAndCompute(image1, Mat(), keyPoint1, imageDesc1);
-	algo->detectAndCompute(image2, Mat(), keyPoint2, imageDesc2);
-	if (imageDesc1.type() != CV_32F || imageDesc2.type() != CV_32F) {
-		imageDesc1.convertTo(imageDesc1, CV_32F);
-		imageDesc2.convertTo(imageDesc2, CV_32F);
-	}
-	FlannBasedMatcher matcher;
-	vector<vector<DMatch>> matchePoints;
+	KeyPoints keyPoint1, keyPoint2;
 	vector<DMatch> GoodMatchePoints;
-
-	vector<Mat> train_desc(1, imageDesc1);
-	matcher.add(train_desc);
-	matcher.train();
-
-	matcher.knnMatch(imageDesc2, matchePoints, 2);
-
-	// Lowe's algorithm,获取优秀匹配点
-	for (int i = 0; i < matchePoints.size(); i++)
+	vector<vector<DMatch>> matchePoints;
+	if (param->algo == FeatDetParam::ORB)
 	{
-		if (matchePoints[i][0].distance < 0.4 * matchePoints[i][1].distance)
+		//提取特征点    
+		Ptr<ORB>  surfDetector = ORB::create(3000);
+		surfDetector->detect(image1, keyPoint1);
+		surfDetector->detect(image2, keyPoint2);
+
+		//特征点描述，为下边的特征点匹配做准备    
+		Ptr<ORB>  SurfDescriptor = ORB::create(3000);
+
+		SurfDescriptor->compute(image1, keyPoint1, imageDesc1);
+		SurfDescriptor->compute(image2, keyPoint2, imageDesc2);
+
+		flann::Index flannIndex(imageDesc1, flann::LshIndexParams(12, 20, 2), cvflann::FLANN_DIST_HAMMING);
+
+		Mat macthIndex(imageDesc2.rows, 2, CV_32SC1), matchDistance(imageDesc2.rows, 2, CV_32FC1);
+		flannIndex.knnSearch(imageDesc2, macthIndex, matchDistance, 2, flann::SearchParams());
+		// Lowe's algorithm,获取优秀匹配点
+		for (int i = 0; i < matchDistance.rows; i++)
 		{
-			GoodMatchePoints.push_back(matchePoints[i][0]);
+			if (matchDistance.at<float>(i, 0) < 0.4 * matchDistance.at<float>(i, 1))
+			{
+				DMatch dmatches(i, macthIndex.at<int>(i, 0), matchDistance.at<float>(i, 0));
+				GoodMatchePoints.push_back(dmatches);
+			}
 		}
 	}
+	else
+	{
+		//提取特征点    
+		algo->detect(image1, keyPoint1);
+		algo->detect(image2, keyPoint2);
+		//特征点描述，为下边的特征点匹配做准备    
+		algo->detectAndCompute(image1, Mat(), keyPoint1, imageDesc1);
+		algo->detectAndCompute(image2, Mat(), keyPoint2, imageDesc2);
+		if (imageDesc1.type() != CV_32F || imageDesc2.type() != CV_32F) {
+			imageDesc1.convertTo(imageDesc1, CV_32F);
+			imageDesc2.convertTo(imageDesc2, CV_32F);
+		}
+		FlannBasedMatcher matcher;
+
+		vector<Mat> train_desc(1, imageDesc1);
+		matcher.add(train_desc);
+		matcher.train();
+
+		matcher.knnMatch(imageDesc2, matchePoints, 2);
+		// Lowe's algorithm,获取优秀匹配点
+		for (int i = 0; i < matchePoints.size(); i++)
+		{
+			if (matchePoints[i][0].distance < 0.4 * matchePoints[i][1].distance)
+			{
+				GoodMatchePoints.push_back(matchePoints[i][0]);
+			}
+		}
+	}
+
 
 	Mat first_match;
 	drawMatches(Matrix1, keyPoint2, Matrix2, keyPoint1, GoodMatchePoints, first_match);
@@ -771,7 +799,6 @@ Mat ImageProcess::comMatR(const Mat &Matrix1, const Mat &Matrix2, ProcessParam* 
 		imagePoints2.push_back(keyPoint2[GoodMatchePoints[i].queryIdx].pt);
 		imagePoints1.push_back(keyPoint1[GoodMatchePoints[i].trainIdx].pt);
 	}
-
 
 
 	//获取图像1到图像2的投影映射矩阵 尺寸为3*3  
