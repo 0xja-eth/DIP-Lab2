@@ -130,6 +130,40 @@ Mat ImageProcess::doFeatDet(const Mat &data1, const Mat &data2,
 	return _featureDectect(algo, data1, data2, param->rType, param->mType);
 }
 
+void ImageProcess::doVideoFeatDet(const Mat *inVideo, long inLen,
+	Mat* &outVideo, long &outLen, ProcessParam* _param) {
+
+	outVideo = new Mat[outLen = inLen];
+	int duration = 0;
+
+	// 每帧处理
+	for (int i = 0; i < inLen; ++i) {
+		progress = i * 1.0 / inLen;
+
+		Mat frame = inVideo[i];
+		Mat &outFrame = outVideo[i];
+		outFrame = frame.clone();
+
+		//初始化
+		vector<KeyPoint> keypoints;
+		Mat descriptors;
+		Ptr<FeatureDetector> detector = cv::ORB::create();
+		Ptr<DescriptorExtractor> descriptor = cv::ORB::create();
+
+		//检测 Oriented FAST 角点位置
+		detector->detect(frame, keypoints);
+
+		//根据角点位置计算 BRIEF 描述子
+		descriptor->compute(frame, keypoints, descriptors);
+
+		//绘制特征点
+		drawKeypoints(frame, keypoints, outFrame, Scalar::all(-1), DrawMatchesFlags::DEFAULT);
+
+		if (!outFrame.empty()) imshow("ORB_Video", outFrame);
+		//waitKey(duration);
+	}
+}
+
 const std::string ImageProcess::FaceDetPath = "./xml/haarcascade_frontalface_alt.xml";
 
 Rect ImageProcess::_faceDet(const Mat &data) {

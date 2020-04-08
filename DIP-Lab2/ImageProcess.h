@@ -114,6 +114,9 @@ public:
 	static Mat comMatR(const Mat &Matrix1, const Mat &Matrix2,
 		ProcessParam* _param = NULL);
 
+	//ORBÃÿ’˜ºÏ≤‚£® ”∆µ£©
+	static void doVideoFeatDet(const Mat *inVideo, long inLen,
+		Mat* &outVideo, long &outLen, ProcessParam* _param = NULL);
 
 private:
 	// »À¡≥ºÏ≤‚
