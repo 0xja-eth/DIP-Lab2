@@ -696,7 +696,7 @@
      </widget>
      <widget class="QWidget" name="tab_6">
       <attribute name="title">
-       <string>点对映射</string>
+       <string>点对映射与图像拼接</string>
       </attribute>
       <widget class="QComboBox" name="rTypeSelect">
        <property name="geometry">
