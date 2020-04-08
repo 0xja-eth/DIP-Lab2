@@ -229,7 +229,7 @@ void ImageProcess::_FERNSTrack(const Mat &data1, const Mat &data2, Mat &out,
 		avgRect.width += obj.width; 
 		avgRect.height += obj.height;
 	});
-
+	 
 	avgRect.x /= objs.size();
 	avgRect.y /= objs.size();
 	avgRect.width /= objs.size();
@@ -739,7 +739,10 @@ Mat ImageProcess::comMatR(const Mat &Matrix1, const Mat &Matrix2, ProcessParam* 
 	Mat imageDesc1, imageDesc2;
 	algo->detectAndCompute(image1, Mat(), keyPoint1, imageDesc1);
 	algo->detectAndCompute(image2, Mat(), keyPoint2, imageDesc2);
-
+	if (imageDesc1.type() != CV_32F || imageDesc2.type() != CV_32F) {
+		imageDesc1.convertTo(imageDesc1, CV_32F);
+		imageDesc2.convertTo(imageDesc2, CV_32F);
+	}
 	FlannBasedMatcher matcher;
 	vector<vector<DMatch>> matchePoints;
 	vector<DMatch> GoodMatchePoints;
