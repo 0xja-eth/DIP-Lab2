@@ -110,8 +110,9 @@ public:
 	static Mat doFeatDet(const Mat &data1, const Mat &data2,
 		ProcessParam* _param = NULL);
 
+	// 拼接图像
 	static Mat comMatR(const Mat &Matrix1, const Mat &Matrix2,
-		const ProcessParam* _param = NULL);//按行合并矩阵
+		ProcessParam* _param = NULL);
 
 
 private:

@@ -406,6 +406,7 @@
       <string>打开视频</string>
      </property>
     </widget>
+<<<<<<< HEAD
     <widget class="QProgressBar" name="progressBar">
      <property name="geometry">
       <rect>
@@ -432,7 +433,7 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_5">
       <attribute name="title">
@@ -792,7 +793,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>点对映射</string>
+        <string>执行</string>
        </property>
       </widget>
       <widget class="QComboBox" name="mTypeSelect">
@@ -815,21 +816,23 @@
         </property>
        </item>
       </widget>
-      <widget class="QPushButton" name="doCombineImage">
-       <property name="geometry">
-        <rect>
-         <x>158</x>
-         <y>44</y>
-         <width>75</width>
-         <height>23</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>图像拼接</string>
-       </property>
-      </widget>
      </widget>
     </widget>
+=======
+    <widget class="QPushButton" name="doCombineImage">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>450</y>
+       <width>93</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>合并</string>
+     </property>
+    </widget>
+>>>>>>> origin/Dante
    </widget>
   </widget>
  </widget>

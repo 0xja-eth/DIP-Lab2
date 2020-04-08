@@ -2,6 +2,12 @@
 #include "ImageProcess.h"
 #include <qdebug.h>
 const float ImageProcess::TwoNNRatio = 1.0 / 1.5;
+<<<<<<< HEAD
+
+double ImageProcess::progress = 0;
+
+Mat ImageProcess::drawRect(const Mat &data, ProcessParam* _param /*= NULL*/) {
+=======
 //图像拼接用到的四个角
 typedef struct
 {
@@ -11,10 +17,9 @@ typedef struct
 	Point2f right_bottom;
 }four_corners_t;
 
-double ImageProcess::progress = 0;
 four_corners_t corners;
-
-Mat ImageProcess::drawRect(const Mat &data, ProcessParam* _param /*= NULL*/) {
+Mat ImageProcess::drawRect(const Mat &data, const ProcessParam* _param /*= NULL*/) {
+>>>>>>> origin/Dante
 	if (_param == NULL) return data;
 	auto param = (RectParam*)_param;
 
@@ -349,7 +354,7 @@ ImageProcess::DMatches ImageProcess::_defaultMatch(
 
 
 //comMatR(conbine matrix as row):combine  Matrix1 and Matrix2 to MatrixCom as row ,just as the matlab expression :MatrixCom=[Matrix1 Matrix1]
-Mat ImageProcess::comMatR(const Mat &Matrix1, const Mat &Matrix2, ProcessParam* _param)
+Mat ImageProcess::comMatR(const Mat &Matrix1, const Mat &Matrix2, const ProcessParam* _param)
 {
 	Ptr<Feature2D> algo;
 	if (_param == NULL) return Matrix1;
@@ -424,7 +429,7 @@ Mat ImageProcess::comMatR(const Mat &Matrix1, const Mat &Matrix2, ProcessParam* 
 	int dst_width = imageTransform1.cols;  //取最右点的长度为拼接图的长度
 	int dst_height = Matrix1.rows;
 
-	Mat dst(dst_height, dst_width, CV_8UC3);
+	Mat dst(dst_height, dst_width, CV_8UC4);
 	dst.setTo(0);
 	/*imageTransform1.copyTo(dst(Rect(dst_width-imageTransform1.cols, dst_height-imageTransform1.rows,
 		imageTransform1.cols, imageTransform1.rows)));*/
@@ -433,6 +438,7 @@ Mat ImageProcess::comMatR(const Mat &Matrix1, const Mat &Matrix2, ProcessParam* 
 	Matrix1.copyTo(dst(Rect(0, 0, Matrix1.cols, Matrix1.rows)));
 
 	OptimizeSeam(Matrix1, imageTransform1, dst);
+	waitKey();
 
 	return dst;
 }

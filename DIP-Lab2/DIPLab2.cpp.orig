@@ -38,7 +38,6 @@ DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 	connect(ui.doObjDet, SIGNAL(clicked()), this, SLOT(doObjDetTrack()));
 
 	connect(ui.doFeatDet, SIGNAL(clicked()), this, SLOT(doFeatDet()));
-	connect(ui.doCombineImage, SIGNAL(clicked()), this, SLOT(doCombineImage()));
 
 	connect(this, SIGNAL(signalUpdate()), this, SLOT(update()));
 	connect(this, SIGNAL(signalLoadCompleted(MediaObject*&)), 
@@ -172,10 +171,15 @@ bool DIPLab2::isDoingMediaIO() {
 		(target1 != NULL && target1->isLoading());
 }
 
+<<<<<<< HEAD
 bool DIPLab2::isProcessEnable() {
 	// 非处理中且第一个媒体对象非空
 	return !isProcessing() && !isDoingMediaIO() 
 		&& media1 != NULL && !media1->isEmpty();
+=======
+	connect(ui.doFeatDetect, SIGNAL(clicked()), this, SLOT(doFeatDet()));
+	connect(ui.doCombineImage, SIGNAL(clicked()), this, SLOT(doCombineImage()));
+>>>>>>> origin/Dante
 }
 
 double DIPLab2::getProcessProgress() {
@@ -435,7 +439,7 @@ void DIPLab2::doFeatDet() {
 
 	int algo = ui.fdAlgoSelect->currentIndex();
 	int rType = ui.rTypeSelect->currentIndex();
-	int mType = ui.mTypeSelect->currentIndex() + 1;
+	int mType = ui.mTypeSelect->currentIndex()+1;
 	
 	param = new FeatDetParam((FeatDetParam::Algo)algo, 
 		(FeatDetParam::RType)rType, (FeatDetParam::MType)mType);
@@ -447,19 +451,14 @@ void DIPLab2::doFeatDet() {
 #pragma endregion
 
 #pragma region 图像拼接
-
-void DIPLab2::doCombineImage() {
-	releaseTargets(); releaseParam();
-
+void DIPLab2::doCombineImage()
+{
 	int algo = ui.fdAlgoSelect->currentIndex();
 	int rType = ui.rTypeSelect->currentIndex();
 	int mType = ui.mTypeSelect->currentIndex() + 1;
-
-	param = new FeatDetParam((FeatDetParam::Algo)algo,
+	auto param = FeatDetParam((FeatDetParam::Algo)algo,
 		(FeatDetParam::RType)rType, (FeatDetParam::MType)mType);
-
-	QTCVUtils::process(ImageProcess::comMatR, 
-		media1, media2, target1, param);
+	auto out = QTCVUtils::process(ImageProcess::comMatR, qImg1, qImg2, &param);
+	setTarImg(&out);
 }
-
 #pragma endregion
