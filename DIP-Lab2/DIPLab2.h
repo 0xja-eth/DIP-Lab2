@@ -53,6 +53,8 @@ public:
 	double getMediaIOProgress();
 
 private:
+	static bool terminated;
+
 	Ui::DIPLab2Class ui;
 
 	static const QString PictureTitle;
@@ -124,6 +126,7 @@ public slots:
 	void doObjDet();
 	void doObjDetTrack();
 	void doFeatDet();
+	void doVideoFeatDet();
 	void doCombineImage();
 
 protected:

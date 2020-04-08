@@ -39,6 +39,7 @@ DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 
 	connect(ui.doFeatDet, SIGNAL(clicked()), this, SLOT(doFeatDet()));
 	connect(ui.doCombineImage, SIGNAL(clicked()), this, SLOT(doCombineImage()));
+	connect(ui.doVideoFeatDet, SIGNAL(clicked()), this, SLOT(doVideoFeatDet()));
 
 	connect(this, SIGNAL(signalUpdate()), this, SLOT(update()));
 	connect(this, SIGNAL(signalLoadCompleted(MediaObject*&)), 
@@ -49,6 +50,7 @@ DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 }
 
 DIPLab2::~DIPLab2() {
+	terminated = true;
 	releaseMedia();
 	releaseTargets();
 	releaseParam();
@@ -57,16 +59,14 @@ DIPLab2::~DIPLab2() {
 
 #pragma region 更新设置
 
+bool DIPLab2::terminated = false;
 const long DIPLab2::UpdateInterval = 10;
 
 void DIPLab2::requestUpdate(DIPLab2* win) {
-	try {
-		while (true) {
-			sleep();
-			emit win->signalUpdate();
-		}
-	} catch (exception e) {
-		LOG("发生错误：" << e.what());
+	while (true) {
+		sleep();
+		if (terminated) break;
+		emit win->signalUpdate();
 	}
 }
 
@@ -238,6 +238,7 @@ void DIPLab2::saveFile(MediaObject* media) {
 }
 
 void DIPLab2::onLoadCompleted(MediaObject*& media) {
+	if (media == NULL) return;
 	if (media->isEmpty()) QMessageBox::information(this, OpenFailText, OpenFailText);
 	else updateProcessResult();
 }
@@ -436,12 +437,20 @@ void DIPLab2::doFeatDet() {
 	int algo = ui.fdAlgoSelect->currentIndex();
 	int rType = ui.rTypeSelect->currentIndex();
 	int mType = ui.mTypeSelect->currentIndex() + 1;
-	
-	param = new FeatDetParam((FeatDetParam::Algo)algo, 
+
+	param = new FeatDetParam((FeatDetParam::Algo)algo,
 		(FeatDetParam::RType)rType, (FeatDetParam::MType)mType);
 
-	QTCVUtils::process(ImageProcess::doFeatDet, 
+	QTCVUtils::process(ImageProcess::doFeatDet,
 		media1, media2, target1, param);
+}
+
+void DIPLab2::doVideoFeatDet() {
+	releaseTargets(); releaseParam();
+
+	if (media1->isImage()) return;
+
+	QTCVUtils::process(ImageProcess::doVideoFeatDet, media1, target1);
 }
 
 #pragma endregion
