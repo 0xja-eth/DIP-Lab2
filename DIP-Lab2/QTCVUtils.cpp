@@ -1,5 +1,7 @@
 #include <opencv2/imgproc/types_c.h>
 
+#include <QTextCodec>
+
 #include "QTCVUtils.h"
 
 const int MediaObject::FOURCC = VideoWriter::fourcc('M', 'J', 'P', 'G');
@@ -64,7 +66,9 @@ void MediaObject::load(string filename, bool isVideo) {
 }
 
 void MediaObject::load(QString filename, bool isVideo) {
-	load(filename.toStdString(), isVideo);
+	QTextCodec *code = QTextCodec::codecForName("UTF-8");
+	string filenameStr = code->fromUnicode(filename).data();
+	load(filenameStr, isVideo);
 }
 
 void MediaObject::loadImage() {
@@ -102,7 +106,9 @@ void MediaObject::save(string filename) {
 }
 
 void MediaObject::save(QString filename) {
-	save(filename.toStdString());
+	QTextCodec *code = QTextCodec::codecForName("GB2312");
+	string filenameStr = code->fromUnicode(filename).data();
+	save(filenameStr);
 }
 
 void MediaObject::saveImage(string filename) {

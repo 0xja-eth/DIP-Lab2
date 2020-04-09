@@ -1,6 +1,7 @@
 
 #include <cmath>
 
+#include <QTextCodec>
 #include <QMetaType>
 
 #include "DIPLab2.h"
@@ -12,6 +13,8 @@ DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 
 	//ÖØÖÃ´óÐ¡
 	this->resize(620, 500);
+
+	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 
 	qRegisterMetaType<MediaObject*>("MediaObject*&");
 
@@ -240,7 +243,10 @@ void DIPLab2::saveFile(MediaObject* media) {
 void DIPLab2::onLoadCompleted(MediaObject*& media) {
 	if (media == NULL) return;
 	if (media->isEmpty()) QMessageBox::information(this, OpenFailText, OpenFailText);
-	else updateProcessResult();
+	else {
+		releaseTargets();
+		updateProcessResult();
+	}
 }
 
 void DIPLab2::onSaveCompleted() {
