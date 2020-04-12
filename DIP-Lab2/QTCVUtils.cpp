@@ -1,3 +1,4 @@
+
 #include <opencv2/imgproc/types_c.h>
 
 #include <QTextCodec>
@@ -322,11 +323,13 @@ void QTCVUtils::process(ProcessFuncType1 func, /* 处理函数 */
 
 	auto f = [&func, &inImg, &outImg, &param]() {
 		processing = true;
+		DebugUtils::startTimer();
 
 		auto inData = inImg->getData();
 		auto outData = func(*inData, param);
 		outImg = new MediaObject(outData);
 
+		DebugUtils::endTimer();
 		processing = false;
 	};
 	processThread = new std::thread(f);
@@ -341,11 +344,13 @@ void QTCVUtils::process(ProcessFuncType2 func, /* 处理函数 */
 
 	auto f = [&func, &inImg1, &inImg2, &outImg, &param]() {
 		processing = true;
+		DebugUtils::startTimer();
 
 		auto inData1 = inImg1->getData(), inData2 = inImg2->getData();
 		auto outData = func(*inData1, *inData2, param);
 		outImg = new MediaObject(outData);
 
+		DebugUtils::endTimer();
 		processing = false;
 	};
 	processThread = new std::thread(f);
@@ -360,6 +365,7 @@ void QTCVUtils::process(ProcessFuncType3 func, /* 处理函数 */
 
 	auto f = [&func, &inImg1, &inImg2, &outImg1, &outImg2, &param]() {
 		processing = true;
+		DebugUtils::startTimer();
 
 		auto inData1 = inImg1->getData(), inData2 = inImg2->getData();
 		Mat outData1, outData2;
@@ -368,6 +374,7 @@ void QTCVUtils::process(ProcessFuncType3 func, /* 处理函数 */
 		outImg1 = new MediaObject(outData1);
 		outImg2 = new MediaObject(outData2);
 
+		DebugUtils::endTimer();
 		processing = false;
 	};
 	processThread = new std::thread(f);
@@ -381,6 +388,8 @@ void QTCVUtils::process(ProcessFuncType4 func, /* 处理函数 */
 
 	auto f = [&func, &inVideo, &outVideo, &param]() {
 		processing = true;
+		DebugUtils::startTimer();
+
 		auto inData = inVideo->getVideoData();
 		long inLen = inVideo->getVideoLength();
 		double fps = inVideo->getVideoFPS();
@@ -389,6 +398,7 @@ void QTCVUtils::process(ProcessFuncType4 func, /* 处理函数 */
 		func(inData, inLen, outData, outLen, param);
 		outVideo = new MediaObject(outData, outLen, fps);
 
+		DebugUtils::endTimer();
 		processing = false;
 	};
 	processThread = new std::thread(f);

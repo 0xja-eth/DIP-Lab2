@@ -10,28 +10,28 @@
   <Class Name="DIPLab2" Collapsed="true">
     <Position X="7.25" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EBAEBIEABAABGAITAABAAAAgQAAUCAAAgCAiAAACBAA=</HashCode>
+      <HashCode>EBwEFoEALAABGAMTAAFCAIAwSgAcCAAAgCAiQEACJAA=</HashCode>
       <FileName>DIPLab2.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="FeatDetParam" Collapsed="true">
     <Position X="0.75" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAABAAAAAAAAAAAAAAgABABAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAABAAAAAAAAAAAAAAgAhABAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ImageProcess.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ImageProcess" Collapsed="true">
     <Position X="9" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AARAAAAACIAAAAAAiAAAIQAAQAAIAEBCAIAQAEAAAAA=</HashCode>
+      <HashCode>AgVAABAACIBAAAEACAAgIwAAwAAEAEBCAIAwQEACCIA=</HashCode>
       <FileName>ImageProcess.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MediaObject" Collapsed="true">
     <Position X="5.5" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EABQERBAAIDQAEAIAAQAAAQAkEAFCAAAABRAAAEAQAA=</HashCode>
+      <HashCode>EABQExBAAIDQAEAIAAQAAAQAkEAFCAAAIJRAAAEAQAA=</HashCode>
       <FileName>QTCVUtils.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -49,10 +49,35 @@
       <FileName>ImageProcess.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="QTCVUtils" Collapsed="true">
-    <Position X="7.25" Y="5.5" Width="1.5" />
+  <Class Name="QTCVUtils">
+    <Position X="7.25" Y="5.5" Width="6.25" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Typedef Name="QTCVUtils::ProcessFuncType1" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>QTCVUtils.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+      <Typedef Name="QTCVUtils::ProcessFuncType2" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>QTCVUtils.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+      <Typedef Name="QTCVUtils::ProcessFuncType3" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>QTCVUtils.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+      <Typedef Name="QTCVUtils::ProcessFuncType4" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>QTCVUtils.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAgAAAAAAAAAIAAAAAAAAAAIAAAAAAQAA=</HashCode>
+      <HashCode>AAgAAgAAAAAAgAAAAAAAQAIAAAAAAgAAAIIAAEAEQAA=</HashCode>
       <FileName>QTCVUtils.h</FileName>
     </TypeIdentifier>
   </Class>

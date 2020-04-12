@@ -19,4 +19,10 @@ public:
 
 	static void openConsole();
 	static void closeConsole();
+
+	static void startTimer();
+	static void endTimer();
+
+private:
+	static double ticks;
 };

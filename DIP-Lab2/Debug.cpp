@@ -29,3 +29,14 @@ void DebugUtils::closeConsole() {
 #endif
 }
 
+void DebugUtils::startTimer() {
+	ticks = (double)GetTickCount();
+}
+
+void DebugUtils::endTimer() {
+	auto delta = (double)GetTickCount() - ticks;
+	LOG("Process time:" << delta << "ms");
+}
+
+double DebugUtils::ticks;
+
