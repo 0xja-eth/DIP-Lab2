@@ -130,6 +130,7 @@ public slots:
 	void doFeatDet();
 	void doVideoFeatDet();
 	void doCombineImage();
+	void doImgCorr();
 
 protected:
 	void mousePressEvent(QMouseEvent * e);

@@ -44,6 +44,8 @@ DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 	connect(ui.doCombineImage, SIGNAL(clicked()), this, SLOT(doCombineImage()));
 	connect(ui.doVideoFeatDet, SIGNAL(clicked()), this, SLOT(doVideoFeatDet()));
 
+	connect(ui.doImgCorr, SIGNAL(clicked()), this, SLOT(doImgCorr()));
+
 	connect(this, SIGNAL(signalUpdate()), this, SLOT(update()));
 	connect(this, SIGNAL(signalLoadCompleted(MediaObject*&)), 
 		this, SLOT(onLoadCompleted(MediaObject*&)));
@@ -476,6 +478,17 @@ void DIPLab2::doCombineImage() {
 
 	QTCVUtils::process(ImageProcess::comMatR, 
 		media1, media2, target1, param);
+}
+
+#pragma endregion
+
+#pragma region Í¼Ïñ½ÃÕý
+
+void DIPLab2::doImgCorr() {
+	releaseTargets(); releaseParam();
+
+	QTCVUtils::process(ImageProcess::doImgCorr,
+		media1, target1, param);
 }
 
 #pragma endregion
