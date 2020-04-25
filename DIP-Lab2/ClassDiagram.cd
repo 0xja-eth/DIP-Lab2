@@ -3,14 +3,14 @@
   <Class Name="DebugUtils" Collapsed="true">
     <Position X="5.5" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAABAAAAAAgAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAABAIAAAAgAAAAAAAAAAAIAAgAAAACAAAAAAAAAAA=</HashCode>
       <FileName>Debug.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DIPLab2" Collapsed="true">
     <Position X="7.25" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EBwEFoEALAABGAMTAAFCAIAwSgAcCAAAgCAiQEACJAA=</HashCode>
+      <HashCode>EBwEFoEALAABGAMTAAFiAIAwSgAcCAAAgCAiQEACJAA=</HashCode>
       <FileName>DIPLab2.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -24,7 +24,7 @@
   <Class Name="ImageProcess" Collapsed="true">
     <Position X="9" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AgVAABAACIBAAAEACAAgIwAAwAAEAEBCAIAwQEACCIA=</HashCode>
+      <HashCode>AgVAABAACIBAAAEACAAgYwAAwAAEAEBCAIAwQEACCIA=</HashCode>
       <FileName>ImageProcess.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -33,13 +33,6 @@
     <TypeIdentifier>
       <HashCode>EABQExBAAIDQAEAIAAQAAAQAkEAFCAAAIJRAAAEAQAA=</HashCode>
       <FileName>QTCVUtils.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ObjDetTrackParam" Collapsed="true">
-    <Position X="3" Y="7.25" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAEQAABAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ImageProcess.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ProcessParam" Collapsed="true">
@@ -55,7 +48,7 @@
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <NestedTypes>
-      <Typedef Name="QTCVUtils::ProcessFuncType1" Collapsed="true">
+      <Typedef Name="QTCVUtils::ProcessFuncType0" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>QTCVUtils.h</NewMemberFileName>
         </TypeIdentifier>
@@ -71,6 +64,11 @@
         </TypeIdentifier>
       </Typedef>
       <Typedef Name="QTCVUtils::ProcessFuncType4" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>QTCVUtils.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+      <Typedef Name="QTCVUtils::ProcessFuncType1" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>QTCVUtils.h</NewMemberFileName>
         </TypeIdentifier>

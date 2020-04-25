@@ -6,6 +6,8 @@
 
 #include "DIPLab2.h"
 
+#include "OTBUtils.h"
+
 DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 	ui.setupUi(this);
 
@@ -50,6 +52,9 @@ DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 	connect(this, SIGNAL(signalLoadCompleted(MediaObject*&)), 
 		this, SLOT(onLoadCompleted(MediaObject*&)));
 	connect(this, SIGNAL(signalSaveCompleted()), this, SLOT(onSaveCompleted()));
+
+	connect(ui.openDataset, SIGNAL(clicked()), this, SLOT(openDataset()));
+	connect(ui.runOTB, SIGNAL(clicked()), this, SLOT(runOTB()));
 
 	updateThread = new std::thread(requestUpdate, this);
 }
@@ -204,6 +209,8 @@ double DIPLab2::getMediaIOProgress() {
 const QString DIPLab2::PictureTitle = "选择图片";
 const QString DIPLab2::VideoTitle = "选择视频";
 
+const QString DIPLab2::DatasetTitle = "打开数据集文件夹";
+
 const QString DIPLab2::SaveTitle = "选择保存位置";
 
 const QString DIPLab2::PictureFilter = "Images(*.png *.bmp *.jpg *.tif *.gif);; AllFiles(*.*)";
@@ -253,6 +260,17 @@ void DIPLab2::onLoadCompleted(MediaObject*& media) {
 
 void DIPLab2::onSaveCompleted() {
 	QMessageBox::information(this, SaveSuccText, SaveSuccText);
+}
+
+void DIPLab2::openDataset() {
+	QString path = QFileDialog::getExistingDirectory(this, DatasetTitle, "");
+	QTextCodec *code = QTextCodec::codecForName("GBK");
+	string pathStr = code->fromUnicode(path).data();
+	ui.datasetName->setText(path);	
+	new std::thread([this, &pathStr]() {
+		//LOG(pathStr);
+		OTBUtils::openDataset(pathStr);
+	});
 }
 
 #pragma endregion
@@ -433,6 +451,22 @@ void DIPLab2::doImageObjDetTrack(ProcessParam* param) {
 void DIPLab2::doVideoObjDetTrack(ProcessParam* param) {
 	QTCVUtils::process(ImageProcess::doObjTrack,
 		media1, media2, target1, target2, param);
+}
+
+void DIPLab2::runOTB() {
+
+	int algo_ = ui.otbAlgoSelect->currentIndex();
+	ObjTrackParam::Algo algo = ObjTrackParam::KCF;
+
+	switch (algo_) {
+	case 0: algo = ObjTrackParam::KCF; break;
+	case 1: algo = ObjTrackParam::TLD; break;
+	case 2: algo = ObjTrackParam::GOTURN; break;
+	}
+
+	param = new ObjTrackParam(algo);
+
+	QTCVUtils::process(OTBUtils::run, param);
 }
 
 #pragma endregion

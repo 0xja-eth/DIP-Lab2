@@ -33,31 +33,47 @@ public:
 	}
 };
 
-// 目标检测跟踪参数
-class ObjDetTrackParam : public RectParam {
+// 目标跟踪参数
+class ObjTrackParam : public RectParam {
 public:
 	// 目标跟踪算法
 	enum Algo {
 		FERNS, BOOSTING, KCF, TLD,
-		MEDIANFLOW
+		MEDIANFLOW, GOTURN
 	};
+
+	Algo algo; // 目标跟踪算法
+
+	ObjTrackParam(int x = 0, int y = 0, int w = 0, int h = 0,
+		Algo algo = FERNS, Scalar color = Scalar::all(255)) :
+		RectParam(x, y, w, h, color), algo(algo) {}
+	ObjTrackParam(Rect rect,
+		Algo algo = FERNS, Scalar color = Scalar::all(255)) :
+		RectParam(x, y, w, h, color), algo(algo) {}
+	ObjTrackParam(Algo algo = KCF) : algo(algo) {}
+
+};
+
+// 目标检测跟踪参数
+class ObjDetTrackParam : public ObjTrackParam {
+public:
 	// 自动检测方式(Auto Detect Type)
 	enum ADType {
 		None, Face
 	};
 
-	Algo algo; // 目标跟踪算法
 	ADType adType; // 自动检测方式
 
 	ObjDetTrackParam(int x = 0, int y = 0, int w = 0, int h = 0,
 		Algo algo = FERNS, ADType adType = None,
 		Scalar color = Scalar::all(255)) :
-		RectParam(x, y, w, h, color),
-		algo(algo), adType(adType) {}
+		ObjTrackParam(x, y, w, h, algo, color), adType(adType) {}
 	ObjDetTrackParam(Rect rect,
 		Algo algo = FERNS, ADType adType = None,
 		Scalar color = Scalar::all(255)) :
-		RectParam(rect, color), algo(algo), adType(adType) {}
+		ObjTrackParam(rect, algo, color), adType(adType) {}
+
+	ObjDetTrackParam(Algo algo = KCF) : ObjTrackParam(algo) {}
 };
 
 // 特征检测参数
@@ -111,6 +127,10 @@ public:
 	static void doObjTrack(const Mat &data1, const Mat &data2,
 		Mat &out1, Mat &out2, ProcessParam* _param = NULL);
 
+	// 目标跟踪（返回Rect用于多用途）
+	static Rect2d doObjTrack(const Mat &data, 
+		Ptr<Tracker> &tracker, bool &newDet, ObjTrackParam* param = NULL);
+
 	// 目标检测及跟踪（视频）
 	static const int DetDuration; // 检测间隔帧数
 	static void doObjDetTrack(const Mat* inVideo, long inLen,
@@ -145,10 +165,15 @@ private:
 	// 使用 opencv 跟踪器进行目标跟踪
 	static void _trackerTrack(const Mat &data1, const Mat &data2,
 		Mat &out1, Mat &out2, ObjDetTrackParam* param = NULL);
+	static bool _trackerTrack(const Mat &data1, const Mat &data2,
+		ObjTrackParam::Algo algo, Rect2d& rect);
+
 	static bool _trackerTrack(Ptr<Tracker> &tracker, bool &newDet,
 		const Mat &frame, Mat &out, ObjDetTrackParam* param);
+	static bool _trackerTrack(Ptr<Tracker> &tracker, bool &newDet,
+		const Mat &frame, ObjTrackParam::Algo algo, Rect2d& rect);
 
-	static Ptr<Tracker> _getTracker(ObjDetTrackParam::Algo algo);
+	static Ptr<Tracker> _getTracker(ObjTrackParam::Algo algo);
 
 	/*-- 特征检测 --*/
     static Mat _featureDectect(Ptr<Feature2D> algo,

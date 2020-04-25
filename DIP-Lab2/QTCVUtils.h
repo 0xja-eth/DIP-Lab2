@@ -100,6 +100,8 @@ private:
 
 static class QTCVUtils {
 public:
+	typedef void(*ProcessFuncType0)( // 仅传入参数的函数签名
+		ProcessParam*);
 	typedef Mat(*ProcessFuncType1)( // 处理一张图片的函数签名
 		const Mat&, ProcessParam*);
 	typedef Mat(*ProcessFuncType2)( // 处理两张图片，但只输出一张图片的函数签名
@@ -121,6 +123,8 @@ public:
 	static QImage mat2QImage(const Mat* mat);
 
 	// 异步处理
+	static void process(ProcessFuncType0 func, // 处理函数
+		ProcessParam* param = NULL); // 执行任意函数
 	static void process(ProcessFuncType1 func, // 处理函数
 		const MediaObject* inImg, // 输入图片
 		MediaObject* &outImg, // 输出图片

@@ -59,6 +59,13 @@ void ImageProcess::doObjTrack(const Mat &data1, const Mat &data2,
 	}
 }
 
+Rect2d ImageProcess::doObjTrack(const Mat &data,
+	Ptr<Tracker> &tracker, bool &newDet, ObjTrackParam* param) {
+	Rect2d rect = param->getRect();
+	newDet = !_trackerTrack(tracker, newDet, data, param->algo, rect);
+	return rect;
+}
+
 const int ImageProcess::DetDuration = 60;
 
 void ImageProcess::doObjDetTrack(const Mat* inVideo, long inLen, 
@@ -324,44 +331,49 @@ void ImageProcess::_FERNSTrack(const Mat &data1, const Mat &data2, Mat &out,
 
 void ImageProcess::_trackerTrack(const Mat &data1, const Mat &data2, Mat &out1, Mat &out2, 
 	ObjDetTrackParam* param /*= NULL*/) {
-	auto tracker = _getTracker(param->algo);
-	
 	Rect2d rect = param->getRect();
-
 	rectangle(out1, rect, param->color);
-	
-	tracker->init(data1, rect);
-	bool ok = tracker->update(data2, rect);
 
+	bool ok = _trackerTrack(data1, data2, param->algo, rect);
 	if (ok) rectangle(out2, rect, param->color);
 	else LOG("¸ú×ÙÊ§°Ü£¡");
 }
 
+bool ImageProcess::_trackerTrack(const Mat &data1, const Mat &data2, 
+	ObjTrackParam::Algo algo, Rect2d& rect) {
+	auto tracker = _getTracker(algo);
+	tracker->init(data1, rect);
+	return tracker->update(data2, rect);
+}
+
 bool ImageProcess::_trackerTrack(Ptr<Tracker> &tracker, bool &newDet,
 	const Mat &frame, Mat &out, ObjDetTrackParam* param) {
+
 	Rect2d rect = param->getRect();
-
-	if (newDet) { // ÖØÐÂ¼ÓÔØ¸ú×ÙÆ÷
-		tracker = _getTracker(param->algo);
-		tracker->init(frame, rect);
-		newDet = false;
-	}
-
-	bool succ = (!tracker.empty() && tracker->update(frame, rect));
+	bool succ = _trackerTrack(tracker, newDet, frame, param->algo, rect);
 	if (succ) rectangle(out, rect, param->color);
-
 	param->setRect(rect);
+
 	return succ;
 }
 
-Ptr<Tracker> ImageProcess::_getTracker(ObjDetTrackParam::Algo algo) {
+bool ImageProcess::_trackerTrack(Ptr<Tracker> &tracker, bool &newDet, 
+	const Mat &frame, ObjTrackParam::Algo algo, Rect2d& rect) {
+	if (newDet) { // ÖØÐÂ¼ÓÔØ¸ú×ÙÆ÷
+		tracker = _getTracker(algo);
+		tracker->init(frame, rect);
+		return !(newDet = false);
+	} else return (!tracker.empty() && tracker->update(frame, rect));
+}
+
+Ptr<Tracker> ImageProcess::_getTracker(ObjTrackParam::Algo algo) {
 	switch (algo) {
-	case ObjDetTrackParam::BOOSTING: return TrackerBoosting::create();
+	case ObjTrackParam::BOOSTING: return TrackerBoosting::create();
 	//case ObjDetTrackParam::MIL: return TrackerMIL::create();
-	case ObjDetTrackParam::KCF: return TrackerKCF::create();
-	case ObjDetTrackParam::TLD: return TrackerTLD::create();
-	case ObjDetTrackParam::MEDIANFLOW: return TrackerMedianFlow::create();
-	//case ObjDetTrackParam::GOTURN: return TrackerGOTURN::create();
+	case ObjTrackParam::KCF: return TrackerKCF::create();
+	case ObjTrackParam::TLD: return TrackerTLD::create();
+	case ObjTrackParam::MEDIANFLOW: return TrackerMedianFlow::create();
+	case ObjTrackParam::GOTURN: return TrackerGOTURN::create();
 	//case ObjDetTrackParam::MOSSE: return TrackerMOSSE::create();
 	}
 }

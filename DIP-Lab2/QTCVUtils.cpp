@@ -315,6 +315,20 @@ MediaObject* QTCVUtils::process(ProcessFuncType4 func,
 }
 */
 
+void QTCVUtils::process(ProcessFuncType0 func, 
+	ProcessParam* param /*= NULL*/) {
+	auto f = [&func, &param]() {
+		processing = true;
+		DebugUtils::startTimer();
+		
+		func(param);
+		
+		DebugUtils::endTimer();
+		processing = false;
+	};
+	processThread = new std::thread(f);
+}
+
 void QTCVUtils::process(ProcessFuncType1 func, /* 处理函数 */ 
 	const MediaObject* inImg, /* 输入图片 */ 
 	MediaObject* &outImg, /* 输出图片 */ 

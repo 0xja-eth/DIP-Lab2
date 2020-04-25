@@ -62,6 +62,8 @@ private:
 	static const QString PictureTitle;
 	static const QString VideoTitle;
 
+	static const QString DatasetTitle;
+
 	static const QString SaveTitle;
 
 	static const QString PictureFilter;
@@ -123,6 +125,9 @@ public slots:
 
 	void setRecting() { recting = true; }
 	
+	void openDataset();
+	void runOTB();
+
 	void onRectChanged();
 
 	void doObjDet();
