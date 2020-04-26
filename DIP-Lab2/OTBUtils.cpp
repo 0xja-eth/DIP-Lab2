@@ -28,11 +28,8 @@ void OTBUtils::run(ProcessParam *param_) {
 	auto param = (ObjTrackParam*)param_;
 
 	// 检测，获取每帧检测矩形
-	Rect2d *detRects;
-	_runDetect(detRects, param);
-
-	double *dists, *oss;
-	_calcEvaluation(detRects, dists, oss);
+	Rect2d *detRects; double *dists, *oss;
+	_runDetect(detRects, dists, oss, param);
 
 	OutTable distRates, osRates;
 	long len = truthRects.size();
@@ -84,12 +81,14 @@ void OTBUtils::_saveToFile(OutTable out, string title) {
 	}
 }
 
-void OTBUtils::_runDetect(Rect2d* &rects, ObjTrackParam *param) {
+void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrackParam *param) {
 	bool newDet = true;
 	Ptr<Tracker> tracker = NULL;
 
 	long len = truthRects.size();
 	rects = new Rect2d[len];
+	dists = new double[len];
+	oss = new double[len];
 
 	for (int i = 0; i < len; ++i) {
 		ImageProcess::progress = i * 1.0 / len * 0.9;
@@ -112,8 +111,8 @@ void OTBUtils::_runDetect(Rect2d* &rects, ObjTrackParam *param) {
 		// 展示
 		Mat drawFrame = frame.clone();
 
-		double dist = __calcDistance(det, truth);
-		double os = __calcOS(det, truth);
+		double dist = dists[i] = __calcDistance(det, truth);
+		double os = oss[i] = __calcOS(det, truth);
 
 		char showText[256];
 
@@ -131,27 +130,27 @@ void OTBUtils::_runDetect(Rect2d* &rects, ObjTrackParam *param) {
 	}
 }
 
-void OTBUtils::_calcEvaluation(Rect2d* rects, double* &dists, double* &oss) {
+//void OTBUtils::_calcEvaluation(Rect2d* rects, double* &dists, double* &oss) {
+//
+//	long len = truthRects.size();
+//	dists = new double[len];
+//	oss = new double[len];
+//	
+//	for (int i = 0; i < len; ++i) {
+//		auto det = rects[i];
+//		auto truth = truthRects[i];
+//
+//		dists[i] = __calcDistance(det, truth);
+//		oss[i] = __calcOS(det, truth);
+//
+//		LOG(i << ". det:" << det.x << "," << det.y << ","
+//			<< det.width << "," << det.height
+//			<< " truth:" << truth.x << "," << truth.y << ","
+//			<< truth.width << "," << truth.height <<
+//			" Dist: " << dists[i] << " OS: " << oss[i]);
+//	}
+//}
 
-	long len = truthRects.size();
-	dists = new double[len];
-	oss = new double[len];
-	
-	for (int i = 0; i < len; ++i) {
-		auto det = rects[i];
-		auto truth = truthRects[i];
-
-		dists[i] = __calcDistance(det, truth);
-		oss[i] = __calcOS(det, truth);
-
-		LOG(i << ". det:" << det.x << "," << det.y << ","
-			<< det.width << "," << det.height
-			<< " truth:" << truth.x << "," << truth.y << ","
-			<< truth.width << "," << truth.height <<
-			" Dist: " << dists[i] << " OS: " << oss[i]);
-	}
-
-}
 
 void OTBUtils::_loadRects(string filename) {
 	truthRects.clear();
@@ -172,7 +171,7 @@ void OTBUtils::_loadFrames(string path) {
 	long len = truthRects.size();
 
 	if (frames != NULL) {
-		delete frames; frames = NULL;
+		delete[] frames; frames = NULL;
 	}
 
 	frames = new Mat[len];

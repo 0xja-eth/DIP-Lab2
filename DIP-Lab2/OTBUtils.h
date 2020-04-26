@@ -32,8 +32,8 @@ private:
 
 	static void _saveToFile(OutTable out, string title);
 
-	static void _runDetect(Rect2d* &rects, ObjTrackParam *param);
-	static void _calcEvaluation(Rect2d* rects, double* &dists, double* &oss);
+	static void _runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrackParam *param);
+	// static void _calcEvaluation(Rect2d* rects, double* &dists, double* &oss);
 
 	// Distance
 	static double __calcDistance(Rect2d dist, Rect2d truth);
