@@ -32,18 +32,16 @@ private:
 
 	static void _saveToFile(OutTable out, string title);
 
-	static void _runRound(double distThreshold, double osThreshold, 
-		double &distRate, double &osRate, ObjTrackParam *param);
+	static void _runDetect(Rect2d* &rects, ObjTrackParam *param);
+	static void _calcEvaluation(Rect2d* rects, double* &dists, double* &oss);
 
 	// Distance
-	static bool __testDistance(Rect2d dist, Rect2d truth, double threshold);
 	static double __calcDistance(Rect2d dist, Rect2d truth);
 
 	// Overlap Space
-	static bool __testOS(Rect2d dist, Rect2d truth, double threshold);
 	static double __calcOS(Rect2d dist, Rect2d truth);
 
 	static double __calcCrossSpace(Rect2d dist, Rect2d truth);
-	static double __calcMergeSpace(Rect2d dist, Rect2d truth);
+	static double __calcMergeSpace(Rect2d dist, Rect2d truth, double cross);
 };
 

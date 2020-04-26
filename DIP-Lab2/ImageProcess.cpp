@@ -63,6 +63,7 @@ Rect2d ImageProcess::doObjTrack(const Mat &data,
 	Ptr<Tracker> &tracker, bool &newDet, ObjTrackParam* param) {
 	Rect2d rect = param->getRect();
 	newDet = !_trackerTrack(tracker, newDet, data, param->algo, rect);
+	param->setRect(rect);
 	return rect;
 }
 
