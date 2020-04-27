@@ -62,8 +62,8 @@ void OTBUtils::run(ProcessParam *param_) {
 		osRates[osT] = osRate;
 	}
 
-	_saveToFile(distRates, "DistResult.r");
-	_saveToFile(osRates, "OSResult.r");
+	_saveToFile(distRates, to_string(param->algo)+"DistResult.r");
+	_saveToFile(osRates, to_string(param->algo)+"OSResult.r");
 }
 
 void OTBUtils::_saveToFile(OutTable out, string title) {
@@ -109,12 +109,12 @@ void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrack
 		rects[i] = det;
 
 		// չʾ
-		Mat drawFrame = frame.clone();
+		//Mat drawFrame = frame.clone();
 
 		double dist = dists[i] = __calcDistance(det, truth);
 		double os = oss[i] = __calcOS(det, truth);
 
-		char showText[256];
+		/*char showText[256];
 
 		sprintf(showText, "Dist: %.4f, OS: %.4f", dist, os);
 
@@ -126,7 +126,7 @@ void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrack
 
 		imshow("OTBTest", drawFrame);
 
-		waitKey(1);
+		waitKey(1);*/
 	}
 }
 
