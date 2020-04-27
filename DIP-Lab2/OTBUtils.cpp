@@ -160,9 +160,9 @@ void OTBUtils::_loadRects(string filename) {
 		LOG("Error opening source file."); return;
 	}
 
-	int x, y, w, h;
+	int x, y, w, h; char ch;
 	while (file >> x) {
-		file >> y; file >> w; file >> h;
+		file >> ch >> y; file >> ch >> w; file >> ch >> h;
 		truthRects.push_back(Rect(x, y, w, h));
 	}
 }

@@ -71,6 +71,12 @@
     <ClCompile Include="OTBUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="test.cpp">
+      <Filter>Source Files\lab</Filter>
+    </ClCompile>
+    <ClCompile Include="LabRun.cpp">
+      <Filter>Source Files\lab</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
@@ -101,6 +107,12 @@
     </Filter>
     <Filter Include="Source Files\opencv\lib">
       <UniqueIdentifier>{dce7e786-1628-4368-b290-c7592a5f23f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\lab">
+      <UniqueIdentifier>{5b852a66-e6de-495a-acdf-ebd6fc3be786}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\lab">
+      <UniqueIdentifier>{660fc608-27c1-43c8-8e19-c537616147e3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +148,9 @@
     </ClInclude>
     <ClInclude Include="OTBUtils.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LabRun.hpp">
+      <Filter>Header Files\lab</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

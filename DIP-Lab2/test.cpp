@@ -1,8 +1,7 @@
 
 #include <iostream>
 
-#include "LabRun.hpp"
-
+/*
 int main(int argc, const char * argv[]) {
     //输入存储运行时间的文件夹目录
     LabRun::labIn("/Users/jireh/Documents/Project/2020/DIP-Lab3-Lab/Result");
@@ -12,3 +11,4 @@ int main(int argc, const char * argv[]) {
 
     return 0;
 }
+*/

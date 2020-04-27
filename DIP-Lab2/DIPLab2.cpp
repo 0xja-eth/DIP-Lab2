@@ -7,6 +7,7 @@
 #include "DIPLab2.h"
 
 #include "OTBUtils.h"
+#include "LabRun.hpp"
 
 DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 	ui.setupUi(this);
@@ -455,6 +456,13 @@ void DIPLab2::doVideoObjDetTrack(ProcessParam* param) {
 
 void DIPLab2::runOTB() {
 
+	//输入存储运行时间的文件夹目录
+	LabRun::labIn("E:/Projects/OpenCVProjects/TrackDataset/OTBResult");
+
+	//输入otb数据集的地址
+	LabRun::otb_lab("E:/Projects/OpenCVProjects/TrackDataset/OTB100");
+
+	/*
 	int algo_ = ui.otbAlgoSelect->currentIndex();
 	ObjTrackParam::Algo algo = ObjTrackParam::KCF;
 
@@ -467,6 +475,7 @@ void DIPLab2::runOTB() {
 	param = new ObjTrackParam(algo);
 
 	QTCVUtils::process(OTBUtils::run, param);
+	*/
 }
 
 #pragma endregion
