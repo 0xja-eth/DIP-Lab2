@@ -5,12 +5,13 @@
 
 #include "ImageProcess.h"
 #include "QTCVUtils.h"
+#include "FilesProcessUtils.hpp"
 
 static class OTBUtils {
 public:
 	static void openDataset(string path);
 
-	static void run(ProcessParam *param_);
+	static void run(ProcessParam *param_, ofstream &opt);
 
 private:
 	typedef map<double, double> OutTable;
@@ -30,9 +31,9 @@ private:
 	static void _loadRects(string filename);
 	static void _loadFrames(string path);
 
-	static void _saveToFile(OutTable out, string title);
+	static void _saveToFile(OutTable out, ofstream &opt);
 
-	static void _runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrackParam *param);
+	static void _runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrackParam *param, ofstream &opt);
 	// static void _calcEvaluation(Rect2d* rects, double* &dists, double* &oss);
 
 	// Distance

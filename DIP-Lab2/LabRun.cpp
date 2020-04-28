@@ -5,11 +5,13 @@
 
 string LabRun::srcPath;
 
-ofstream LabRun::opt1;
+//ofstream LabRun::opt1;
 
 bool LabRun::labIn(string src_path) {
 	srcPath = src_path;
-	opt1.open(srcPath + "/otb_lab.csv");
+
+	FilesProcessUtils::createDir(srcPath+"/OTB_LAB");
+	//opt1.open(srcPath + "/otb_lab.csv");
 	// opt1 << "编号" << "," << "数据名" << "," << "KCF(用时/秒)" << endl;
 
 	return true;
@@ -24,31 +26,38 @@ bool LabRun::otb_lab(string otb_path) {
 
 	// 循环处理各个数据
 	LOG("[开始处理]");
+	string filepath;
 	for (int i = 0; i < files.size(); i++) {
 		LOG(to_string(i) + ". " + files[i]);
-		opt1 << i << "," << files[i] << ",";
+		filepath = srcPath+"/OTB_LAB/"+files[i];
+		FilesProcessUtils::createDir(filepath);
 
 		//读取数据
 		OTBUtils::openDataset(otb_path + "/" + files[i]);
 		LOG("a) 读取数据");
 
+		//KCF
+		ofstream optKCF;
+		optKCF.open(filepath+"KCF.csv");
+		optKCF<<"Overall"<<endl;
+		optKCF<<"Frame"<<","<<"Distance"<<","<<"OverlapSpace"<<","<<"Times(s)"<<endl;
+
 		start = static_cast<double>(getTickCount());
 		ObjTrackParam trackparamKCF(ObjTrackParam::KCF);
-		OTBUtils::run(&trackparamKCF);
+		OTBUtils::run(&trackparamKCF, optKCF);
 		end = static_cast<double>(getTickCount());
 		run_time = (end - start) / getTickFrequency();
 		LOG("b) KCF, 用时" + to_string(run_time));
-		opt1 << run_time << ",";
 
-		opt1 << endl;
+		optKCF.close();
+
+		//下一个方法
 	}
-
-	opt1.close();
 
 	return true;
 }
 
-vector<string> LabRun::getFiles(string path) {
+/*vector<string> LabRun::getFiles(string path) {
 	vector<string> files;//存放文件名
 
 #ifdef WIN32
@@ -85,4 +94,4 @@ vector<string> LabRun::getFiles(string path) {
 
 	sort(files.begin(), files.end());
 	return files;
-}
+}*/
