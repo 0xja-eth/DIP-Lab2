@@ -24,12 +24,12 @@ void OTBUtils::openDataset(string path) {
 	_loadRects(rectFile); _loadFrames(imgDir);
 }
 
-void OTBUtils::run(ProcessParam *param_) {
+void OTBUtils::run(ProcessParam *param_, ofstream &opt) {
 	auto param = (ObjTrackParam*)param_;
 
-	// ¼ì²â£¬»ñÈ¡Ã¿Ö¡¼ì²â¾ØÐÎ
+	// ï¿½ï¿½â£¬ï¿½ï¿½È¡Ã¿Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	Rect2d *detRects; double *dists, *oss;
-	_runDetect(detRects, dists, oss, param);
+	_runDetect(detRects, dists, oss, param, opt);
 
 	OutTable distRates, osRates;
 	long len = truthRects.size();
@@ -62,26 +62,26 @@ void OTBUtils::run(ProcessParam *param_) {
 		osRates[osT] = osRate;
 	}
 
-	_saveToFile(distRates, to_string(param->algo)+"DistResult.r");
-	_saveToFile(osRates, to_string(param->algo)+"OSResult.r");
+	opt << "Distance" << endl;
+	opt << "Treshold" << "," << "Ratio" << endl;
+	_saveToFile(distRates, opt);
+
+	opt << "OverlapSpace" << endl;
+	opt << "Treshold" << "," << "Ratio" << endl;
+	_saveToFile(osRates, opt);
 }
 
-void OTBUtils::_saveToFile(OutTable out, string title) {
-	string filename = path + "/" + title;
-
-	ofstream file(filename, ios::out);
-	if (!file) { //´ò¿ªÊ§°Ü
-		LOG("Error opening save file."); return;
-	}
-
+void OTBUtils::_saveToFile(OutTable out, ofstream &opt) {
 	OutTable::iterator oit = out.begin();
 	for (; oit != out.end(); ++oit) {
 		auto pair = *oit;
-		file << pair.first << " " << pair.second << endl;
+		opt << pair.first << "," << pair.second << endl;
 	}
 }
 
-void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrackParam *param) {
+void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrackParam *param, ofstream &opt) {
+	double start, end, run_time;
+
 	bool newDet = true;
 	Ptr<Tracker> tracker = NULL;
 
@@ -91,6 +91,7 @@ void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrack
 	oss = new double[len];
 
 	for (int i = 0; i < len; ++i) {
+		start = static_cast<double>(getTickCount());
 		ImageProcess::progress = i * 1.0 / len * 0.9;
 
 		auto truth = truthRects[i];
@@ -104,7 +105,7 @@ void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrack
 
 		auto det = ImageProcess::doObjTrack(frame, tracker, newDet, param);
 
-		// Æ¥Åä²»µ½
+		// Æ¥ï¿½ä²»ï¿½ï¿½
 		if (newDet) det = Rect2d();
 		rects[i] = det;
 
@@ -113,6 +114,11 @@ void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrack
 
 		double dist = dists[i] = __calcDistance(det, truth);
 		double os = oss[i] = __calcOS(det, truth);
+
+		end = static_cast<double>(getTickCount());
+		run_time = (end-start)/getTickFrequency();
+
+		opt<<i+1<<","<<dist<<","<<os<<","<<run_time<<endl;
 
 		/*char showText[256];
 
@@ -155,8 +161,8 @@ void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrack
 void OTBUtils::_loadRects(string filename) {
 	truthRects.clear();
 
-	ifstream file(filename, ios::in); // ÒÔÎÄ±¾Ä£Ê½´ò¿ªin.txt±¸¶Á
-	if (!file) { //´ò¿ªÊ§°Ü
+	ifstream file(filename, ios::in); // ï¿½ï¿½ï¿½Ä±ï¿½Ä£Ê½ï¿½ï¿½in.txtï¿½ï¿½ï¿½ï¿½
+	if (!file) { //ï¿½ï¿½Ê§ï¿½ï¿½
 		LOG("Error opening source file."); return;
 	}
 

@@ -27,9 +27,9 @@ public:
 private:
     static string srcPath;
     
-    static ofstream opt1; //实验一写入文件
+    //static ofstream opt1; //实验一写入文件
     
-    static vector<string> getFiles(string path); //获取目录下文件名
+    //static vector<string> getFiles(string path); //获取目录下文件名
 };
 
 #endif /* LabRun_hpp */
