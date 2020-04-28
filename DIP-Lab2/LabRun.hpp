@@ -4,15 +4,6 @@
 
 #include "OTBUtils.h"
 
-#ifdef WIN32
-#include <direct.h>
-#include <io.h>
-#endif
-
-#ifdef __APPLE__
-#include <dirent.h>
-#endif
-
 static class LabRun{
 public:
     //初始化
