@@ -44,16 +44,13 @@ void OTBUtils::run(ProcessParam *param_) {
 		double distRate, osRate;
 		long distCnt = 0, osCnt = 0;
 		for (int i = 1; i < len; ++i) {
-			auto det = detRects[i];
-			auto truth = truthRects[i];
-
 			double dist = dists[i], os = oss[i];
 
 			if (dist <= distT) distCnt++;
 			if (os >= osT) osCnt++;
 		}
 
-		if (len > 0) {
+		if (len > 1) {
 			distRate = distCnt * 1.0 / (len - 1);
 			osRate = osCnt * 1.0 / (len - 1);
 		} else distRate = osRate = 0;
