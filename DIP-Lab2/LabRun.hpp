@@ -2,6 +2,8 @@
 #ifndef LabRun_hpp
 #define LabRun_hpp
 
+#include "FilesProcessUtils.hpp"
+
 #include "OTBUtils.h"
 
 static class LabRun{

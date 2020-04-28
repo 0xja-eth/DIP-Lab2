@@ -22,21 +22,21 @@ bool LabRun::otb_lab(string otb_path) {
 
 	// 获取目录下全部文件夹名称
 	LOG("[获取目录信息]");
-	vector<string> files = getFiles(otb_path);
+	vector<string> files = FilesProcessUtils::getFiles(otb_path);
 
 	// 循环处理各个数据
 	LOG("[开始处理]");
 	string filepath;
 	for (int i = 0; i < files.size(); i++) {
 		LOG(to_string(i) + ". " + files[i]);
-		filepath = srcPath+"/OTB_LAB/"+files[i];
+		filepath = srcPath + "/OTB_LAB/" + files[i] + "/";
 		FilesProcessUtils::createDir(filepath);
 
-		//读取数据
+		// 读取数据
 		OTBUtils::openDataset(otb_path + "/" + files[i]);
 		LOG("a) 读取数据");
 
-		//KCF
+		// KCF
 		ofstream optKCF;
 		optKCF.open(filepath+"KCF.csv");
 		optKCF<<"Overall"<<endl;
@@ -51,7 +51,7 @@ bool LabRun::otb_lab(string otb_path) {
 
 		optKCF.close();
 
-		//下一个方法
+		// 下一个方法
 	}
 
 	return true;
