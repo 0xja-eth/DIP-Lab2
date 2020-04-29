@@ -11,18 +11,18 @@ static class OTBUtils {
 public:
 	static void openDataset(string path);
 
-	static void run(ProcessParam *param_, ofstream &opt);
+	static void run(ProcessParam *param_, ofstream &opt, int frames_num=0);
 
 private:
 	typedef map<double, double> OutTable;
 
-	static const string RectSpecFile; // ¾ØÐÎÖ¸¶¨ÎÄ¼þÃû
-	static const string ImagesDir; // Í¼Æ¬ÎÄ¼þ¼Ð
+	static const string RectSpecFile; // ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
+	static const string ImagesDir; // Í¼Æ¬ï¿½Ä¼ï¿½ï¿½ï¿½
 
 	static const double MaxDistanceTreshold;
 	static const double MaxOSTreshold;
 
-	static const double DeltaTreshold; // ÔöÁ¿
+	static const double DeltaTreshold; // ï¿½ï¿½ï¿½ï¿½
 
 	static string path;
 	static Mat* frames;
@@ -33,7 +33,7 @@ private:
 
 	static void _saveToFile(OutTable out, ofstream &opt);
 
-	static void _runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrackParam *param, ofstream &opt);
+	static void _runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrackParam *param, ofstream &opt, long start_frame);
 	// static void _calcEvaluation(Rect2d* rects, double* &dists, double* &oss);
 
 	// Distance

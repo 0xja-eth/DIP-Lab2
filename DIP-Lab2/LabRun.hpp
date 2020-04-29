@@ -14,6 +14,10 @@ public:
     //实验一：otb测试
     static bool otb_lab(string otb_path);
     
+    //实验二：otb_TRE 时间鲁棒性
+    static bool otb_lab_tre(string otb_path);
+    static bool otb_after_tre(string inpath, string outpath);//后处理
+    
     //结束
     static bool labClose();
 

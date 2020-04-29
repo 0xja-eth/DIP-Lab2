@@ -24,12 +24,13 @@ void OTBUtils::openDataset(string path) {
 	_loadRects(rectFile); _loadFrames(imgDir);
 }
 
-void OTBUtils::run(ProcessParam *param_, ofstream &opt) {
+void OTBUtils::run(ProcessParam *param_, ofstream &opt, int frames_num) {
 	auto param = (ObjTrackParam*)param_;
+	long start_frame = frames_num*truthRects.size()/20;
 
-	// ��⣬��ȡÿ֡������
+	// ���?��ȡÿ֡������
 	Rect2d *detRects; double *dists, *oss;
-	_runDetect(detRects, dists, oss, param, opt);
+	_runDetect(detRects, dists, oss, param, opt, start_frame);
 
 	OutTable distRates, osRates;
 	long len = truthRects.size();
@@ -59,12 +60,14 @@ void OTBUtils::run(ProcessParam *param_, ofstream &opt) {
 		osRates[osT] = osRate;
 	}
 
-	opt << "Distance" << endl;
-	opt << "Treshold" << "," << "Ratio" << endl;
+	//opt << "Distance" << endl;
+	//opt << "Treshold" << "," << "Ratio" << endl;
+	opt << "#" << endl;
 	_saveToFile(distRates, opt);
 
-	opt << "OverlapSpace" << endl;
-	opt << "Treshold" << "," << "Ratio" << endl;
+	//opt << "OverlapSpace" << endl;
+	//opt << "Treshold" << "," << "Ratio" << endl;
+	opt << "#" << endl;
 	_saveToFile(osRates, opt);
 }
 
@@ -76,13 +79,13 @@ void OTBUtils::_saveToFile(OutTable out, ofstream &opt) {
 	}
 }
 
-void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrackParam *param, ofstream &opt) {
+void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrackParam *param, ofstream &opt, long start_frame) {
 	double start, end, run_time;
 
 	bool newDet = true;
 	Ptr<Tracker> tracker = NULL;
 
-	long len = truthRects.size();
+	long len = truthRects.size()-start_frame;
 	rects = new Rect2d[len];
 	dists = new double[len];
 	oss = new double[len];
@@ -91,8 +94,8 @@ void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrack
 		start = static_cast<double>(getTickCount());
 		ImageProcess::progress = i * 1.0 / len * 0.9;
 
-		auto truth = truthRects[i];
-		auto frame = frames[i];
+		auto truth = truthRects[i+start_frame];
+		auto frame = frames[i+start_frame];
 
 		if (i == 0) {
 			param->setRect(rects[i] = truth);
@@ -115,7 +118,7 @@ void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrack
 		end = static_cast<double>(getTickCount());
 		run_time = (end-start)/getTickFrequency();
 
-		opt<<i+1<<","<<dist<<","<<os<<","<<run_time<<endl;
+		opt<<i+start_frame+1<<","<<dist<<","<<os<<","<<run_time<<endl;
 
 		/*char showText[256];
 
