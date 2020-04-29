@@ -33,7 +33,7 @@ void OTBUtils::run(ProcessParam *param_, ofstream &opt, int frames_num) {
 	_runDetect(detRects, dists, oss, param, opt, start_frame);
 
 	OutTable distRates, osRates;
-	long len = truthRects.size();
+	long len = truthRects.size() - start_frame;
 
 	for (double t = 0; t < 1; t += DeltaTreshold) {
 
@@ -85,7 +85,7 @@ void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrack
 	bool newDet = true;
 	Ptr<Tracker> tracker = NULL;
 
-	long len = truthRects.size()-start_frame;
+	long len = truthRects.size() - start_frame;
 	rects = new Rect2d[len];
 	dists = new double[len];
 	oss = new double[len];

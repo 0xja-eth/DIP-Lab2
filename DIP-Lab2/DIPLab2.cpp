@@ -460,7 +460,7 @@ void DIPLab2::runOTB() {
 	LabRun::labIn("E:/Projects/OpenCVProjects/TrackDataset/OTBResult");
 
 	//输入otb数据集的地址
-	LabRun::otb_lab("E:/Projects/OpenCVProjects/TrackDataset/OTB100");
+	LabRun::otb_lab_tre("E:/Projects/OpenCVProjects/TrackDataset/OTB100");
 
 	/*
 	int algo_ = ui.otbAlgoSelect->currentIndex();

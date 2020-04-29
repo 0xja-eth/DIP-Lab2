@@ -10,45 +10,45 @@ string LabRun::srcPath;
 bool LabRun::labIn(string src_path) {
 	srcPath = src_path;
 
-	FilesProcessUtils::createDir(srcPath+"/OTB_OPE");
-	FilesProcessUtils::createDir(srcPath+"/OTB_TRE");
+	FilesProcessUtils::createDir(srcPath + "/OTB_OPE");
+	FilesProcessUtils::createDir(srcPath + "/OTB_TRE");
 	//opt1.open(srcPath + "/otb_lab.csv");
 	// opt1 << "编号" << "," << "数据名" << "," << "KCF(用时/秒)" << endl;
 
 	return true;
 }
 
-bool LabRun::otb_lab_ope(string otb_path) {
+bool LabRun::otb_lab(string otb_path) {
 	double start, end, run_time; // 记录用时
 
 	// 获取目录下全部文件夹名称
-	LOG("[获取目录信息]");
+	LOG("[Get Directory Info]");
 	vector<string> files = FilesProcessUtils::getFiles(otb_path);
 
 	// 循环处理各个数据
-	LOG("[开始处理]");
+	LOG("[Start Processing]");
 	string filepath;
 	for (int i = 0; i < files.size(); i++) {
 		LOG(to_string(i) + ". " + files[i]);
-		filepath = srcPath + "/OTB_LAB/" + files[i] + "/";
+		filepath = otb_path + "/OTB_LAB/" + files[i] + "/";
 		FilesProcessUtils::createDir(filepath);
 
 		// 读取数据
 		OTBUtils::openDataset(otb_path + "/" + files[i]);
-		LOG("a) 读取数据");
+		LOG("a) Read data");
 
 		// KCF
 		ofstream optKCF;
-		optKCF.open(filepath+"KCF.csv");
-		optKCF<<"Overall"<<endl;
-		optKCF<<"Frame"<<","<<"Distance"<<","<<"OverlapSpace"<<","<<"Times(s)"<<endl;
+		optKCF.open(filepath + "KCF.csv");
+		optKCF << "Overall" << endl;
+		optKCF << "Frame" << "," << "Distance" << "," << "OverlapSpace" << "," << "Times(s)" << endl;
 
 		start = static_cast<double>(getTickCount());
 		ObjTrackParam trackparamKCF(ObjTrackParam::KCF);
 		OTBUtils::run(&trackparamKCF, optKCF);
 		end = static_cast<double>(getTickCount());
 		run_time = (end - start) / getTickFrequency();
-		LOG("b) KCF, 用时" + to_string(run_time));
+		LOG("b) KCF, Cost Time" + to_string(run_time));
 
 		optKCF.close();
 
@@ -58,211 +58,211 @@ bool LabRun::otb_lab_ope(string otb_path) {
 	return true;
 }
 
-bool LabRun::otb_lab_tre(string otb_path){
-    double start, end, run_time; //记录用时
-    
-    //获取目录下全部文件夹名称
-    LOG("「获取目录信息」");
-    vector<string> files= FilesProcessUtils::getFiles(otb_path);
-    
-    //循环处理各个数据
-    LOG("「开始处理」");
-    string filepath;
-    for(int i=0; i<files.size(); i++){
-        LOG(to_string(i)+". "+files[i]);
-        filepath = srcPath+"/OTB_TRE/"+files[i];
-        FilesProcessUtils::createDir(filepath);
-        
-        //读取数据
-        OTBUtils::openDataset(otb_path+"/"+files[i]);
-        LOG("a) 读取数据");
-        
-        //KCF
-        ofstream optKCF;
-        optKCF.open(filepath+"/KCF.csv");
-        LOG("b) KCF");
-        for(int s=0; s<20; s++){
-            //optKCF<<"Overall"<<endl;
-            //optKCF<<"Frame"<<","<<"Distance"<<","<<"OverlapSpace"<<","<<"Times(s)"<<endl;
-            optKCF<<"#"<<endl;
-            
-            start = static_cast<double>(getTickCount());
-            ObjTrackParam trackparamKCF(ObjTrackParam::KCF);
-            OTBUtils::run(&trackparamKCF, optKCF, s);
-    
-            end = static_cast<double>(getTickCount());
-            run_time = (end - start) / getTickFrequency();
-            LOG("时间段："+to_string(s)+" | 用时："+to_string(run_time));
-        }
-        
-        optKCF<<"##"<<endl;
-        
-        optKCF.close();
-        LOG("- 数据后处理");
-        otb_after_tre(filepath+"/KCF.csv", filepath+"/KCF-after.csv");
-    }
-    
+bool LabRun::otb_lab_tre(string otb_path) {
+	double start, end, run_time; //记录用时
 
-    
-    return true;
+	//获取目录下全部文件夹名称
+	LOG("[Get Directory Info]");
+	vector<string> files = FilesProcessUtils::getFiles(otb_path);
+
+	//循环处理各个数据
+	LOG("[Start Processing]");
+	string filepath;
+	for (int i = 0; i < files.size(); i++) {
+		LOG(to_string(i) + ". " + files[i]);
+		filepath = srcPath + "/OTB_TRE/" + files[i];
+		FilesProcessUtils::createDir(filepath);
+
+		//读取数据
+		OTBUtils::openDataset(otb_path + "/" + files[i]);
+		LOG("a) Reading Data");
+
+		//KCF
+		ofstream optKCF;
+		optKCF.open(filepath + "/KCF.csv");
+		LOG("b) KCF");
+		for (int s = 0; s < 20; s++) {
+			//optKCF<<"Overall"<<endl;
+			//optKCF<<"Frame"<<","<<"Distance"<<","<<"OverlapSpace"<<","<<"Times(s)"<<endl;
+			optKCF << "#" << endl;
+
+			start = static_cast<double>(getTickCount());
+			ObjTrackParam trackparamKCF(ObjTrackParam::KCF);
+			OTBUtils::run(&trackparamKCF, optKCF, s);
+
+			end = static_cast<double>(getTickCount());
+			run_time = (end - start) / getTickFrequency();
+			LOG("Slide: " << s << "  Time: " << (run_time));
+		}
+
+		optKCF << "##" << endl;
+
+		optKCF.close();
+		LOG("After Process");
+		otb_after_tre(filepath + "/KCF.csv", filepath + "/KCF-after.csv");
+	}
+
+
+
+	return true;
 }
 
-bool LabRun::otb_after_tre(string inpath, string outpath){
-    ifstream in(inpath);
-    
-    string str=".";
-    
-    int frame;
-    double dis, os, time;
-    vector<double> diss, oss, times;
-    
-    double d_threshold, d_ratio;
-    vector<double> d_thresholds;
-    vector<vector<double>> d_ratioss;
-    
-    double os_threshold, os_ratio;
-    vector<double> os_thresholds;
-    vector<vector<double>> os_ratioss;
-    
-    int num=0;
-    while(in.good()){
-        num++;
-        //cout<<"num: "<<num<<endl;
-        
-        vector<double> d_ratios, os_ratios;
-        
-        while(str!="#") in>>str;
-        
-        if(num==1){
-            while(in>>str, str!="#"){
-                /*stringstream strstream(str);
-                string a;
-            
-                getline(strstream, a, ',');
-                frame = atoi(a.c_str());
-            
-                getline(strstream, a, ',');
-                dis = atof(a.c_str());
-            
-                getline(strstream, a, ',');
-                os = atof(a.c_str());
-            
-                getline(strstream, a, ',');
-                time = atof(a.c_str());
+bool LabRun::otb_after_tre(string inpath, string outpath) {
+	ifstream in(inpath);
 
-                diss.push_back(dis);
-                oss.push_back(os);
-                times.push_back(time);*/
-            }
-    
-            while(in>>str, str!="#"){
-                stringstream strstream(str);
-                string a;
-        
-                getline(strstream, a, ',');
-                d_threshold = atof(a.c_str());
-        
-                getline(strstream, a, ',');
-                d_ratio = atof(a.c_str());
-        
-                d_thresholds.push_back(d_threshold);
-                d_ratios.push_back(d_ratio);
-            }
-            
-            d_ratioss.push_back(d_ratios);
-    
-            while(in>>str, str!="#"){
-                stringstream strstream(str);
-                string a;
-            
-                getline(strstream, a, ',');
-                os_threshold = atof(a.c_str());
-            
-                getline(strstream, a, ',');
-                os_ratio = atof(a.c_str());
-            
-                os_thresholds.push_back(os_threshold);
-                os_ratios.push_back(os_ratio);
-            }
-            
-            os_ratioss.push_back(os_ratios);
-        }else{
-            while(in>>str, str!="#");
-            
-            while(in>>str, str!="#"){
-                stringstream strstream(str);
-                string a;
-                
-                getline(strstream, a, ',');
-                d_threshold = atof(a.c_str());
-                
-                getline(strstream, a, ',');
-                d_ratio = atof(a.c_str());
-                
-                d_ratios.push_back(d_ratio);
-            }
-                    
-            d_ratioss.push_back(d_ratios);
-            
-            while(in>>str, str!="#"){
-                if(str=="##") break;
-                stringstream strstream(str);
-                string a;
-                    
-                getline(strstream, a, ',');
-                os_threshold = atof(a.c_str());
-                    
-                getline(strstream, a, ',');
-                os_ratio = atof(a.c_str());
-                    
-                os_ratios.push_back(os_ratio);
-            }
-                    
-            os_ratioss.push_back(os_ratios);
-            if(str=="##") break;
-        }
-    }
-    in.close();
-    
-    //cout<<"Distance"<<endl;
-    
-    ofstream opt;
-    opt.open(outpath);
-    
-    opt<<"Distance"<<endl;
-    opt<<"Threshold"<<",";
-    for(int i=0; i<num; i++) opt<<"Ratio(第"<<i<<"次)"<<",";
-    opt<<"平均"<<endl;
-    
-    for(int i=0; i<d_thresholds.size(); i++){
-        d_ratio = 0;
-        
-        opt<<d_thresholds[i]<<",";
-        for(int j=0; j<num; j++){
-            opt<<d_ratioss[j][i]<<",";
-            d_ratio += d_ratioss[j][i];
-        }
-        opt<<d_ratio/num<<endl;
-    }
-    
-    //cout<<"OverlapSpace"<<endl;
-    opt<<endl<<"OverlapSpace"<<endl;
-    opt<<"Threshold"<<",";
-    for(int i=0; i<num; i++) opt<<"Ratio(第"<<i<<"次)"<<",";
-    opt<<"平均"<<endl;
-    
-    for(int i=0; i<os_thresholds.size(); i++){
-        os_ratio = 0;
-        
-        opt<<os_thresholds[i]<<",";
-        for(int j=0; j<num; j++){
-            opt<<os_ratioss[j][i]<<",";
-            os_ratio += d_ratioss[j][i];
-        }
-        opt<<os_ratio/num<<endl;
-    }
-    
-    return true;
+	string str = ".";
+
+	int frame;
+	double dis, os, time;
+	vector<double> diss, oss, times;
+
+	double d_threshold, d_ratio;
+	vector<double> d_thresholds;
+	vector<vector<double>> d_ratioss;
+
+	double os_threshold, os_ratio;
+	vector<double> os_thresholds;
+	vector<vector<double>> os_ratioss;
+
+	int num = 0;
+	while (in.good()) {
+		num++;
+		//cout<<"num: "<<num<<endl;
+
+		vector<double> d_ratios, os_ratios;
+
+		while (str != "#") in >> str;
+
+		if (num == 1) {
+			while (in >> str, str != "#") {
+				/*stringstream strstream(str);
+				string a;
+
+				getline(strstream, a, ',');
+				frame = atoi(a.c_str());
+
+				getline(strstream, a, ',');
+				dis = atof(a.c_str());
+
+				getline(strstream, a, ',');
+				os = atof(a.c_str());
+
+				getline(strstream, a, ',');
+				time = atof(a.c_str());
+
+				diss.push_back(dis);
+				oss.push_back(os);
+				times.push_back(time);*/
+			}
+
+			while (in >> str, str != "#") {
+				stringstream strstream(str);
+				string a;
+
+				getline(strstream, a, ',');
+				d_threshold = atof(a.c_str());
+
+				getline(strstream, a, ',');
+				d_ratio = atof(a.c_str());
+
+				d_thresholds.push_back(d_threshold);
+				d_ratios.push_back(d_ratio);
+			}
+
+			d_ratioss.push_back(d_ratios);
+
+			while (in >> str, str != "#") {
+				stringstream strstream(str);
+				string a;
+
+				getline(strstream, a, ',');
+				os_threshold = atof(a.c_str());
+
+				getline(strstream, a, ',');
+				os_ratio = atof(a.c_str());
+
+				os_thresholds.push_back(os_threshold);
+				os_ratios.push_back(os_ratio);
+			}
+
+			os_ratioss.push_back(os_ratios);
+		} else {
+			while (in >> str, str != "#");
+
+			while (in >> str, str != "#") {
+				stringstream strstream(str);
+				string a;
+
+				getline(strstream, a, ',');
+				d_threshold = atof(a.c_str());
+
+				getline(strstream, a, ',');
+				d_ratio = atof(a.c_str());
+
+				d_ratios.push_back(d_ratio);
+			}
+
+			d_ratioss.push_back(d_ratios);
+
+			while (in >> str, str != "#") {
+				if (str == "##") break;
+				stringstream strstream(str);
+				string a;
+
+				getline(strstream, a, ',');
+				os_threshold = atof(a.c_str());
+
+				getline(strstream, a, ',');
+				os_ratio = atof(a.c_str());
+
+				os_ratios.push_back(os_ratio);
+			}
+
+			os_ratioss.push_back(os_ratios);
+			if (str == "##") break;
+		}
+	}
+	in.close();
+
+	//cout<<"Distance"<<endl;
+
+	ofstream opt;
+	opt.open(outpath);
+
+	opt << "Distance" << endl;
+	opt << "Threshold" << ",";
+	for (int i = 0; i < num; i++) opt << "Ratio(" << i << "th)" << ",";
+	opt << "Average" << endl;
+
+	for (int i = 0; i < d_thresholds.size(); i++) {
+		d_ratio = 0;
+
+		opt << d_thresholds[i] << ",";
+		for (int j = 0; j < num; j++) {
+			opt << d_ratioss[j][i] << ",";
+			d_ratio += d_ratioss[j][i];
+		}
+		opt << d_ratio / num << endl;
+	}
+
+	//cout<<"OverlapSpace"<<endl;
+	opt << endl << "OverlapSpace" << endl;
+	opt << "Threshold" << ",";
+	for (int i = 0; i < num; i++) opt << "Ratio(" << i << "th)" << ",";
+	opt << "Average" << endl;
+
+	for (int i = 0; i < os_thresholds.size(); i++) {
+		os_ratio = 0;
+
+		opt << os_thresholds[i] << ",";
+		for (int j = 0; j < num; j++) {
+			opt << os_ratioss[j][i] << ",";
+			os_ratio += d_ratioss[j][i];
+		}
+		opt << os_ratio / num << endl;
+	}
+
+	return true;
 }
 
 /*vector<string> LabRun::getFiles(string path) {
