@@ -5,6 +5,8 @@
 
 string LabRun::srcPath;
 
+int LabRun::maxNum = 0;
+
 //ofstream LabRun::opt1;
 
 bool LabRun::labIn(string src_path) {
@@ -28,7 +30,11 @@ bool LabRun::otb_lab(string otb_path) {
 	// 循环处理各个数据
 	LOG("[Start Processing]");
 	string filepath;
-	for (int i = 0; i < files.size(); i++) {
+
+	int count = files.size();
+	if (maxNum > 0) count = min(maxNum, count);
+
+	for (int i = 0; i < count; i++) {
 		LOG(to_string(i) + ". " + files[i]);
 		filepath = otb_path + "/OTB_LAB/" + files[i] + "/";
 		FilesProcessUtils::createDir(filepath);
@@ -68,7 +74,11 @@ bool LabRun::otb_lab_tre(string otb_path) {
 	//循环处理各个数据
 	LOG("[Start Processing]");
 	string filepath;
-	for (int i = 0; i < files.size(); i++) {
+
+	int count = files.size();
+	if (maxNum > 0) count = min(maxNum, count);
+
+	for (int i = 0; i < count; i++) {
 		LOG(to_string(i) + ". " + files[i]);
 		filepath = srcPath + "/OTB_TRE/" + files[i];
 		FilesProcessUtils::createDir(filepath);
@@ -231,7 +241,7 @@ bool LabRun::otb_after_tre(string inpath, string outpath) {
 
 	opt << "Distance" << endl;
 	opt << "Threshold" << ",";
-	for (int i = 0; i < num; i++) opt << "Ratio(" << i << "th)" << ",";
+	for (int i = 0; i < num; i++) opt << "Ratio(" << i << ")" << ",";
 	opt << "Average" << endl;
 
 	for (int i = 0; i < d_thresholds.size(); i++) {
@@ -248,7 +258,7 @@ bool LabRun::otb_after_tre(string inpath, string outpath) {
 	//cout<<"OverlapSpace"<<endl;
 	opt << endl << "OverlapSpace" << endl;
 	opt << "Threshold" << ",";
-	for (int i = 0; i < num; i++) opt << "Ratio(" << i << "th)" << ",";
+	for (int i = 0; i < num; i++) opt << "Ratio(" << i << ")" << ",";
 	opt << "Average" << endl;
 
 	for (int i = 0; i < os_thresholds.size(); i++) {

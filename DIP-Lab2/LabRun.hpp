@@ -4,13 +4,20 @@
 
 #include "FilesProcessUtils.hpp"
 
+#include <cstdlib>
+#include <cstdio>
+#include <cmath>
+#include <algorithm>
+
 #include "OTBUtils.h"
 
 static class LabRun{
 public:
+	static int maxNum;
+
     //初始化
     static bool labIn(string src_path);
-    
+
     //实验一：otb测试
     static bool otb_lab(string otb_path);
     

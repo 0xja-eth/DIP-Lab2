@@ -456,6 +456,7 @@ void DIPLab2::doVideoObjDetTrack(ProcessParam* param) {
 
 void DIPLab2::runOTB() {
 
+	LabRun::maxNum = ui.numInput->value();
 	//输入存储运行时间的文件夹目录
 	LabRun::labIn("E:/Projects/OpenCVProjects/TrackDataset/OTBResult");
 
