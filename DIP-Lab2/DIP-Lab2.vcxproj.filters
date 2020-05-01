@@ -80,6 +80,42 @@
     <ClCompile Include="FilesProcessUtils.cpp">
       <Filter>Source Files\lab</Filter>
     </ClCompile>
+    <ClCompile Include="lib\STRUCK\Config.cpp">
+      <Filter>Source Files\opencv\struck</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\STRUCK\Features.cpp">
+      <Filter>Source Files\opencv\struck</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\STRUCK\HaarFeature.cpp">
+      <Filter>Source Files\opencv\struck</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\STRUCK\HaarFeatures.cpp">
+      <Filter>Source Files\opencv\struck</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\STRUCK\HistogramFeatures.cpp">
+      <Filter>Source Files\opencv\struck</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\STRUCK\ImageRep.cpp">
+      <Filter>Source Files\opencv\struck</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\STRUCK\LaRank.cpp">
+      <Filter>Source Files\opencv\struck</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\STRUCK\MultiFeatures.cpp">
+      <Filter>Source Files\opencv\struck</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\STRUCK\RawFeatures.cpp">
+      <Filter>Source Files\opencv\struck</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\STRUCK\Sampler.cpp">
+      <Filter>Source Files\opencv\struck</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\STRUCK\Tracker.cpp">
+      <Filter>Source Files\opencv\struck</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\STRUCK\GraphUtils\GraphUtils.cpp">
+      <Filter>Source Files\opencv\struck\GraphUtils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
@@ -117,6 +153,21 @@
     <Filter Include="Source Files\lab">
       <UniqueIdentifier>{660fc608-27c1-43c8-8e19-c537616147e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\opencv">
+      <UniqueIdentifier>{3b6f840e-1706-41bc-a6cd-3b04379a45bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\opencv\struck">
+      <UniqueIdentifier>{d890965b-033a-4657-9414-4929c25b9769}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\opencv\struck">
+      <UniqueIdentifier>{254cd8ee-43de-4292-8a78-7ee02ffda581}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\opencv\struck\GraphUtils">
+      <UniqueIdentifier>{91af28bc-1177-46a9-99e7-e3c8ee1c4d47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\opencv\struck\GraphUtils">
+      <UniqueIdentifier>{6c67bf14-5851-4931-9ce9-4bf6fe19961b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="DIPLab2.h">
@@ -134,9 +185,6 @@
     </QtRcc>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="opencv\mycv.h">
-      <Filter>Source Files\opencv</Filter>
-    </ClInclude>
     <ClInclude Include="opencv\lib\PatchGenerator.h">
       <Filter>Source Files\opencv\lib</Filter>
     </ClInclude>
@@ -157,6 +205,63 @@
     </ClInclude>
     <ClInclude Include="FilesProcessUtils.hpp">
       <Filter>Header Files\lab</Filter>
+    </ClInclude>
+    <ClInclude Include="opencv\mycv.h">
+      <Filter>Header Files\opencv</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\STRUCK\BaseTest.hpp">
+      <Filter>Header Files\opencv\struck</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\STRUCK\Config.h">
+      <Filter>Header Files\opencv\struck</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\STRUCK\Features.h">
+      <Filter>Header Files\opencv\struck</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\STRUCK\HaarFeature.h">
+      <Filter>Header Files\opencv\struck</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\STRUCK\HaarFeatures.h">
+      <Filter>Header Files\opencv\struck</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\STRUCK\HistogramFeatures.h">
+      <Filter>Header Files\opencv\struck</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\STRUCK\ImageRep.h">
+      <Filter>Header Files\opencv\struck</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\STRUCK\Kernels.h">
+      <Filter>Header Files\opencv\struck</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\STRUCK\LaRank.h">
+      <Filter>Header Files\opencv\struck</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\STRUCK\MultiFeatures.h">
+      <Filter>Header Files\opencv\struck</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\STRUCK\OTBTest.hpp">
+      <Filter>Header Files\opencv\struck</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\STRUCK\RawFeatures.h">
+      <Filter>Header Files\opencv\struck</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\STRUCK\Rect.h">
+      <Filter>Header Files\opencv\struck</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\STRUCK\Sample.h">
+      <Filter>Header Files\opencv\struck</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\STRUCK\Sampler.h">
+      <Filter>Header Files\opencv\struck</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\STRUCK\Tracker.h">
+      <Filter>Header Files\opencv\struck</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\STRUCK\VOTTest.hpp">
+      <Filter>Header Files\opencv\struck</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\STRUCK\GraphUtils\GraphUtils.h">
+      <Filter>Header Files\opencv\struck\GraphUtils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

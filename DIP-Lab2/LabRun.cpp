@@ -5,6 +5,8 @@
 
 string LabRun::srcPath;
 
+int LabRun::maxNum = 0;
+
 //ofstream LabRun::opt1;
 
 bool LabRun::labIn(string src_path) {
@@ -28,7 +30,11 @@ bool LabRun::otb_lab(string otb_path) {
 	// 循环处理各个数据
 	LOG("[Start Processing]");
 	string filepath;
-	for (int i = 0; i < files.size(); i++) {
+
+	int count = files.size();
+	if (maxNum > 0) count = min(maxNum, count);
+
+	for (int i = 0; i < count; i++) {
 		LOG(to_string(i) + ". " + files[i]);
 		filepath = otb_path + "/OTB_LAB/" + files[i] + "/";
 		FilesProcessUtils::createDir(filepath);
@@ -52,6 +58,7 @@ bool LabRun::otb_lab(string otb_path) {
 
 		optKCF.close();
 
+<<<<<<< HEAD
 		//BOOSTING
         ofstream optBOOSTING;
         optBOOSTING.open(filepath+"/BOOSTING.csv");
@@ -111,6 +118,24 @@ bool LabRun::otb_lab(string otb_path) {
         LOG("f) GOTURN, 用时"+to_string(run_time));
         
         optGOTURN.close();*/
+=======
+		// 下一个方法
+
+		// STRUCK
+		ofstream optSTRUCK;
+		optSTRUCK.open(filepath + "STRUCK.csv");
+		optSTRUCK << "Overall" << endl;
+		optSTRUCK << "Frame" << "," << "Distance" << "," << "OverlapSpace" << "," << "Times(s)" << endl;
+
+		start = static_cast<double>(getTickCount());
+		ObjTrackParam trackparamSTRUCK(ObjTrackParam::STRUCK);
+		OTBUtils::run(&trackparamSTRUCK, optSTRUCK);
+		end = static_cast<double>(getTickCount());
+		run_time = (end - start) / getTickFrequency();
+		LOG("b) STRUCK, Cost Time" + to_string(run_time));
+
+		optSTRUCK.close();
+>>>>>>> 3ea4f2e53bfdea354dafead7beb5bc7565dfe4de
 	}
 
 	return true;
@@ -126,7 +151,11 @@ bool LabRun::otb_lab_tre(string otb_path) {
 	//循环处理各个数据
 	LOG("[Start Processing]");
 	string filepath;
-	for (int i = 0; i < files.size(); i++) {
+
+	int count = files.size();
+	if (maxNum > 0) count = min(maxNum, count);
+
+	for (int i = 0; i < count; i++) {
 		LOG(to_string(i) + ". " + files[i]);
 		filepath = srcPath + "/OTB_TRE/" + files[i];
 		FilesProcessUtils::createDir(filepath);
@@ -159,6 +188,7 @@ bool LabRun::otb_lab_tre(string otb_path) {
 		LOG("After Process");
 		otb_after_tre(filepath + "/KCF.csv", filepath + "/KCF-after.csv");
 
+<<<<<<< HEAD
 		//BOOSTING
         ofstream optBOOSTING;
         optBOOSTING.open(filepath+"/BOOSTING.csv");
@@ -246,6 +276,31 @@ bool LabRun::otb_lab_tre(string otb_path) {
         optGOTURN.close();
         LOG("- 数据后处理");
         otb_after_tre(filepath+"/GOTURN.csv", filepath+"/GOTURN-after.csv");*/
+=======
+		// STRUCK
+		ofstream optSTRUCK;
+		optSTRUCK.open(filepath + "/STRUCK.csv");
+		LOG("b) KCF");
+		for (int s = 0; s < 20; s++) {
+			//optKCF<<"Overall"<<endl;
+			//optKCF<<"Frame"<<","<<"Distance"<<","<<"OverlapSpace"<<","<<"Times(s)"<<endl;
+			optSTRUCK << "#" << endl;
+
+			start = static_cast<double>(getTickCount());
+			ObjTrackParam trackparamSTRUCK(ObjTrackParam::STRUCK);
+			OTBUtils::run(&trackparamSTRUCK, optSTRUCK, s);
+
+			end = static_cast<double>(getTickCount());
+			run_time = (end - start) / getTickFrequency();
+			LOG("Slide: " << s << "  Time: " << (run_time));
+		}
+
+		optSTRUCK << "##" << endl;
+
+		optSTRUCK.close();
+		LOG("After Process");
+		otb_after_tre(filepath + "/STRUCK.csv", filepath + "/STRUCK-after.csv");
+>>>>>>> 3ea4f2e53bfdea354dafead7beb5bc7565dfe4de
 	}
 
 
@@ -377,7 +432,7 @@ bool LabRun::otb_after_tre(string inpath, string outpath) {
 
 	opt << "Distance" << endl;
 	opt << "Threshold" << ",";
-	for (int i = 0; i < num; i++) opt << "Ratio(" << i << "th)" << ",";
+	for (int i = 0; i < num; i++) opt << "Ratio(" << i << ")" << ",";
 	opt << "Average" << endl;
 
 	for (int i = 0; i < d_thresholds.size(); i++) {
@@ -394,7 +449,7 @@ bool LabRun::otb_after_tre(string inpath, string outpath) {
 	//cout<<"OverlapSpace"<<endl;
 	opt << endl << "OverlapSpace" << endl;
 	opt << "Threshold" << ",";
-	for (int i = 0; i < num; i++) opt << "Ratio(" << i << "th)" << ",";
+	for (int i = 0; i < num; i++) opt << "Ratio(" << i << ")" << ",";
 	opt << "Average" << endl;
 
 	for (int i = 0; i < os_thresholds.size(); i++) {

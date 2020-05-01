@@ -56,6 +56,7 @@ DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 
 	connect(ui.openDataset, SIGNAL(clicked()), this, SLOT(openDataset()));
 	connect(ui.runOTB, SIGNAL(clicked()), this, SLOT(runOTB()));
+	connect(ui.batRunOTB, SIGNAL(clicked()), this, SLOT(batRunOTB()));
 
 	updateThread = new std::thread(requestUpdate, this);
 }
@@ -265,12 +266,17 @@ void DIPLab2::onSaveCompleted() {
 
 void DIPLab2::openDataset() {
 	QString path = QFileDialog::getExistingDirectory(this, DatasetTitle, "");
+	if (path.isEmpty()) return;
+
 	QTextCodec *code = QTextCodec::codecForName("GBK");
 	string pathStr = code->fromUnicode(path).data();
-	ui.datasetName->setText(path);	
-	new std::thread([this, &pathStr]() {
+	auto format = ui.format->text();
+	string formatStr = code->fromUnicode(format).data();
+	ui.datasetName->setText(path);
+
+	new std::thread([this, &pathStr, &formatStr]() {
 		//LOG(pathStr);
-		OTBUtils::openDataset(pathStr);
+		OTBUtils::openDataset(pathStr, formatStr);
 	});
 }
 
@@ -455,27 +461,34 @@ void DIPLab2::doVideoObjDetTrack(ProcessParam* param) {
 }
 
 void DIPLab2::runOTB() {
-
-	//输入存储运行时间的文件夹目录
-	LabRun::labIn("E:/Projects/OpenCVProjects/TrackDataset/OTBResult");
-
-	//输入otb数据集的地址
-	LabRun::otb_lab_tre("E:/Projects/OpenCVProjects/TrackDataset/OTB100");
-
-	/*
 	int algo_ = ui.otbAlgoSelect->currentIndex();
+	OTBUtils::showImg = ui.showImg->isChecked();
+
 	ObjTrackParam::Algo algo = ObjTrackParam::KCF;
 
 	switch (algo_) {
 	case 0: algo = ObjTrackParam::KCF; break;
 	case 1: algo = ObjTrackParam::TLD; break;
 	case 2: algo = ObjTrackParam::GOTURN; break;
+	case 3: algo = ObjTrackParam::STRUCK; break;
 	}
 
 	param = new ObjTrackParam(algo);
 
 	QTCVUtils::process(OTBUtils::run, param);
-	*/
+}
+
+void DIPLab2::batRunOTB() {
+	LabRun::maxNum = ui.numInput->value();
+	QTCVUtils::process(_batRunOTB);
+}
+
+void DIPLab2::_batRunOTB() {
+	//输入存储运行时间的文件夹目录
+	LabRun::labIn("E:/Projects/OpenCVProjects/TrackDataset/OTBResult");
+
+	//输入otb数据集的地址
+	LabRun::otb_lab_tre("E:/Projects/OpenCVProjects/TrackDataset/OTB100");
 }
 
 #pragma endregion

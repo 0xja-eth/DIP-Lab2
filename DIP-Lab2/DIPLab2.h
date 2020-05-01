@@ -127,6 +127,7 @@ public slots:
 	
 	void openDataset();
 	void runOTB();
+	void batRunOTB();
 
 	void onRectChanged();
 
@@ -141,6 +142,8 @@ protected:
 	void mousePressEvent(QMouseEvent * e);
 	void mouseMoveEvent(QMouseEvent *e);
 	void mouseReleaseEvent(QMouseEvent * e);
+
+	static void _batRunOTB();
 
 private:
 	MediaObject *media1 = NULL, *media2 = NULL;

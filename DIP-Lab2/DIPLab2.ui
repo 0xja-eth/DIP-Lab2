@@ -32,7 +32,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>12</x>
+      <x>10</x>
       <y>12</y>
       <width>831</width>
       <height>841</height>
@@ -153,7 +153,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>510</y>
+       <y>516</y>
        <width>80</width>
        <height>12</height>
       </rect>
@@ -712,7 +712,7 @@
        <x>620</x>
        <y>0</y>
        <width>211</width>
-       <height>121</height>
+       <height>291</height>
       </rect>
      </property>
      <property name="title">
@@ -722,9 +722,9 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>50</y>
-        <width>181</width>
-        <height>31</height>
+        <y>170</y>
+        <width>191</width>
+        <height>21</height>
        </rect>
       </property>
       <property name="text">
@@ -738,7 +738,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>96</y>
+        <y>206</y>
         <width>54</width>
         <height>12</height>
        </rect>
@@ -751,8 +751,8 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>20</y>
-        <width>76</width>
+        <y>140</y>
+        <width>191</width>
         <height>24</height>
        </rect>
       </property>
@@ -764,7 +764,7 @@
       <property name="geometry">
        <rect>
         <x>80</x>
-        <y>90</y>
+        <y>200</y>
         <width>121</width>
         <height>22</height>
        </rect>
@@ -784,18 +784,101 @@
         <string>GOTURN</string>
        </property>
       </item>
+      <item>
+       <property name="text">
+        <string>STRUCK</string>
+       </property>
+      </item>
      </widget>
      <widget class="QPushButton" name="runOTB">
       <property name="geometry">
        <rect>
-        <x>120</x>
-        <y>20</y>
-        <width>76</width>
+        <x>10</x>
+        <y>230</y>
+        <width>191</width>
         <height>24</height>
        </rect>
       </property>
       <property name="text">
-       <string>执行测试</string>
+       <string>执行单个数据集测试</string>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="numInput">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>24</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_12">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>91</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>处理数据集数量（0为不限）</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="batRunOTB">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>191</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>执行快速批量测试</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_13">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>112</y>
+        <width>101</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>输入图片命名格式</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="format">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>110</y>
+        <width>81</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>%04d.jpg</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="showImg">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>264</y>
+        <width>101</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>显示过程图片</string>
       </property>
      </widget>
     </widget>

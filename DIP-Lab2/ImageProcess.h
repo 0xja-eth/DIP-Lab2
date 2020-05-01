@@ -9,6 +9,9 @@
 
 #include "Debug.h"
 
+#include "lib/STRUCK/Tracker.h"
+#include "lib/STRUCK/Config.h"
+
 // 处理参数父类
 class ProcessParam {};
 
@@ -21,15 +24,15 @@ public:
 	RectParam(int x = 0, int y = 0, int w = 0, int h = 0,
 		Scalar color = Scalar::all(255)) :
 		x(x), y(y), w(w), h(h), color(color) {}
-	RectParam(Rect rect, Scalar color = Scalar::all(255)) :
+	RectParam(cv::Rect rect, Scalar color = Scalar::all(255)) :
 		color(color) { setRect(rect); }
 
-	void setRect(Rect rect) { 
+	void setRect(cv::Rect rect) { 
 		x = rect.x; y = rect.y;
 		w = rect.width; h = rect.height;
 	}
-	Rect getRect() const {
-		return Rect(x, y, w, h);
+	cv::Rect getRect() const {
+		return cv::Rect(x, y, w, h);
 	}
 };
 
@@ -39,7 +42,7 @@ public:
 	// 目标跟踪算法
 	enum Algo {
 		FERNS, BOOSTING, KCF, TLD,
-		MEDIANFLOW, GOTURN
+		MEDIANFLOW, GOTURN, STRUCK
 	};
 
 	Algo algo; // 目标跟踪算法
@@ -47,7 +50,7 @@ public:
 	ObjTrackParam(int x = 0, int y = 0, int w = 0, int h = 0,
 		Algo algo = FERNS, Scalar color = Scalar::all(255)) :
 		RectParam(x, y, w, h, color), algo(algo) {}
-	ObjTrackParam(Rect rect,
+	ObjTrackParam(cv::Rect rect,
 		Algo algo = FERNS, Scalar color = Scalar::all(255)) :
 		RectParam(x, y, w, h, color), algo(algo) {}
 	ObjTrackParam(Algo algo = KCF) : algo(algo) {}
@@ -68,7 +71,7 @@ public:
 		Algo algo = FERNS, ADType adType = None,
 		Scalar color = Scalar::all(255)) :
 		ObjTrackParam(x, y, w, h, algo, color), adType(adType) {}
-	ObjDetTrackParam(Rect rect,
+	ObjDetTrackParam(cv::Rect rect,
 		Algo algo = FERNS, ADType adType = None,
 		Scalar color = Scalar::all(255)) :
 		ObjTrackParam(rect, algo, color), adType(adType) {}
@@ -127,9 +130,12 @@ public:
 	static void doObjTrack(const Mat &data1, const Mat &data2,
 		Mat &out1, Mat &out2, ProcessParam* _param = NULL);
 
-	// 目标跟踪（返回Rect用于多用途）
-	static Rect2d doObjTrack(const Mat &data, 
-		Ptr<Tracker> &tracker, bool &newDet, ObjTrackParam* param = NULL);
+	// 目标跟踪（返回cv::Rect用于多用途）
+	static Rect2d doObjTrack(const Mat &data,
+		Ptr<cv::Tracker> &tracker, bool &newDet, ObjTrackParam* param = NULL);
+
+	// 目标跟踪（STRUCK跟踪，返回cv::Rect用于多用途）
+	static Rect2d doObjTrack(const Mat &data, ::Tracker &tracker);
 
 	// 目标检测及跟踪（视频）
 	static const int DetDuration; // 检测间隔帧数
@@ -154,7 +160,7 @@ public:
 private:
 	// 人脸检测
 	static const string FaceDetPath; // 模型路径
-	static Rect _faceDet(const Mat &data);
+	static cv::Rect _faceDet(const Mat &data);
 
 	// FERNS 跟踪
 	static void _FERNSTrack(const Mat &data1, const Mat &data2,
@@ -162,18 +168,23 @@ private:
 	static void _FERNSTrack(const Mat &data1, const Mat &data2,
 		Mat &out, ObjDetTrackParam* param = NULL);
 
+	// STRUCK 跟踪
+	static void _STRUCKTrack(const Mat &data1, const Mat &data2,
+		Mat &out1, Mat &out2, ObjDetTrackParam* param = NULL);
+	static cv::Rect _STRUCKTrack(::Tracker &tracker, const Mat &frame);
+
 	// 使用 opencv 跟踪器进行目标跟踪
 	static void _trackerTrack(const Mat &data1, const Mat &data2,
 		Mat &out1, Mat &out2, ObjDetTrackParam* param = NULL);
 	static bool _trackerTrack(const Mat &data1, const Mat &data2,
 		ObjTrackParam::Algo algo, Rect2d& rect);
 
-	static bool _trackerTrack(Ptr<Tracker> &tracker, bool &newDet,
+	static bool _trackerTrack(Ptr<cv::Tracker> &tracker, bool &newDet,
 		const Mat &frame, Mat &out, ObjDetTrackParam* param);
-	static bool _trackerTrack(Ptr<Tracker> &tracker, bool &newDet,
+	static bool _trackerTrack(Ptr<cv::Tracker> &tracker, bool &newDet,
 		const Mat &frame, ObjTrackParam::Algo algo, Rect2d& rect);
 
-	static Ptr<Tracker> _getTracker(ObjTrackParam::Algo algo);
+	static Ptr<cv::Tracker> _getTracker(ObjTrackParam::Algo algo);
 
 	/*-- 特征检测 --*/
     static Mat _featureDectect(Ptr<Feature2D> algo,
