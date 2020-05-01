@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
 #include "ImageProcess.h"
 #include "QTCVUtils.h"

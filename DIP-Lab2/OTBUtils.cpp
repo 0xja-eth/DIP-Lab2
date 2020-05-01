@@ -234,33 +234,34 @@ void OTBUtils::__runSTRUCKDetect(Rect2d* &rects, double* &dists, double* &oss,
 }
 
 Rect OTBUtils::_initRect(Rect orig, int rect_type){
+    int x = frames[0].rows; int y = frames[0].cols;
     switch(rect_type){
         case 0:
             return orig;
         case 1:
-            return Rect(orig.x, orig.y-orig.height*0.1, orig.width, orig.height);
+            return Rect(orig.x, max(int(orig.y-orig.height*0.1), int(orig.height/2)), orig.width, orig.height);
         case 2:
-            return Rect(orig.x+orig.width*0.07, orig.y-orig.height*0.07, orig.width, orig.height);
+            return Rect(min(int(orig.x+orig.width*0.07), int(x-orig.width/2)), max(int(orig.y-orig.height*0.07),int(orig.height/2)), orig.width, orig.height);
         case 3:
-            return Rect(orig.x+orig.width*0.1, orig.y, orig.width, orig.height);
+            return Rect(min(int(orig.x+orig.width*0.1), int(x-orig.width/2)), orig.y, orig.width, orig.height);
         case 4:
-            return Rect(orig.x+orig.width*0.07, orig.y+orig.height*0.07, orig.width, orig.height);
+            return Rect(min(int(orig.x+orig.width*0.07),int(x-orig.width/2)), min(int(orig.y+orig.height*0.07),int(y-orig.height/2)), orig.width, orig.height);
         case 5:
-            return Rect(orig.x, orig.y+orig.height*0.1, orig.width, orig.height);
+            return Rect(orig.x, min(int(orig.y+orig.height*0.1), int(y-orig.height/2)), orig.width, orig.height);
         case 6:
-            return Rect(orig.x-orig.width*0.07, orig.y+orig.height*0.07, orig.width, orig.height);
+            return Rect(max(int(orig.x-orig.width*0.07), int(orig.width/2)), min(int(orig.y+orig.height*0.07),int(y-orig.height/2)), orig.width, orig.height);
         case 7:
-            return Rect(orig.x-orig.width*0.1, orig.y, orig.width, orig.height);
+            return Rect(max(int(orig.x-orig.width*0.1),int(orig.width/2)), orig.y, orig.width, orig.height);
         case 8:
-            return Rect(orig.x-orig.width*0.07, orig.y-orig.height*0.07, orig.width, orig.height);
+            return Rect(max(int(orig.x-orig.width*0.07),int(orig.width/2)), max(int(orig.y-orig.height*0.07),int(orig.height/2)), orig.width, orig.height);
         case 9:
             return Rect(orig.x, orig.y, orig.width*0.8, orig.height*0.8);
         case 10:
             return Rect(orig.x, orig.y, orig.width*0.9, orig.height*0.9);
         case 11:
-            return Rect(orig.x, orig.y, orig.width*1.1, orig.height*1.1);
+            return Rect(min(orig.x,int(x-orig.width*1.1/2)), min(orig.y,int(y-orig.height*1.1/2)), orig.width*1.1, orig.height*1.1);
         default:
-            return Rect(orig.x, orig.y, orig.width*1.2, orig.height*1.2);
+            return Rect(min(orig.x,int(x-orig.width*1.2/2)), min(orig.y,int(y-orig.height*1.2/2)), orig.width*1.2, orig.height*1.2);
     }
     
     return orig;
