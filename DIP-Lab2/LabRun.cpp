@@ -531,10 +531,32 @@ bool LabRun::otb_lab_sre(string otb_path){
         LOG("- 数据后处理");
         otb_after_sre(filepath+"/BOOSTING.csv", filepath+"/BOOSTING-after.csv");
         
+        //TLD
+        ofstream optTLD;
+        optTLD.open(filepath+"/TLD.csv");
+        LOG("d) TLD");
+        for(int s=0; s<13; s++){
+            optTLD<<"#"<<endl;
+                
+            start = static_cast<double>(getTickCount());
+            ObjTrackParam trackparamTLD(ObjTrackParam::TLD);
+            OTBUtils::run(&trackparamTLD, optTLD, 0, s);
+        
+            end = static_cast<double>(getTickCount());
+            run_time = (end - start) / getTickFrequency();
+            LOG("空间变化："+to_string(s)+" | 用时："+to_string(run_time));
+        }
+            
+        optTLD<<"##"<<endl;
+            
+        optTLD.close();
+        LOG("- 数据后处理");
+        otb_after_sre(filepath+"/TLD.csv", filepath+"/TLD-after.csv");
+
         //MEDIANFLOW
         ofstream optMEDIANFLOW;
         optMEDIANFLOW.open(filepath+"/MEDIANFLOW.csv");
-        LOG("d) MEDIANFLOW");
+        LOG("e) MEDIANFLOW");
         for(int s=0; s<13; s++){
             optMEDIANFLOW<<"#"<<endl;
                 
@@ -556,7 +578,7 @@ bool LabRun::otb_lab_sre(string otb_path){
         //GOTURN
         /*ofstream optGOTURN;
         optGOTURN.open(filepath+"/GOTURN.csv");
-        LOG("d) GOTURN");
+        LOG("f) GOTURN");
         for(int s=0; s<13; s++){
             optGOTURN<<"#"<<endl;
                 
