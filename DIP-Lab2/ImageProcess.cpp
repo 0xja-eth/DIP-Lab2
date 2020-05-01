@@ -21,7 +21,7 @@ Mat ImageProcess::drawRect(const Mat &data, ProcessParam* _param /*= NULL*/) {
 	auto param = (RectParam*)_param;
 
 	Mat out = data.clone();
-	Rect rect = param->getRect();
+	cv::Rect rect = param->getRect();
 	
 	if (!rect.empty()) rectangle(out, rect, param->color);
 
@@ -32,7 +32,7 @@ Mat ImageProcess::doObjDet(const Mat &data, ProcessParam* _param /*= NULL*/) {
 	if (_param == NULL) return data;
 	auto param = (ObjDetTrackParam*)_param;
 
-	Rect rect = param->getRect();
+	cv::Rect rect = param->getRect();
 
 	switch (param->adType) {
 	case ObjDetTrackParam::Face:
@@ -52,19 +52,25 @@ void ImageProcess::doObjTrack(const Mat &data1, const Mat &data2,
 	auto param = (ObjDetTrackParam*)_param;
 
 	switch (param->algo) {
-	case ObjDetTrackParam::FERNS: 
+	case ObjDetTrackParam::FERNS:
 		_FERNSTrack(data1, data2, out1, out2, param); break;
+	case ObjDetTrackParam::STRUCK:
+		_STRUCKTrack(data1, data2, out1, out2, param); break;
 	default: 
 		_trackerTrack(data1, data2, out1, out2, param); break;
 	}
 }
 
 Rect2d ImageProcess::doObjTrack(const Mat &data,
-	Ptr<Tracker> &tracker, bool &newDet, ObjTrackParam* param) {
+	Ptr<cv::Tracker> &tracker, bool &newDet, ObjTrackParam* param) {
 	Rect2d rect = param->getRect();
 	newDet = !_trackerTrack(tracker, newDet, data, param->algo, rect);
 	param->setRect(rect);
 	return rect;
+}
+
+Rect2d ImageProcess::doObjTrack(const Mat &data, ::Tracker &tracker) {
+	return _STRUCKTrack(tracker, data);
 }
 
 const int ImageProcess::DetDuration = 60;
@@ -82,7 +88,7 @@ void ImageProcess::doObjDetTrack(const Mat* inVideo, long inLen,
 	bool auto_ = param->adType != ObjDetTrackParam::None; // 是否自动监测
 	int duration = 0;
 
-	Ptr<Tracker> tracker = NULL;
+	Ptr<cv::Tracker> tracker = NULL;
 
 	// 每帧处理
 	for (int i = 0; i < inLen; ++i, ++duration) {
@@ -154,7 +160,7 @@ Mat ImageProcess::doImgCorr(const Mat &data1, ProcessParam* _param /*= NULL*/) {
 	Mat RatationedImg;
 
 	vector<vector<Point> > contours;
-	vector<Rect> boundRect(contours.size());
+	vector<cv::Rect> boundRect(contours.size());
 	//注意第5个参数为CV_RETR_EXTERNAL，只检索外框  
 	findContours(binImg, contours, RETR_EXTERNAL, CHAIN_APPROX_NONE); //找轮廓
 	for (int i = 0; i < contours.size(); i++) {
@@ -216,7 +222,7 @@ Mat ImageProcess::doImgCorr(const Mat &data1, ProcessParam* _param /*= NULL*/) {
 
 	for (int j = 0; j < contours2.size(); j++) {
 		//这时候其实就是一个长方形了，所以获取rect  
-		Rect rect = boundingRect(Mat(contours2[j]));
+		cv::Rect rect = boundingRect(Mat(contours2[j]));
 		//面积太小的轮廓直接pass,通过设置过滤面积大小，可以保证只拿到外框
 		if (rect.area() < 600) continue;
 		Mat dstImg = RatationedImg(rect);
@@ -261,16 +267,16 @@ void ImageProcess::doVideoFeatDet(const Mat *inVideo, long inLen,
 
 const std::string ImageProcess::FaceDetPath = "./xml/haarcascade_frontalface_alt.xml";
 
-Rect ImageProcess::_faceDet(const Mat &data) {
+cv::Rect ImageProcess::_faceDet(const Mat &data) {
 	// 加载
 	static CascadeClassifier cascade;
 	if (cascade.empty()) 
 		// 加载训练好的 人脸检测器（.xml）
 		if (!cascade.load(FaceDetPath)) LOG("人脸检测器加载失败");
 
-	if (cascade.empty()) return Rect(0, 0, 0, 0);
+	if (cascade.empty()) return cv::Rect(0, 0, 0, 0);
 	
-	vector<Rect> faces(0);
+	vector<cv::Rect> faces(0);
 	cascade.detectMultiScale(data, faces, 1.1, 2, 0, Size(30, 30));
 
 	if (faces.size() > 0) {
@@ -279,13 +285,13 @@ Rect ImageProcess::_faceDet(const Mat &data) {
 	}
 	
 	LOG("未检测到人脸");
-	return Rect(0, 0, 0, 0);
+	return cv::Rect(0, 0, 0, 0);
 }
 
 void ImageProcess::_FERNSTrack(const Mat &data1, const Mat &data2, 
 	Mat &out1, Mat &out2, ObjDetTrackParam* param /*= NULL*/) {
 
-	Rect tmplBB = param->getRect();
+	cv::Rect tmplBB = param->getRect();
 	rectangle(out1, tmplBB, param->color);
 
 	_FERNSTrack(data1, data2, out2, param);
@@ -330,6 +336,51 @@ void ImageProcess::_FERNSTrack(const Mat &data1, const Mat &data2, Mat &out,
 	param->setRect(avgRect);
 }
 
+void ImageProcess::_STRUCKTrack(const Mat &data1, const Mat &data2, 
+	Mat &out1, Mat &out2, ObjDetTrackParam* param /*= NULL*/) {
+	Mat scaledFrame;
+	Config conf; ::Tracker tracker(conf);
+
+	auto initPos = param->getRect();
+	rectangle(out1, initPos, param->color);
+
+	float scaleW = (float)conf.frameWidth / data1.cols;
+	float scaleH = (float)conf.frameHeight / data1.rows;
+
+	resize(data1, scaledFrame, Size(conf.frameWidth, conf.frameHeight));
+
+	FloatRect initBB = FloatRect(initPos.x*scaleW, initPos.y*scaleH, initPos.width*scaleW, initPos.height*scaleH);
+
+	tracker.Initialise(scaledFrame, initBB);
+
+	auto outRect = _STRUCKTrack(tracker, data2);
+	rectangle(out2, outRect, param->color);
+
+	param->setRect(outRect);
+}
+
+cv::Rect ImageProcess::_STRUCKTrack(::Tracker &tracker, const Mat &frame) {
+	auto conf = tracker.getConfig();
+
+	float scaleW = (float)conf.frameWidth / frame.cols;
+	float scaleH = (float)conf.frameHeight / frame.rows;
+
+	Mat scaledFrame;
+
+	resize(frame, scaledFrame, Size(conf.frameWidth, conf.frameHeight));
+
+	tracker.Track(scaledFrame);
+
+	const FloatRect& bb = tracker.GetBB();
+
+	float x = bb.XMin() / scaleW;
+	float y = bb.YMin() / scaleH;
+	float w = bb.Width() / scaleW;
+	float h = bb.Height() / scaleH;
+
+	return cv::Rect(x, y, w, h);
+}
+
 void ImageProcess::_trackerTrack(const Mat &data1, const Mat &data2, Mat &out1, Mat &out2, 
 	ObjDetTrackParam* param /*= NULL*/) {
 	Rect2d rect = param->getRect();
@@ -347,7 +398,7 @@ bool ImageProcess::_trackerTrack(const Mat &data1, const Mat &data2,
 	return tracker->update(data2, rect);
 }
 
-bool ImageProcess::_trackerTrack(Ptr<Tracker> &tracker, bool &newDet,
+bool ImageProcess::_trackerTrack(Ptr<cv::Tracker> &tracker, bool &newDet,
 	const Mat &frame, Mat &out, ObjDetTrackParam* param) {
 
 	Rect2d rect = param->getRect();
@@ -358,7 +409,7 @@ bool ImageProcess::_trackerTrack(Ptr<Tracker> &tracker, bool &newDet,
 	return succ;
 }
 
-bool ImageProcess::_trackerTrack(Ptr<Tracker> &tracker, bool &newDet, 
+bool ImageProcess::_trackerTrack(Ptr<cv::Tracker> &tracker, bool &newDet, 
 	const Mat &frame, ObjTrackParam::Algo algo, Rect2d& rect) {
 	if (newDet) { // 重新加载跟踪器
 		tracker = _getTracker(algo);
@@ -367,7 +418,7 @@ bool ImageProcess::_trackerTrack(Ptr<Tracker> &tracker, bool &newDet,
 	} else return (!tracker.empty() && tracker->update(frame, rect));
 }
 
-Ptr<Tracker> ImageProcess::_getTracker(ObjTrackParam::Algo algo) {
+Ptr<cv::Tracker> ImageProcess::_getTracker(ObjTrackParam::Algo algo) {
 	switch (algo) {
 	case ObjTrackParam::BOOSTING: return TrackerBoosting::create();
 	//case ObjDetTrackParam::MIL: return TrackerMIL::create();
@@ -918,11 +969,11 @@ Mat ImageProcess::comMatR(const Mat &Matrix1, const Mat &Matrix2, ProcessParam* 
 
 	Mat dst(dst_height, dst_width, CV_8UC3);
 	dst.setTo(0);
-	/*imageTransform1.copyTo(dst(Rect(dst_width-imageTransform1.cols, dst_height-imageTransform1.rows,
+	/*imageTransform1.copyTo(dst(cv::Rect(dst_width-imageTransform1.cols, dst_height-imageTransform1.rows,
 		imageTransform1.cols, imageTransform1.rows)));*/
-	imageTransform1.copyTo(dst(Rect(0, 0,
+	imageTransform1.copyTo(dst(cv::Rect(0, 0,
 		imageTransform1.cols, imageTransform1.rows)));
-	Matrix1.copyTo(dst(Rect(0, 0, Matrix1.cols, Matrix1.rows)));
+	Matrix1.copyTo(dst(cv::Rect(0, 0, Matrix1.cols, Matrix1.rows)));
 
 	OptimizeSeam(Matrix1, imageTransform1, dst);
 

@@ -48,7 +48,7 @@
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <NestedTypes>
-      <Typedef Name="QTCVUtils::ProcessFuncType0" Collapsed="true">
+      <Typedef Name="QTCVUtils::ProcessFuncType1" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>QTCVUtils.h</NewMemberFileName>
         </TypeIdentifier>
@@ -68,14 +68,14 @@
           <NewMemberFileName>QTCVUtils.h</NewMemberFileName>
         </TypeIdentifier>
       </Typedef>
-      <Typedef Name="QTCVUtils::ProcessFuncType1" Collapsed="true">
+      <Typedef Name="QTCVUtils::ProcessFuncType0" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>QTCVUtils.h</NewMemberFileName>
         </TypeIdentifier>
       </Typedef>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAgAAgAAAAAAgAAAAAAAQAIAAAAAAgAAAIIAAEAEQAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAIAAAAAAAAAAIIAAEAEQAA=</HashCode>
       <FileName>QTCVUtils.h</FileName>
     </TypeIdentifier>
   </Class>

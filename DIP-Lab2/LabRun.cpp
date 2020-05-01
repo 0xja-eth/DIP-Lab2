@@ -59,6 +59,21 @@ bool LabRun::otb_lab(string otb_path) {
 		optKCF.close();
 
 		// 下一个方法
+
+		// STRUCK
+		ofstream optSTRUCK;
+		optSTRUCK.open(filepath + "STRUCK.csv");
+		optSTRUCK << "Overall" << endl;
+		optSTRUCK << "Frame" << "," << "Distance" << "," << "OverlapSpace" << "," << "Times(s)" << endl;
+
+		start = static_cast<double>(getTickCount());
+		ObjTrackParam trackparamSTRUCK(ObjTrackParam::STRUCK);
+		OTBUtils::run(&trackparamSTRUCK, optSTRUCK);
+		end = static_cast<double>(getTickCount());
+		run_time = (end - start) / getTickFrequency();
+		LOG("b) STRUCK, Cost Time" + to_string(run_time));
+
+		optSTRUCK.close();
 	}
 
 	return true;
@@ -110,6 +125,30 @@ bool LabRun::otb_lab_tre(string otb_path) {
 		optKCF.close();
 		LOG("After Process");
 		otb_after_tre(filepath + "/KCF.csv", filepath + "/KCF-after.csv");
+
+		// STRUCK
+		ofstream optSTRUCK;
+		optSTRUCK.open(filepath + "/STRUCK.csv");
+		LOG("b) KCF");
+		for (int s = 0; s < 20; s++) {
+			//optKCF<<"Overall"<<endl;
+			//optKCF<<"Frame"<<","<<"Distance"<<","<<"OverlapSpace"<<","<<"Times(s)"<<endl;
+			optSTRUCK << "#" << endl;
+
+			start = static_cast<double>(getTickCount());
+			ObjTrackParam trackparamSTRUCK(ObjTrackParam::STRUCK);
+			OTBUtils::run(&trackparamSTRUCK, optSTRUCK, s);
+
+			end = static_cast<double>(getTickCount());
+			run_time = (end - start) / getTickFrequency();
+			LOG("Slide: " << s << "  Time: " << (run_time));
+		}
+
+		optSTRUCK << "##" << endl;
+
+		optSTRUCK.close();
+		LOG("After Process");
+		otb_after_tre(filepath + "/STRUCK.csv", filepath + "/STRUCK-after.csv");
 	}
 
 

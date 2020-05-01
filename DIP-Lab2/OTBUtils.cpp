@@ -10,22 +10,33 @@ const double OTBUtils::MaxOSTreshold = 1;
 
 const double OTBUtils::DeltaTreshold = 0.01;
 
+bool OTBUtils::showImg = false;
+
+std::string OTBUtils::format = "%04d.jpg";
+
 std::string OTBUtils::path = "";
 
 Mat* OTBUtils::frames = NULL;
 
-vector<Rect> OTBUtils::truthRects;
+vector<cv::Rect> OTBUtils::truthRects;
 
-void OTBUtils::openDataset(string path) {
+void OTBUtils::openDataset(string path, string format) {
 	OTBUtils::path = path;
+	OTBUtils::format = format;
+
 	auto rectFile = path + "/" + RectSpecFile;
 	auto imgDir = path + "/" + ImagesDir;
 
 	_loadRects(rectFile); _loadFrames(imgDir);
 }
 
-void OTBUtils::run(ProcessParam *param_, ofstream &opt, int frames_num) {
+void OTBUtils::run(ProcessParam *param_) {
 	auto param = (ObjTrackParam*)param_;
+	ofstream opt(path + "/CustomOTBResult.csv");
+	run(param, opt);
+}
+
+void OTBUtils::run(ObjTrackParam *param, ofstream &opt, int frames_num) {
 	long start_frame = frames_num*truthRects.size()/20;
 
 	// ���?��ȡÿ֡������
@@ -79,20 +90,32 @@ void OTBUtils::_saveToFile(OutTable out, ofstream &opt) {
 	}
 }
 
-void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrackParam *param, ofstream &opt, long start_frame) {
-	double start, end, run_time;
-
-	bool newDet = true;
-	Ptr<Tracker> tracker = NULL;
+void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss,
+	ObjTrackParam *param, ofstream &opt, long start_frame) {
 
 	long len = truthRects.size() - start_frame;
 	rects = new Rect2d[len];
 	dists = new double[len];
 	oss = new double[len];
 
+	if (param->algo == ObjTrackParam::STRUCK)
+		__runSTRUCKDetect(rects, dists, oss, param, opt, start_frame);
+	else
+		__runStdDetect(rects, dists, oss, param, opt, start_frame);
+}
+
+void OTBUtils::__runStdDetect(Rect2d* &rects, double* &dists, double* &oss,
+	ObjTrackParam *param, ofstream &opt, long start_frame) {
+	double start, end, run_time;
+
+	bool newDet = true;
+	Ptr<cv::Tracker> tracker = NULL;
+
+	long len = truthRects.size() - start_frame;
+
 	for (int i = 0; i < len; ++i) {
-		start = static_cast<double>(getTickCount());
 		ImageProcess::progress = i * 1.0 / len * 0.9;
+		start = static_cast<double>(getTickCount());
 
 		auto truth = truthRects[i+start_frame];
 		auto frame = frames[i+start_frame];
@@ -109,9 +132,6 @@ void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrack
 		if (newDet) det = Rect2d();
 		rects[i] = det;
 
-		// չʾ
-		//Mat drawFrame = frame.clone();
-
 		double dist = dists[i] = __calcDistance(det, truth);
 		double os = oss[i] = __calcOS(det, truth);
 
@@ -120,7 +140,12 @@ void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrack
 
 		opt<<i+start_frame+1<<","<<dist<<","<<os<<","<<run_time<<endl;
 
-		/*char showText[256];
+		// չʾ
+		if (!showImg) continue;
+
+		Mat drawFrame = frame.clone();
+
+		char showText[256];
 
 		sprintf(showText, "Dist: %.4f, OS: %.4f", dist, os);
 
@@ -132,7 +157,67 @@ void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrack
 
 		imshow("OTBTest", drawFrame);
 
-		waitKey(1);*/
+		waitKey(1);
+	}
+}
+
+void OTBUtils::__runSTRUCKDetect(Rect2d* &rects, double* &dists, double* &oss, 
+	ObjTrackParam *param, ofstream &opt, long start_frame) {
+	double start, end, run_time;
+
+	Config conf; ::Tracker tracker(conf);
+
+	long len = truthRects.size() - start_frame;
+
+	for (int i = 0; i < len; ++i) {
+		ImageProcess::progress = i * 1.0 / len * 0.9;
+		start = static_cast<double>(getTickCount());
+
+		auto truth = truthRects[i + start_frame];
+		auto frame = frames[i + start_frame];
+
+		if (i == 0) {
+			Mat scaledFrame;
+
+			float scaleW = (float)conf.frameWidth / frame.cols;
+			float scaleH = (float)conf.frameHeight / frame.rows;
+
+			resize(frame, scaledFrame, Size(conf.frameWidth, conf.frameHeight));
+			FloatRect initBB = FloatRect(truth.x*scaleW, truth.y*scaleH,
+				truth.width*scaleW, truth.height*scaleH);
+			tracker.Initialise(scaledFrame, initBB);
+
+			continue;
+		}
+
+		auto det = rects[i] = ImageProcess::doObjTrack(frame, tracker);
+
+		double dist = dists[i] = __calcDistance(det, truth);
+		double os = oss[i] = __calcOS(det, truth);
+
+		end = static_cast<double>(getTickCount());
+		run_time = (end - start) / getTickFrequency();
+
+		opt << i + start_frame + 1 << "," << dist << "," << os << "," << run_time << endl;
+
+		// չʾ
+		if (!showImg) continue;
+
+		Mat drawFrame = frame.clone();
+
+		char showText[256];
+
+		sprintf(showText, "Dist: %.4f, OS: %.4f", dist, os);
+
+		putText(drawFrame, showText, Point(20, 20),
+			FONT_HERSHEY_SIMPLEX, 0.75, Scalar(255, 255, 255), 2);
+
+		rectangle(drawFrame, det, param->color, 2);
+		rectangle(drawFrame, truth, Scalar(255, 0, 0), 2);
+
+		imshow("OTBTest", drawFrame);
+
+		waitKey(1);
 	}
 }
 
@@ -169,7 +254,7 @@ void OTBUtils::_loadRects(string filename) {
 	int x, y, w, h; char ch;
 	while (file >> x) {
 		file >> ch >> y; file >> ch >> w; file >> ch >> h;
-		truthRects.push_back(Rect(x, y, w, h));
+		truthRects.push_back(cv::Rect(x, y, w, h));
 	}
 }
 
@@ -185,7 +270,7 @@ void OTBUtils::_loadFrames(string path) {
 		ImageProcess::progress = i * 1.0 / len;
 
 		char name_[12];
-		sprintf(name_, "%04d.jpg", i+1);
+		sprintf(name_, format.c_str(), i+1);
 		string filename(name_);
 		filename = path + filename;
 
