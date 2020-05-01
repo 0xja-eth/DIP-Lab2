@@ -24,13 +24,13 @@ void OTBUtils::openDataset(string path) {
 	_loadRects(rectFile); _loadFrames(imgDir);
 }
 
-void OTBUtils::run(ProcessParam *param_, ofstream &opt, int frames_num) {
+void OTBUtils::run(ProcessParam *param_, ofstream &opt, int frames_num, int rect_type) {
 	auto param = (ObjTrackParam*)param_;
 	long start_frame = frames_num*truthRects.size()/20;
 
 	// ���?��ȡÿ֡������
 	Rect2d *detRects; double *dists, *oss;
-	_runDetect(detRects, dists, oss, param, opt, start_frame);
+	_runDetect(detRects, dists, oss, param, opt, start_frame, rect_type);
 
 	OutTable distRates, osRates;
 	long len = truthRects.size() - start_frame;
@@ -79,7 +79,7 @@ void OTBUtils::_saveToFile(OutTable out, ofstream &opt) {
 	}
 }
 
-void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrackParam *param, ofstream &opt, long start_frame) {
+void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type) {
 	double start, end, run_time;
 
 	bool newDet = true;
@@ -98,7 +98,7 @@ void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrack
 		auto frame = frames[i+start_frame];
 
 		if (i == 0) {
-			param->setRect(rects[i] = truth);
+			param->setRect(rects[i] = _initRect(truth, rect_type)));
 			ImageProcess::doObjTrack(frame, tracker, newDet, param);
 			continue;
 		}
@@ -134,6 +134,39 @@ void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrack
 
 		waitKey(1);*/
 	}
+}
+
+Rect OTBUtils::_initRect(Rect orig, int rect_type){
+    switch(rect_type){
+        case 0:
+            return orig;
+        case 1:
+            return Rect(orig.x, orig.y-orig.height*0.1, orig.width, orig.height);
+        case 2:
+            return Rect(orig.x+orig.width*0.07, orig.y-orig.height*0.07, orig.width, orig.height);
+        case 3:
+            return Rect(orig.x+orig.width*0.1, orig.y, orig.width, orig.height);
+        case 4:
+            return Rect(orig.x+orig.width*0.07, orig.y+orig.height*0.07, orig.width, orig.height);
+        case 5:
+            return Rect(orig.x, orig.y+orig.height*0.1, orig.width, orig.height);
+        case 6:
+            return Rect(orig.x-orig.width*0.07, orig.y+orig.height*0.07, orig.width, orig.height);
+        case 7:
+            return Rect(orig.x-orig.width*0.1, orig.y, orig.width, orig.height);
+        case 8:
+            return Rect(orig.x-orig.width*0.07, orig.y-orig.height*0.07, orig.width, orig.height);
+        case 9:
+            return Rect(orig.x, orig.y, orig.width*0.8, orig.height*0.8);
+        case 10:
+            return Rect(orig.x, orig.y, orig.width*0.9, orig.height*0.9);
+        case 11:
+            return Rect(orig.x, orig.y, orig.width*1.1, orig.height*1.1);
+        default:
+            return Rect(orig.x, orig.y, orig.width*1.2, orig.height*1.2);
+    }
+    
+    return orig;
 }
 
 //void OTBUtils::_calcEvaluation(Rect2d* rects, double* &dists, double* &oss) {

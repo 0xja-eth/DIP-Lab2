@@ -18,6 +18,10 @@ public:
     static bool otb_lab_tre(string otb_path);
     static bool otb_after_tre(string inpath, string outpath);//后处理
     
+    //实验三：otb_SRE 空间鲁棒性
+    static bool otb_lab_sre(string otb_path);
+    static bool otb_after_sre(string inpath, string outpath);//后处理
+    
     //结束
     static bool labClose();
 

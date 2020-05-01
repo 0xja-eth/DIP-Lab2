@@ -13,6 +13,8 @@ int main(int argc, const char * argv[]) {
     LOG("实验二：OTB的TRE，时间鲁棒性测试")
     LabRun::otb_lab_tre("/Users/jireh/Documents/Project/2020/DIP-Lab3-Lab/Dataset/OTBtest");
     
+    LOG("实验三：OTB的SRE，空间鲁棒性");
+    LabRun::otb_lab_sre("/Users/jireh/Documents/Project/2020/DIP-Lab3-Lab/Dataset/OTBtest");
     return 0;
 }
 */
