@@ -3,29 +3,38 @@
 
 #include "LabRun.hpp"
 
-string LabRun::srcPath;
+string LabRun::outPath;
+
+string LabRun::otbPath;
 
 int LabRun::maxNum = 0;
 
 //ofstream LabRun::opt1;
 
-bool LabRun::labIn(string src_path) {
-	srcPath = src_path;
+bool LabRun::labIn(string outPath) {
+	LabRun::outPath = outPath;
 
-	FilesProcessUtils::createDir(srcPath + "/OTB_OPE");
-	FilesProcessUtils::createDir(srcPath + "/OTB_TRE");
+	FilesProcessUtils::createDir(outPath + "/OTB_OPE");
+	FilesProcessUtils::createDir(outPath + "/OTB_TRE");
 	//opt1.open(srcPath + "/otb_lab.csv");
 	// opt1 << "编号" << "," << "数据名" << "," << "KCF(用时/秒)" << endl;
 
 	return true;
 }
 
-bool LabRun::otb_lab(string otb_path) {
+void LabRun::setOtbPath(string otbPath) {
+	LabRun::otbPath = otbPath;
+}
+
+void LabRun::otbLab() {
+	otbLab(otbPath);
+}
+bool LabRun::otbLab(string otbPath) {
 	double start, end, run_time; // 记录用时
 
 	// 获取目录下全部文件夹名称
 	LOG("[Get Directory Info]");
-	vector<string> files = FilesProcessUtils::getFiles(otb_path);
+	vector<string> files = FilesProcessUtils::getFiles(otbPath);
 
 	// 循环处理各个数据
 	LOG("[Start Processing]");
@@ -36,11 +45,11 @@ bool LabRun::otb_lab(string otb_path) {
 
 	for (int i = 0; i < count; i++) {
 		LOG(to_string(i) + ". " + files[i]);
-		filepath = otb_path + "/OTB_LAB/" + files[i] + "/";
+		filepath = otbPath + "/OTB_LAB/" + files[i] + "/";
 		FilesProcessUtils::createDir(filepath);
 
 		// 读取数据
-		OTBUtils::openDataset(otb_path + "/" + files[i]);
+		OTBUtils::openDataset(otbPath + "/" + files[i]);
 		LOG("a) Read data");
 
 		// KCF
@@ -58,8 +67,8 @@ bool LabRun::otb_lab(string otb_path) {
 
 		optKCF.close();
 
-		//BOOSTING
 		/*
+		//BOOSTING
 		ofstream optBOOSTING;
 		optBOOSTING.open(filepath+"/BOOSTING.csv");
 		optBOOSTING<<"Overall"<<endl;
@@ -89,6 +98,7 @@ bool LabRun::otb_lab(string otb_path) {
 		LOG("d) TLD, Cost Time" + to_string(run_time));
 
 		optTLD.close();
+
 		//
 		////MEDIANFLOW
 		//ofstream optMEDIANFLOW;
@@ -106,6 +116,7 @@ bool LabRun::otb_lab(string otb_path) {
 		//optMEDIANFLOW.close();
 		//
 		//GOTURN
+
 		ofstream optGOTURN;
 		optGOTURN.open(filepath + "/GOTURN.csv");
 		optGOTURN << "Overall" << endl;
@@ -139,12 +150,15 @@ bool LabRun::otb_lab(string otb_path) {
 	return true;
 }
 
-bool LabRun::otb_lab_tre(string otb_path) {
+void LabRun::otbLabTRE() {
+	otbLabTRE(otbPath);
+}
+bool LabRun::otbLabTRE(string otbPath) {
 	double start, end, run_time; //记录用时
 
 	//获取目录下全部文件夹名称
 	LOG("[Get Directory Info]");
-	vector<string> files = FilesProcessUtils::getFiles(otb_path);
+	vector<string> files = FilesProcessUtils::getFiles(otbPath);
 
 	//循环处理各个数据
 	LOG("[Start Processing]");
@@ -155,11 +169,11 @@ bool LabRun::otb_lab_tre(string otb_path) {
 
 	for (int i = 0; i < count; i++) {
 		LOG(to_string(i) + ". " + files[i]);
-		filepath = srcPath + "/OTB_TRE/" + files[i];
+		filepath = outPath + "/OTB_TRE/" + files[i];
 		FilesProcessUtils::createDir(filepath);
 
 		//读取数据
-		OTBUtils::openDataset(otb_path + "/" + files[i]);
+		OTBUtils::openDataset(otbPath + "/" + files[i]);
 		LOG("a) Reading Data");
 
 		//KCF
@@ -184,7 +198,8 @@ bool LabRun::otb_lab_tre(string otb_path) {
 
 		optKCF.close();
 		LOG("After Process");
-		otb_after_tre(filepath + "/KCF.csv", filepath + "/KCF-after.csv");
+		otbAfterTRE(filepath + "/KCF.csv", filepath + "/KCF-after.csv");
+
 		/*
 		//BOOSTING
 		ofstream optBOOSTING;
@@ -208,6 +223,7 @@ bool LabRun::otb_lab_tre(string otb_path) {
 		LOG("- 数据后处理");
 		otb_after_tre(filepath+"/BOOSTING.csv", filepath+"/BOOSTING-after.csv");
 		*/
+
 		//TLD
 		ofstream optTLD;
 		optTLD.open(filepath + "/TLD.csv");
@@ -228,7 +244,7 @@ bool LabRun::otb_lab_tre(string otb_path) {
 
 		optTLD.close();
 		LOG("After Process");
-		otb_after_tre(filepath + "/TLD.csv", filepath + "/TLD-after.csv");
+		otbAfterTRE(filepath + "/TLD.csv", filepath + "/TLD-after.csv");
 
 		/*
 		//MEDIANFLOW
@@ -274,7 +290,7 @@ bool LabRun::otb_lab_tre(string otb_path) {
 
 		optGOTURN.close();
 		LOG("After Process");
-		otb_after_tre(filepath + "/GOTURN.csv", filepath + "/GOTURN-after.csv");
+		otbAfterTRE(filepath + "/GOTURN.csv", filepath + "/GOTURN-after.csv");
 
 		// STRUCK
 		ofstream optSTRUCK;
@@ -298,7 +314,7 @@ bool LabRun::otb_lab_tre(string otb_path) {
 
 		optSTRUCK.close();
 		LOG("After Process");
-		otb_after_tre(filepath + "/STRUCK.csv", filepath + "/STRUCK-after.csv");
+		otbAfterTRE(filepath + "/STRUCK.csv", filepath + "/STRUCK-after.csv");
 
 	}
 
@@ -307,8 +323,8 @@ bool LabRun::otb_lab_tre(string otb_path) {
 	return true;
 }
 
-bool LabRun::otb_after_tre(string inpath, string outpath) {
-	ifstream in(inpath);
+bool LabRun::otbAfterTRE(string inPath, string outPath) {
+	ifstream in(inPath);
 
 	string str = ".";
 
@@ -427,7 +443,7 @@ bool LabRun::otb_after_tre(string inpath, string outpath) {
 	//cout<<"Distance"<<endl;
 
 	ofstream opt;
-	opt.open(outpath);
+	opt.open(outPath);
 
 	opt << "Distance" << endl;
 	opt << "Threshold" << ",";
@@ -465,12 +481,15 @@ bool LabRun::otb_after_tre(string inpath, string outpath) {
 	return true;
 }
 
-bool LabRun::otb_lab_sre(string otb_path) {
+void LabRun::otbLabSRE() {
+	otbLabSRE(otbPath);
+}
+bool LabRun::otbLabSRE(string otbPath) {
 	double start, end, run_time; //记录用时
 
 	//获取目录下全部文件夹名称
 	LOG("[Get Directory Info]");
-	vector<string> files = FilesProcessUtils::getFiles(otb_path);
+	vector<string> files = FilesProcessUtils::getFiles(otbPath);
 
 	//循环处理各个数据
 	LOG("[Start Processing]");
@@ -478,11 +497,11 @@ bool LabRun::otb_lab_sre(string otb_path) {
 	string filepath;
 	for (int i = 0; i < files.size(); i++) {
 		LOG(to_string(i) + ". " + files[i]);
-		filepath = srcPath + "/OTB_SRE/" + files[i];
+		filepath = outPath + "/OTB_SRE/" + files[i];
 		FilesProcessUtils::createDir(filepath);
 
 		//读取数据
-		OTBUtils::openDataset(otb_path + "/" + files[i]);
+		OTBUtils::openDataset(otbPath + "/" + files[i]);
 		LOG("a) Read Data");
 
 		//KCF
@@ -507,7 +526,7 @@ bool LabRun::otb_lab_sre(string otb_path) {
 
 		optKCF.close();
 		LOG("After Process");
-		otb_after_sre(filepath + "/KCF.csv", filepath + "/KCF-after.csv");
+		otbAfterSRE(filepath + "/KCF.csv", filepath + "/KCF-after.csv");
 
 		/*
 		//BOOSTING
@@ -553,7 +572,7 @@ bool LabRun::otb_lab_sre(string otb_path) {
 
 		optTLD.close();
 		LOG("After Process");
-		otb_after_sre(filepath + "/TLD.csv", filepath + "/TLD-after.csv");
+		otbAfterSRE(filepath + "/TLD.csv", filepath + "/TLD-after.csv");
 
 		/*
 		//MEDIANFLOW
@@ -599,7 +618,7 @@ bool LabRun::otb_lab_sre(string otb_path) {
 
 		optGOTURN.close();
 		LOG("After Process");
-		otb_after_sre(filepath + "/GOTURN.csv", filepath + "/GOTURN-after.csv");
+		otbAfterSRE(filepath + "/GOTURN.csv", filepath + "/GOTURN-after.csv");
 
 		// STRUCK
 		ofstream optSTRUCK;
@@ -623,15 +642,15 @@ bool LabRun::otb_lab_sre(string otb_path) {
 
 		optSTRUCK.close();
 		LOG("After Process");
-		otb_after_tre(filepath + "/STRUCK.csv", filepath + "/STRUCK-after.csv");
+		otbAfterTRE(filepath + "/STRUCK.csv", filepath + "/STRUCK-after.csv");
 
 	}
 
 	return true;
 }
 
-bool LabRun::otb_after_sre(string inpath, string outpath) {
-	ifstream in(inpath);
+bool LabRun::otbAfterSRE(string inPath, string outPath) {
+	ifstream in(inPath);
 
 	string str = ".";
 
@@ -769,7 +788,7 @@ bool LabRun::otb_after_sre(string inpath, string outpath) {
 	//cout<<"Distance"<<endl;
 
 	ofstream opt;
-	opt.open(outpath);
+	opt.open(outPath);
 
 	opt << "Distance" << endl;
 	opt << "Threshold" << "," << "Ratio(Ori)" << ",";
@@ -810,6 +829,7 @@ bool LabRun::otb_after_sre(string inpath, string outpath) {
 
 	return true;
 }
+
 /*vector<string> LabRun::getFiles(string path) {
 	vector<string> files;//存放文件名
 

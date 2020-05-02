@@ -125,9 +125,16 @@ public slots:
 
 	void setRecting() { recting = true; }
 	
-	void openDataset();
-	void runOTB();
+	void openOutDir();
+	void openDatasetDir();
+
 	void batRunOTB();
+	void batRunOTBTRE();
+	void batRunOTBSRE();
+
+	void openDataset();
+
+	void runOTB();
 
 	void onRectChanged();
 
