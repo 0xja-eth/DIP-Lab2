@@ -11,11 +11,12 @@
 #include "lib/STRUCK/Tracker.h"
 #include "lib/STRUCK/Config.h"
 
-static class OTBUtils {
+static class TestUtils {
 public:
 	static bool showImg;
 
-	static void openDataset(string path, string format = "%04d.jpg");
+	static void openOtbDataset(string path, string format = "%04d.jpg");
+	static void openVotDataset(string path, string format = "%08d.jpg");
 
 	static void run(ProcessParam *param_);
 	static void run(ObjTrackParam *param, ofstream &opt, int frames_num = 0, int rect_type = 0);
@@ -23,7 +24,9 @@ public:
 private:
 	typedef map<double, double> OutTable;
 
-	static const string RectSpecFile; // ����ָ���ļ���
+	static const string OtbRectSpecFile; // ����ָ���ļ���
+	static const string VotRectSpecFile; // ����ָ���ļ���
+
 	static const string ImagesDir; // ͼƬ�ļ���
 
 	static const double MaxDistanceTreshold;

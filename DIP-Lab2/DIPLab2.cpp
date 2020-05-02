@@ -6,7 +6,7 @@
 
 #include "DIPLab2.h"
 
-#include "OTBUtils.h"
+#include "TestUtils.h"
 #include "LabRun.hpp"
 
 DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
@@ -290,7 +290,7 @@ void DIPLab2::openOutDir() {
 	string pathStr = code->fromUnicode(path).data();
 
 	ui.outDir->setText(path);
-	LabRun::labIn(pathStr);
+	LabRun::labOtbIn(pathStr);
 }
 
 void DIPLab2::openDataset() {
@@ -305,7 +305,7 @@ void DIPLab2::openDataset() {
 
 	new std::thread([this, &pathStr, &formatStr]() {
 		//LOG(pathStr);
-		OTBUtils::openDataset(pathStr, formatStr);
+		TestUtils::openOtbDataset(pathStr, formatStr);
 	});
 }
 
@@ -490,7 +490,7 @@ void DIPLab2::doVideoObjDetTrack(ProcessParam* param) {
 }
 
 void DIPLab2::runOTB() {
-	OTBUtils::showImg = ui.showImg->isChecked();
+	TestUtils::showImg = ui.showImg->isChecked();
 	int algo_ = ui.otbAlgoSelect->currentIndex();
 
 	ObjTrackParam::Algo algo = ObjTrackParam::KCF;
@@ -504,23 +504,23 @@ void DIPLab2::runOTB() {
 
 	param = new ObjTrackParam(algo);
 
-	QTCVUtils::process(OTBUtils::run, param);
+	QTCVUtils::process(TestUtils::run, param);
 }
 
 void DIPLab2::batRunOTB() {
-	OTBUtils::showImg = ui.showImg->isChecked();
+	TestUtils::showImg = ui.showImg->isChecked();
 	LabRun::maxNum = ui.numInput->value();
 	QTCVUtils::process(LabRun::otbLab);
 }
 
 void DIPLab2::batRunOTBTRE() {
-	OTBUtils::showImg = ui.showImg->isChecked();
+	TestUtils::showImg = ui.showImg->isChecked();
 	LabRun::maxNum = ui.numInput->value();
 	QTCVUtils::process(LabRun::otbLabTRE);
 }
 
 void DIPLab2::batRunOTBSRE() {
-	OTBUtils::showImg = ui.showImg->isChecked();
+	TestUtils::showImg = ui.showImg->isChecked();
 	LabRun::maxNum = ui.numInput->value();
 	QTCVUtils::process(LabRun::otbLabSRE);
 }

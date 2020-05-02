@@ -1,42 +1,54 @@
-#include "OTBUtils.h"
+#include "TestUtils.h"
 
-const std::string OTBUtils::RectSpecFile = "groundtruth_rect.txt";
+const std::string TestUtils::OtbRectSpecFile = "groundtruth_rect.txt";
 
-const std::string OTBUtils::ImagesDir = "img/";
+const std::string TestUtils::VotRectSpecFile = "groundtruth.txt";
 
-const double OTBUtils::MaxDistanceTreshold = 50;
+const std::string TestUtils::ImagesDir = "img/";
 
-const double OTBUtils::MaxOSTreshold = 1;
+const double TestUtils::MaxDistanceTreshold = 50;
 
-const double OTBUtils::DeltaTreshold = 0.01;
+const double TestUtils::MaxOSTreshold = 1;
 
-bool OTBUtils::showImg = false;
+const double TestUtils::DeltaTreshold = 0.01;
 
-std::string OTBUtils::format = "%04d.jpg";
+bool TestUtils::showImg = false;
 
-std::string OTBUtils::path = "";
+std::string TestUtils::format = "%04d.jpg";
 
-Mat* OTBUtils::frames = NULL;
+std::string TestUtils::path = "";
 
-vector<cv::Rect> OTBUtils::truthRects;
+Mat* TestUtils::frames = NULL;
 
-void OTBUtils::openDataset(string path, string format) {
-	OTBUtils::path = path;
-	OTBUtils::format = format;
+vector<cv::Rect> TestUtils::truthRects;
 
-	auto rectFile = path + "/" + RectSpecFile;
+void TestUtils::openOtbDataset(string path, string format) {
+	TestUtils::path = path;
+	TestUtils::format = format;
+
+	auto rectFile = path + "/" + OtbRectSpecFile;
 	auto imgDir = path + "/" + ImagesDir;
 
 	_loadRects(rectFile); _loadFrames(imgDir);
 }
 
-void OTBUtils::run(ProcessParam *param_) {
+void TestUtils::openVotDataset(string path, string format /*= "%04d.jpg"*/) {
+
+	TestUtils::path = path;
+	TestUtils::format = format;
+
+	auto rectFile = path + "/" + VotRectSpecFile;
+	auto imgDir = path + "/";
+
+}
+
+void TestUtils::run(ProcessParam *param_) {
 	auto param = (ObjTrackParam*)param_;
 	ofstream opt(path + "/CustomOTBResult.csv");
 	run(param, opt);
 }
 
-void OTBUtils::run(ObjTrackParam *param, ofstream &opt, int frames_num, int rect_type) {
+void TestUtils::run(ObjTrackParam *param, ofstream &opt, int frames_num, int rect_type) {
 	long start_frame = frames_num*truthRects.size()/20;
 
 	// ���?��ȡÿ֡������
@@ -82,7 +94,7 @@ void OTBUtils::run(ObjTrackParam *param, ofstream &opt, int frames_num, int rect
 	_saveToFile(osRates, opt);
 }
 
-void OTBUtils::_saveToFile(OutTable out, ofstream &opt) {
+void TestUtils::_saveToFile(OutTable out, ofstream &opt) {
 	OutTable::iterator oit = out.begin();
 	for (; oit != out.end(); ++oit) {
 		auto pair = *oit;
@@ -90,7 +102,7 @@ void OTBUtils::_saveToFile(OutTable out, ofstream &opt) {
 	}
 }
 
-void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, 
+void TestUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, 
 	ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type) {
 
 	long len = truthRects.size() - start_frame;
@@ -106,7 +118,7 @@ void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss,
 		__runStdDetect(rects, dists, oss, param, opt, start_frame, rect_type);
 }
 
-void OTBUtils::__runStdDetect(Rect2d* &rects, double* &dists, double* &oss,
+void TestUtils::__runStdDetect(Rect2d* &rects, double* &dists, double* &oss,
 	ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type) {
 	double start, end, run_time;
 
@@ -149,7 +161,7 @@ void OTBUtils::__runStdDetect(Rect2d* &rects, double* &dists, double* &oss,
 	}
 }
 
-void OTBUtils::__runSTRUCKDetect(Rect2d* &rects, double* &dists, double* &oss, 
+void TestUtils::__runSTRUCKDetect(Rect2d* &rects, double* &dists, double* &oss, 
 	ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type) {
 	double start, end, run_time;
 
@@ -199,7 +211,7 @@ void OTBUtils::__runSTRUCKDetect(Rect2d* &rects, double* &dists, double* &oss,
 	}
 }
 
-void OTBUtils::__runGOTURNDetect(Rect2d* &rects, double* &dists, double* &oss,
+void TestUtils::__runGOTURNDetect(Rect2d* &rects, double* &dists, double* &oss,
 	ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type) {
 	double start, end, run_time;
 
@@ -241,7 +253,7 @@ void OTBUtils::__runGOTURNDetect(Rect2d* &rects, double* &dists, double* &oss,
 	}
 }
 
-void OTBUtils::__showProcessingImage(double dist, double os,
+void TestUtils::__showProcessingImage(double dist, double os,
 	Mat &frame, Rect2d &det, ObjTrackParam * param, cv::Rect &truth) {
 	Mat drawFrame = frame.clone();
 
@@ -260,7 +272,7 @@ void OTBUtils::__showProcessingImage(double dist, double os,
 	waitKey(1);
 }
 
-cv::Rect OTBUtils::_initRect(cv::Rect orig, int rect_type){
+cv::Rect TestUtils::_initRect(cv::Rect orig, int rect_type){
     int x = frames[0].rows; int y = frames[0].cols;    
 
 	switch(rect_type){
@@ -317,7 +329,7 @@ cv::Rect OTBUtils::_initRect(cv::Rect orig, int rect_type){
 //}
 
 
-void OTBUtils::_loadRects(string filename) {
+void TestUtils::_loadRects(string filename) {
 	truthRects.clear();
 
 	ifstream file(filename, ios::in); // ���ı�ģʽ��in.txt����
@@ -332,7 +344,7 @@ void OTBUtils::_loadRects(string filename) {
 	}
 }
 
-void OTBUtils::_loadFrames(string path) {
+void TestUtils::_loadFrames(string path) {
 	long len = truthRects.size();
 
 	if (frames != NULL) {
@@ -352,7 +364,7 @@ void OTBUtils::_loadFrames(string path) {
 	}
 }
 
-double OTBUtils::__calcDistance(Rect2d dist, Rect2d truth) {
+double TestUtils::__calcDistance(Rect2d dist, Rect2d truth) {
 	double dx = dist.x + (dist.width / 2);
 	double dy = dist.y + (dist.height / 2);
 	double tx = truth.x + (truth.width / 2);
@@ -360,12 +372,12 @@ double OTBUtils::__calcDistance(Rect2d dist, Rect2d truth) {
 	return sqrt((tx - dx)*(tx - dx) + (ty - dy)*(ty - dy));
 }
 
-double OTBUtils::__calcOS(Rect2d dist, Rect2d truth) {
+double TestUtils::__calcOS(Rect2d dist, Rect2d truth) {
 	auto cross = __calcCrossSpace(dist, truth);
 	return __calcCrossSpace(dist, truth) / __calcMergeSpace(dist, truth, cross);
 }
 
-double OTBUtils::__calcCrossSpace(Rect2d dist, Rect2d truth) {
+double TestUtils::__calcCrossSpace(Rect2d dist, Rect2d truth) {
 	double dx = dist.x, dy = dist.y,
 		dw = dist.width, dh = dist.height;
 	double tx = truth.x, ty = truth.y,
@@ -379,6 +391,6 @@ double OTBUtils::__calcCrossSpace(Rect2d dist, Rect2d truth) {
 	return width * height;
 }
 
-double OTBUtils::__calcMergeSpace(Rect2d dist, Rect2d truth, double cross) {
+double TestUtils::__calcMergeSpace(Rect2d dist, Rect2d truth, double cross) {
 	return dist.area() + truth.area() - cross;
 }
