@@ -241,7 +241,6 @@ void OTBUtils::__runGOTURNDetect(Rect2d* &rects, double* &dists, double* &oss,
 	}
 }
 
-
 void OTBUtils::__showProcessingImage(double dist, double os,
 	Mat &frame, Rect2d &det, ObjTrackParam * param, cv::Rect &truth) {
 	Mat drawFrame = frame.clone();
@@ -262,33 +261,35 @@ void OTBUtils::__showProcessingImage(double dist, double os,
 }
 
 cv::Rect OTBUtils::_initRect(cv::Rect orig, int rect_type){
-    switch(rect_type){
+    int x = frames[0].rows; int y = frames[0].cols;    
+
+	switch(rect_type){
         case 0:
             return orig;
         case 1:
-            return cv::Rect(orig.x, orig.y-orig.height*0.1, orig.width, orig.height);
+            return cv::Rect(orig.x, max(int(orig.y-orig.height*0.1), int(orig.height/2)), orig.width, orig.height);
         case 2:
-            return cv::Rect(orig.x+orig.width*0.07, orig.y-orig.height*0.07, orig.width, orig.height);
+            return cv::Rect(min(int(orig.x+orig.width*0.07), int(x-orig.width/2)), max(int(orig.y-orig.height*0.07),int(orig.height/2)), orig.width, orig.height);
         case 3:
-            return cv::Rect(orig.x+orig.width*0.1, orig.y, orig.width, orig.height);
+            return cv::Rect(min(int(orig.x+orig.width*0.1), int(x-orig.width/2)), orig.y, orig.width, orig.height);
         case 4:
-            return cv::Rect(orig.x+orig.width*0.07, orig.y+orig.height*0.07, orig.width, orig.height);
+            return cv::Rect(min(int(orig.x+orig.width*0.07),int(x-orig.width/2)), min(int(orig.y+orig.height*0.07),int(y-orig.height/2)), orig.width, orig.height);
         case 5:
-            return cv::Rect(orig.x, orig.y+orig.height*0.1, orig.width, orig.height);
+            return cv::Rect(orig.x, min(int(orig.y+orig.height*0.1), int(y-orig.height/2)), orig.width, orig.height);
         case 6:
-            return cv::Rect(orig.x-orig.width*0.07, orig.y+orig.height*0.07, orig.width, orig.height);
+            return cv::Rect(max(int(orig.x-orig.width*0.07), int(orig.width/2)), min(int(orig.y+orig.height*0.07),int(y-orig.height/2)), orig.width, orig.height);
         case 7:
-            return cv::Rect(orig.x-orig.width*0.1, orig.y, orig.width, orig.height);
+            return cv::Rect(max(int(orig.x-orig.width*0.1),int(orig.width/2)), orig.y, orig.width, orig.height);
         case 8:
-            return cv::Rect(orig.x-orig.width*0.07, orig.y-orig.height*0.07, orig.width, orig.height);
+            return cv::Rect(max(int(orig.x-orig.width*0.07),int(orig.width/2)), max(int(orig.y-orig.height*0.07),int(orig.height/2)), orig.width, orig.height);
         case 9:
             return cv::Rect(orig.x, orig.y, orig.width*0.8, orig.height*0.8);
         case 10:
             return cv::Rect(orig.x, orig.y, orig.width*0.9, orig.height*0.9);
         case 11:
-            return cv::Rect(orig.x, orig.y, orig.width*1.1, orig.height*1.1);
+            return cv::Rect(min(orig.x,int(x-orig.width*1.1/2)), min(orig.y,int(y-orig.height*1.1/2)), orig.width*1.1, orig.height*1.1);
         default:
-            return cv::Rect(orig.x, orig.y, orig.width*1.2, orig.height*1.2);
+            return cv::Rect(min(orig.x,int(x-orig.width*1.2/2)), min(orig.y,int(y-orig.height*1.2/2)), orig.width*1.2, orig.height*1.2);
     }
     
     return orig;
