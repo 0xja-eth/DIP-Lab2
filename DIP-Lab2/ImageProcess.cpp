@@ -73,6 +73,10 @@ Rect2d ImageProcess::doObjTrack(const Mat &data, ::Tracker &tracker) {
 	return _STRUCKTrack(tracker, data);
 }
 
+Rect2d ImageProcess::doObjTrack(const Mat &data1, const Mat &data2, cv::dnn::Net &tracker, const cv::Rect prevRect) {
+	return _GOTURNTrack(tracker, data1, data2, prevRect);
+}
+
 const int ImageProcess::DetDuration = 60;
 
 void ImageProcess::doObjDetTrack(const Mat* inVideo, long inLen, 
@@ -265,6 +269,10 @@ void ImageProcess::doVideoFeatDet(const Mat *inVideo, long inLen,
 	}
 }
 
+cv::dnn::Net ImageProcess::createGOTURN() {
+	return readNetFromCaffe(GOTURNPrototxt, GOTURNModel);
+}
+
 const std::string ImageProcess::FaceDetPath = "./xml/haarcascade_frontalface_alt.xml";
 
 cv::Rect ImageProcess::_faceDet(const Mat &data) {
@@ -379,6 +387,79 @@ cv::Rect ImageProcess::_STRUCKTrack(::Tracker &tracker, const Mat &frame) {
 	float h = bb.Height() / scaleH;
 
 	return cv::Rect(x, y, w, h);
+}
+
+const std::string ImageProcess::GOTURNPrototxt = "goturn.prototxt";
+
+const std::string ImageProcess::GOTURNModel = "goturn.caffemodel";
+
+const int ImageProcess::InputSize = 227;
+
+void ImageProcess::_GOTURNTrack(const Mat &data1, const Mat &data2, 
+	Mat &out1, Mat &out2, ObjDetTrackParam* param /*= NULL*/) {
+	cv::dnn::Net net = createGOTURN();
+
+	auto initPos = param->getRect();
+	rectangle(out1, initPos, param->color);
+
+	auto curBB = _GOTURNTrack(net, data1, data2, initPos);
+	rectangle(out2, curBB, param->color);
+}
+
+cv::Rect ImageProcess::_GOTURNTrack(cv::dnn::Net &tracker, const Mat &data1, 
+	const Mat &data2, const cv::Rect prevRect) {
+
+	Rect2d curBB;
+
+	float padTargetPatch = 2.0;
+	Rect2f searchPatchRect, targetPatchRect;
+	Point2f currCenter, prevCenter;
+	Mat prevFramePadded, curFramePadded;
+	Mat searchPatch, targetPatch;
+
+	prevCenter.x = (float)(prevRect.x + prevRect.width / 2);
+	prevCenter.y = (float)(prevRect.y + prevRect.height / 2);
+
+	targetPatchRect.width = (float)(prevRect.width*padTargetPatch);
+	targetPatchRect.height = (float)(prevRect.height*padTargetPatch);
+	targetPatchRect.x = (float)(prevCenter.x - prevRect.width*padTargetPatch / 2.0 + targetPatchRect.width);
+	targetPatchRect.y = (float)(prevCenter.y - prevRect.height*padTargetPatch / 2.0 + targetPatchRect.height);
+
+	copyMakeBorder(data1, prevFramePadded, (int)targetPatchRect.height, (int)targetPatchRect.height, (int)targetPatchRect.width, (int)targetPatchRect.width, BORDER_REPLICATE);
+	targetPatch = prevFramePadded(targetPatchRect).clone();
+
+	copyMakeBorder(data2, curFramePadded, (int)targetPatchRect.height, (int)targetPatchRect.height, (int)targetPatchRect.width, (int)targetPatchRect.width, BORDER_REPLICATE);
+	searchPatch = curFramePadded(targetPatchRect).clone();
+
+	//Preprocess
+	//Resize
+	resize(targetPatch, targetPatch, Size(InputSize, InputSize));
+	resize(searchPatch, searchPatch, Size(InputSize, InputSize));
+
+	//Mean Subtract
+	targetPatch = targetPatch - 128;
+	searchPatch = searchPatch - 128;
+
+	//Convert to Float type
+	targetPatch.convertTo(targetPatch, CV_32F);
+	searchPatch.convertTo(searchPatch, CV_32F);
+
+	Mat targetBlob = blobFromImage(targetPatch);
+	Mat searchBlob = blobFromImage(searchPatch);
+
+	tracker.setInput(targetBlob, "data1");
+	tracker.setInput(searchBlob, "data2");
+
+	Mat res = tracker.forward("scale");
+	Mat resMat = res.reshape(1, 1);
+	//printf("width : %d, height : %d\n", (resMat.at<float>(2) - resMat.at<float>(0)), (resMat.at<float>(3) - resMat.at<float>(1)));
+
+	curBB.x = targetPatchRect.x + (resMat.at<float>(0) * targetPatchRect.width / InputSize) - targetPatchRect.width;
+	curBB.y = targetPatchRect.y + (resMat.at<float>(1) * targetPatchRect.height / InputSize) - targetPatchRect.height;
+	curBB.width = (resMat.at<float>(2) - resMat.at<float>(0)) * targetPatchRect.width / InputSize;
+	curBB.height = (resMat.at<float>(3) - resMat.at<float>(1)) * targetPatchRect.height / InputSize;
+
+	return curBB;
 }
 
 void ImageProcess::_trackerTrack(const Mat &data1, const Mat &data2, Mat &out1, Mat &out2, 

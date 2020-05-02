@@ -23,9 +23,6 @@
     <ClCompile Include="opencv\mycv\ForrestClassifier.cpp">
       <Filter>Source Files\opencv\mycv</Filter>
     </ClCompile>
-    <ClCompile Include="opencv\mycv\HaarFeature.cpp">
-      <Filter>Source Files\opencv\mycv</Filter>
-    </ClCompile>
     <ClCompile Include="opencv\mycv\HaarFeaturesExtractor.cpp">
       <Filter>Source Files\opencv\mycv</Filter>
     </ClCompile>
@@ -116,6 +113,9 @@
     <ClCompile Include="lib\STRUCK\GraphUtils\GraphUtils.cpp">
       <Filter>Source Files\opencv\struck\GraphUtils</Filter>
     </ClCompile>
+    <ClCompile Include="opencv\mycv\HaarFeatureFERNS.cpp">
+      <Filter>Source Files\opencv\mycv</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
@@ -168,6 +168,9 @@
     <Filter Include="Source Files\opencv\struck\GraphUtils">
       <UniqueIdentifier>{6c67bf14-5851-4931-9ce9-4bf6fe19961b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\opencv\lib">
+      <UniqueIdentifier>{11f88d51-0013-4e96-991c-ad518739edfc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="DIPLab2.h">
@@ -185,9 +188,6 @@
     </QtRcc>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="opencv\lib\PatchGenerator.h">
-      <Filter>Source Files\opencv\lib</Filter>
-    </ClInclude>
     <ClInclude Include="QTCVUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -262,6 +262,9 @@
     </ClInclude>
     <ClInclude Include="lib\STRUCK\GraphUtils\GraphUtils.h">
       <Filter>Header Files\opencv\struck\GraphUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="opencv\lib\PatchGenerator.h">
+      <Filter>Header Files\opencv\lib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

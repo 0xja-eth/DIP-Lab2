@@ -461,8 +461,8 @@ void DIPLab2::doVideoObjDetTrack(ProcessParam* param) {
 }
 
 void DIPLab2::runOTB() {
-	int algo_ = ui.otbAlgoSelect->currentIndex();
 	OTBUtils::showImg = ui.showImg->isChecked();
+	int algo_ = ui.otbAlgoSelect->currentIndex();
 
 	ObjTrackParam::Algo algo = ObjTrackParam::KCF;
 
@@ -479,16 +479,21 @@ void DIPLab2::runOTB() {
 }
 
 void DIPLab2::batRunOTB() {
+	OTBUtils::showImg = ui.showImg->isChecked();
 	LabRun::maxNum = ui.numInput->value();
 	QTCVUtils::process(_batRunOTB);
 }
 
 void DIPLab2::_batRunOTB() {
+	cv::Mat test(20, 20, CV_32F);
+	cv::imshow("Test", test);
+	/*
 	//输入存储运行时间的文件夹目录
 	LabRun::labIn("E:/Projects/OpenCVProjects/TrackDataset/OTBResult");
 
 	//输入otb数据集的地址
 	LabRun::otb_lab_tre("E:/Projects/OpenCVProjects/TrackDataset/OTB100");
+	*/
 }
 
 #pragma endregion

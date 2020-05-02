@@ -2,6 +2,9 @@
 
 #include <opencv2/imgproc/types_c.h>
 #include <opencv2/tracking.hpp>
+
+#include <opencv2/dnn.hpp>
+
 #include <opencv2/xfeatures2d.hpp>
 #include <opencv2/features2d.hpp>
 #include "opencv/mycv.h"
@@ -11,6 +14,8 @@
 
 #include "lib/STRUCK/Tracker.h"
 #include "lib/STRUCK/Config.h"
+
+using namespace cv::dnn;
 
 // 处理参数父类
 class ProcessParam {};
@@ -137,6 +142,10 @@ public:
 	// 目标跟踪（STRUCK跟踪，返回cv::Rect用于多用途）
 	static Rect2d doObjTrack(const Mat &data, ::Tracker &tracker);
 
+	// 目标跟踪（GOTURN跟踪，返回cv::Rect用于多用途）
+	static Rect2d doObjTrack(const Mat &data1, const Mat &data2,
+		cv::dnn::Net &tracker, const cv::Rect prevRect);
+
 	// 目标检测及跟踪（视频）
 	static const int DetDuration; // 检测间隔帧数
 	static void doObjDetTrack(const Mat* inVideo, long inLen,
@@ -157,6 +166,9 @@ public:
 	static void doVideoFeatDet(const Mat *inVideo, long inLen,
 		Mat* &outVideo, long &outLen, ProcessParam* _param = NULL);
 
+	// 创建 GOTURN 跟踪器
+	static cv::dnn::Net createGOTURN();
+
 private:
 	// 人脸检测
 	static const string FaceDetPath; // 模型路径
@@ -172,6 +184,16 @@ private:
 	static void _STRUCKTrack(const Mat &data1, const Mat &data2,
 		Mat &out1, Mat &out2, ObjDetTrackParam* param = NULL);
 	static cv::Rect _STRUCKTrack(::Tracker &tracker, const Mat &frame);
+
+	// GOTURN 跟踪
+	static const string GOTURNPrototxt;
+	static const string GOTURNModel;
+	static const int InputSize;
+
+	static void _GOTURNTrack(const Mat &data1, const Mat &data2,
+		Mat &out1, Mat &out2, ObjDetTrackParam* param = NULL);
+	static cv::Rect _GOTURNTrack(cv::dnn::Net &tracker, const Mat &data1,
+		const Mat &data2, const cv::Rect prevRect);
 
 	// 使用 opencv 跟踪器进行目标跟踪
 	static void _trackerTrack(const Mat &data1, const Mat &data2,

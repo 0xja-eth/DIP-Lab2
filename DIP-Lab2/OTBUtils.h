@@ -16,12 +16,8 @@ public:
 
 	static void openDataset(string path, string format = "%04d.jpg");
 
-<<<<<<< HEAD
-	static void run(ProcessParam *param_, ofstream &opt, int frames_num=0, int rect_type=0);
-=======
 	static void run(ProcessParam *param_);
-	static void run(ObjTrackParam *param, ofstream &opt, int frames_num = 0);
->>>>>>> 3ea4f2e53bfdea354dafead7beb5bc7565dfe4de
+	static void run(ObjTrackParam *param, ofstream &opt, int frames_num = 0, int rect_type = 0);
 
 private:
 	typedef map<double, double> OutTable;
@@ -44,17 +40,20 @@ private:
 
 	static void _saveToFile(OutTable out, ofstream &opt);
 
-<<<<<<< HEAD
-	static Rect _initRect(Rect orig, int rect_type); //根据类型构造初始矩阵
+	static cv::Rect _initRect(cv::Rect orig, int rect_type); //根据类型构造初始矩阵
+
 	static void _runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type);
-=======
-	static void _runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrackParam *param, ofstream &opt, long start_frame);
 
 	static void __runStdDetect(Rect2d* &rects, double* &dists, double* &oss, 
-		ObjTrackParam *param, ofstream &opt, long start_frame);
-	static void __runSTRUCKDetect(Rect2d* &rects, double* &dists, double* &oss, 
-		ObjTrackParam *param, ofstream &opt, long start_frame);
->>>>>>> 3ea4f2e53bfdea354dafead7beb5bc7565dfe4de
+		ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type);
+	static void __runSTRUCKDetect(Rect2d* &rects, double* &dists, double* &oss,
+		ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type);
+	static void __runGOTURNDetect(Rect2d* &rects, double* &dists, double* &oss,
+		ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type);
+
+	static void __showProcessingImage(double dist, double os, 
+		Mat &frame, Rect2d &det, ObjTrackParam * param, cv::Rect &truth);
+
 	// static void _calcEvaluation(Rect2d* rects, double* &dists, double* &oss);
 
 	// Distance
