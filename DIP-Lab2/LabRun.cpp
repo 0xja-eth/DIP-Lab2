@@ -27,6 +27,9 @@ bool LabRun::labOtbIn(string outPath) {
 
 bool LabRun::labVotIn(string outPath) {
 	LabRun::outPath = outPath;
+
+	FilesProcessUtils::createDir(outPath + "/VOT_LAB");
+
 	return true;
 }
 
@@ -74,7 +77,7 @@ bool LabRun::otbLab(string otbPath) {
 
 		start = static_cast<double>(getTickCount());
 		ObjTrackParam trackparamKCF(ObjTrackParam::KCF);
-		TestUtils::run(&trackparamKCF, optKCF);
+		TestUtils::runOtb(&trackparamKCF, optKCF, 0, 0, true);
 		end = static_cast<double>(getTickCount());
 		run_time = (end - start) / getTickFrequency();
 		LOG("b) KCF, Cost Time " + to_string(run_time));
@@ -106,7 +109,7 @@ bool LabRun::otbLab(string otbPath) {
 
 		start = static_cast<double>(getTickCount());
 		ObjTrackParam trackparamTLD(ObjTrackParam::TLD);
-		TestUtils::run(&trackparamTLD, optTLD);
+		TestUtils::runOtb(&trackparamTLD, optTLD, 0, 0, true);
 		end = static_cast<double>(getTickCount());
 		run_time = (end - start) / getTickFrequency();
 		LOG("d) TLD, Cost Time " + to_string(run_time));
@@ -138,7 +141,7 @@ bool LabRun::otbLab(string otbPath) {
 
 		start = static_cast<double>(getTickCount());
 		ObjTrackParam trackparamGOTURN(ObjTrackParam::GOTURN);
-		TestUtils::run(&trackparamGOTURN, optGOTURN);
+		TestUtils::runOtb(&trackparamGOTURN, optGOTURN, 0, 0, true);
 		end = static_cast<double>(getTickCount());
 		run_time = (end - start) / getTickFrequency();
 		LOG("f) GOTURN, Cost Time " + to_string(run_time));
@@ -153,7 +156,7 @@ bool LabRun::otbLab(string otbPath) {
 
 		start = static_cast<double>(getTickCount());
 		ObjTrackParam trackparamSTRUCK(ObjTrackParam::STRUCK);
-		TestUtils::run(&trackparamSTRUCK, optSTRUCK);
+		TestUtils::runOtb(&trackparamSTRUCK, optSTRUCK, 0, 0, true);
 		end = static_cast<double>(getTickCount());
 		run_time = (end - start) / getTickFrequency();
 		LOG("b) STRUCK, Cost Time " + to_string(run_time));
@@ -201,7 +204,7 @@ bool LabRun::otbLabTRE(string otbPath) {
 
 			start = static_cast<double>(getTickCount());
 			ObjTrackParam trackparamKCF(ObjTrackParam::KCF);
-			TestUtils::run(&trackparamKCF, optKCF, s);
+			TestUtils::runOtb(&trackparamKCF, optKCF, s);
 
 			end = static_cast<double>(getTickCount());
 			run_time = (end - start) / getTickFrequency();
@@ -247,7 +250,7 @@ bool LabRun::otbLabTRE(string otbPath) {
 
 			start = static_cast<double>(getTickCount());
 			ObjTrackParam trackparamTLD(ObjTrackParam::TLD);
-			TestUtils::run(&trackparamTLD, optTLD, s);
+			TestUtils::runOtb(&trackparamTLD, optTLD, s);
 
 			end = static_cast<double>(getTickCount());
 			run_time = (end - start) / getTickFrequency();
@@ -293,7 +296,7 @@ bool LabRun::otbLabTRE(string otbPath) {
 
 			start = static_cast<double>(getTickCount());
 			ObjTrackParam trackparamGOTURN(ObjTrackParam::GOTURN);
-			TestUtils::run(&trackparamGOTURN, optGOTURN, s);
+			TestUtils::runOtb(&trackparamGOTURN, optGOTURN, s);
 
 			end = static_cast<double>(getTickCount());
 			run_time = (end - start) / getTickFrequency();
@@ -317,7 +320,7 @@ bool LabRun::otbLabTRE(string otbPath) {
 
 			start = static_cast<double>(getTickCount());
 			ObjTrackParam trackparamSTRUCK(ObjTrackParam::STRUCK);
-			TestUtils::run(&trackparamSTRUCK, optSTRUCK, s);
+			TestUtils::runOtb(&trackparamSTRUCK, optSTRUCK, s);
 
 			end = static_cast<double>(getTickCount());
 			run_time = (end - start) / getTickFrequency();
@@ -529,7 +532,7 @@ bool LabRun::otbLabSRE(string otbPath) {
 
 			start = static_cast<double>(getTickCount());
 			ObjTrackParam trackparamKCF(ObjTrackParam::KCF);
-			TestUtils::run(&trackparamKCF, optKCF, 0, s);
+			TestUtils::runOtb(&trackparamKCF, optKCF, 0, s);
 
 			end = static_cast<double>(getTickCount());
 			run_time = (end - start) / getTickFrequency();
@@ -575,7 +578,7 @@ bool LabRun::otbLabSRE(string otbPath) {
 
 			start = static_cast<double>(getTickCount());
 			ObjTrackParam trackparamTLD(ObjTrackParam::TLD);
-			TestUtils::run(&trackparamTLD, optTLD, 0, s);
+			TestUtils::runOtb(&trackparamTLD, optTLD, 0, s);
 
 			end = static_cast<double>(getTickCount());
 			run_time = (end - start) / getTickFrequency();
@@ -621,7 +624,7 @@ bool LabRun::otbLabSRE(string otbPath) {
 
 			start = static_cast<double>(getTickCount());
 			ObjTrackParam trackparamGOTURN(ObjTrackParam::GOTURN);
-			TestUtils::run(&trackparamGOTURN, optGOTURN, 0, s);
+			TestUtils::runOtb(&trackparamGOTURN, optGOTURN, 0, s);
 
 			end = static_cast<double>(getTickCount());
 			run_time = (end - start) / getTickFrequency();
@@ -645,7 +648,7 @@ bool LabRun::otbLabSRE(string otbPath) {
 
 			start = static_cast<double>(getTickCount());
 			ObjTrackParam trackparamSTRUCK(ObjTrackParam::STRUCK);
-			TestUtils::run(&trackparamSTRUCK, optSTRUCK, 0, s);
+			TestUtils::runOtb(&trackparamSTRUCK, optSTRUCK, 0, s);
 
 			end = static_cast<double>(getTickCount());
 			run_time = (end - start) / getTickFrequency();
@@ -846,6 +849,7 @@ bool LabRun::otbAfterSRE(string inPath, string outPath) {
 
 #pragma endregion
 
+#pragma region VOT
 
 void LabRun::votLab() {
 	votLab(votPath);
@@ -855,7 +859,7 @@ bool LabRun::votLab(string votPath) {
 
 	// 获取目录下全部文件夹名称
 	LOG("[Get Directory Info]");
-	vector<string> files = FilesProcessUtils::getFiles(otbPath);
+	vector<string> files = FilesProcessUtils::getFiles(votPath);
 
 	// 循环处理各个数据
 	LOG("[Start Processing]");
@@ -866,14 +870,112 @@ bool LabRun::votLab(string votPath) {
 
 	for (int i = 0; i < count; i++) {
 		LOG(to_string(i) + ". " + files[i]);
-		filepath = otbPath + "/OTB_LAB/" + files[i] + "/";
+		filepath = outPath + "/VOT_LAB/" + files[i] + "/";
 		FilesProcessUtils::createDir(filepath);
 
+		// 读取数据
+		TestUtils::openVotDataset(votPath + "/" + files[i]);
+		LOG("a) Read data");
 
+		// KCF
+		ofstream optKCF;
+		optKCF.open(filepath + "KCF.csv");
+		optKCF << "Overall" << endl;
+		optKCF << "Frame" << "," << "Distance" << "," << "OverlapSpace" << "," << "Times(s)" << endl;
+
+		start = static_cast<double>(getTickCount());
+		ObjTrackParam trackparamKCF(ObjTrackParam::KCF);
+		TestUtils::runVot(&trackparamKCF, optKCF, true);
+		end = static_cast<double>(getTickCount());
+		run_time = (end - start) / getTickFrequency();
+		LOG("b) KCF, Cost Time " + to_string(run_time));
+
+		optKCF.close();
+
+		/*
+		//BOOSTING
+		ofstream optBOOSTING;
+		optBOOSTING.open(filepath+"/BOOSTING.csv");
+		optBOOSTING<<"Overall"<<endl;
+		optBOOSTING<<"Frame"<<","<<"Distance"<<","<<"OverlapSpace"<<","<<"Times(s)"<<endl;
+
+		start = static_cast<double>(getTickCount());
+		ObjTrackParam trackparamBOOSTING(ObjTrackParam::BOOSTING);
+		OTBUtils::run(&trackparamBOOSTING, optBOOSTING);
+		end = static_cast<double>(getTickCount());
+		run_time = (end - start) / getTickFrequency();
+		LOG("c) BOOSTING, Cost Time"+to_string(run_time));
+
+		optBOOSTING.close();
+		*/
+
+		//TLD
+		ofstream optTLD;
+		optTLD.open(filepath + "TLD.csv");
+		optTLD << "Overall" << endl;
+		optTLD << "Frame" << "," << "Distance" << "," << "OverlapSpace" << "," << "Times(s)" << endl;
+
+		start = static_cast<double>(getTickCount());
+		ObjTrackParam trackparamTLD(ObjTrackParam::TLD);
+		TestUtils::runVot(&trackparamTLD, optTLD, true);
+		end = static_cast<double>(getTickCount());
+		run_time = (end - start) / getTickFrequency();
+		LOG("d) TLD, Cost Time " + to_string(run_time));
+
+		optTLD.close();
+
+		//
+		////MEDIANFLOW
+		//ofstream optMEDIANFLOW;
+		//optMEDIANFLOW.open(filepath+"/MEDIANFLOW.csv");
+		//optMEDIANFLOW<<"Overall"<<endl;
+		//optMEDIANFLOW<<"Frame"<<","<<"Distance"<<","<<"OverlapSpace"<<","<<"Times(s)"<<endl;
+		//
+		//start = static_cast<double>(getTickCount());
+		//ObjTrackParam trackparamMEDIANFLOW(ObjTrackParam::MEDIANFLOW);
+		//OTBUtils::run(&trackparamMEDIANFLOW, optMEDIANFLOW);
+		//end = static_cast<double>(getTickCount());
+		//run_time = (end - start) / getTickFrequency();
+		//LOG("e) MEDIANFLOW, Cost Time"+to_string(run_time));
+		//
+		//optMEDIANFLOW.close();
+		//
+		//GOTURN
+
+		ofstream optGOTURN;
+		optGOTURN.open(filepath + "GOTURN.csv");
+		optGOTURN << "Overall" << endl;
+		optGOTURN << "Frame" << "," << "Distance" << "," << "OverlapSpace" << "," << "Times(s)" << endl;
+
+		start = static_cast<double>(getTickCount());
+		ObjTrackParam trackparamGOTURN(ObjTrackParam::GOTURN);
+		TestUtils::runVot(&trackparamGOTURN, optGOTURN, true);
+		end = static_cast<double>(getTickCount());
+		run_time = (end - start) / getTickFrequency();
+		LOG("f) GOTURN, Cost Time " + to_string(run_time));
+
+		optGOTURN.close();
+
+		// STRUCK
+		ofstream optSTRUCK;
+		optSTRUCK.open(filepath + "STRUCK.csv");
+		optSTRUCK << "Overall" << endl;
+		optSTRUCK << "Frame" << "," << "Distance" << "," << "OverlapSpace" << "," << "Times(s)" << endl;
+
+		start = static_cast<double>(getTickCount());
+		ObjTrackParam trackparamSTRUCK(ObjTrackParam::STRUCK);
+		TestUtils::runVot(&trackparamSTRUCK, optSTRUCK, true);
+		end = static_cast<double>(getTickCount());
+		run_time = (end - start) / getTickFrequency();
+		LOG("b) STRUCK, Cost Time " + to_string(run_time));
+
+		optSTRUCK.close();
 	}
 
 	return true;
 }
+
+#pragma endregion
 
 /*vector<string> LabRun::getFiles(string path) {
 	vector<string> files;//存放文件名

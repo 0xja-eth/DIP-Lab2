@@ -11,6 +11,24 @@
 #include "lib/STRUCK/Tracker.h"
 #include "lib/STRUCK/Config.h"
 
+struct VOTBB {
+	cv::Point a, b, c, d;
+
+	cv::Rect toRect() {
+		cv::Point minP = a, maxP = a;
+
+		minP.x = min(minP.x, b.x); minP.y = min(minP.y, b.y);
+		minP.x = min(minP.x, c.x); minP.y = min(minP.y, c.y);
+		minP.x = min(minP.x, d.x); minP.y = min(minP.y, d.y);
+
+		maxP.x = max(maxP.x, b.x); maxP.y = max(maxP.y, b.y);
+		maxP.x = max(maxP.x, c.x); maxP.y = max(maxP.y, c.y);
+		maxP.x = max(maxP.x, d.x); maxP.y = max(maxP.y, d.y);
+
+		return cv::Rect(minP, maxP);
+	}
+};
+
 static class TestUtils {
 public:
 	static bool showImg;
@@ -18,8 +36,11 @@ public:
 	static void openOtbDataset(string path, string format = "%04d.jpg");
 	static void openVotDataset(string path, string format = "%08d.jpg");
 
-	static void run(ProcessParam *param_);
-	static void run(ObjTrackParam *param, ofstream &opt, int frames_num = 0, int rect_type = 0);
+	static void runOtb(ProcessParam *param_);
+	static void runOtb(ObjTrackParam *param, ofstream &opt, int frames_num = 0, int rect_type = 0, bool head = false);
+
+	static void runVot(ProcessParam *param_);
+	static void runVot(ObjTrackParam *param, ofstream &opt, bool head = false);
 
 private:
 	typedef map<double, double> OutTable;
@@ -34,12 +55,15 @@ private:
 
 	static const double DeltaTreshold; // ����
 
+	static string mode; // OTB / VOT
+
 	static string format;
 	static string path;
 	static Mat* frames;
 	static vector<cv::Rect> truthRects;
 
-	static void _loadRects(string filename);
+	static void _loadOtbRects(string filename);
+	static void _loadVotRects(string filename);
 	static void _loadFrames(string path);
 
 	static void _saveToFile(OutTable out, ofstream &opt);
@@ -68,5 +92,8 @@ private:
 
 	static double __calcCrossSpace(Rect2d dist, Rect2d truth);
 	static double __calcMergeSpace(Rect2d dist, Rect2d truth, double cross);
-};
 
+	// 计算失败率
+	static double __calcFailRate(long len, vector<long> &failPos);
+	static double __deltaFail(long len, vector<long> &failPos, int pos);
+};

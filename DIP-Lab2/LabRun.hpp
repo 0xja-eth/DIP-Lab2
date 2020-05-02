@@ -39,6 +39,8 @@ public:
 	//实验四：vot测试
 	static void votLab();
 	static bool votLab(string votPath);
+	static bool votAfter(string inPath, string outPath);//后处理
+
 
 private:
     static string outPath, otbPath, votPath;

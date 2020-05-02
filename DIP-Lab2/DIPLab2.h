@@ -124,17 +124,24 @@ public slots:
 	void saveTarget() { saveFile(target1); }
 
 	void setRecting() { recting = true; }
-	
-	void openOutDir();
-	void openDatasetDir();
+
+	void openOtbOutDir();
+	void openOtbDatasetDir();
+
+	void openVotOutDir();
+	void openVotDatasetDir();
 
 	void batRunOTB();
 	void batRunOTBTRE();
 	void batRunOTBSRE();
 
-	void openDataset();
+	void batRunVOT();
+
+	void openOtbDataset();
+	void openVotDataset();
 
 	void runOTB();
+	void runVOT();
 
 	void onRectChanged();
 
