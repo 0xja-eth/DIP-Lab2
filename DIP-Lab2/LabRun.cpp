@@ -17,7 +17,7 @@ bool LabRun::labOtbIn(string outPath) {
 	LabRun::outPath = outPath;
 
 	FilesProcessUtils::createDir(outPath + "/OTB_LAB");
-	FilesProcessUtils::createDir(outPath + "/OTB_OPE");
+	FilesProcessUtils::createDir(outPath + "/OTB_SRE");
 	FilesProcessUtils::createDir(outPath + "/OTB_TRE");
 	//opt1.open(srcPath + "/otb_lab.csv");
 	// opt1 << "编号" << "," << "数据名" << "," << "KCF(用时/秒)" << endl;
