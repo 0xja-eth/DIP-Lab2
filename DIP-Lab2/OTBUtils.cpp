@@ -10,14 +10,20 @@ const double OTBUtils::MaxOSTreshold = 1;
 
 const double OTBUtils::DeltaTreshold = 0.01;
 
+bool OTBUtils::showImg = false;
+
+std::string OTBUtils::format = "%04d.jpg";
+
 std::string OTBUtils::path = "";
 
 Mat* OTBUtils::frames = NULL;
 
-vector<Rect> OTBUtils::truthRects;
+vector<cv::Rect> OTBUtils::truthRects;
 
-void OTBUtils::openDataset(string path) {
+void OTBUtils::openDataset(string path, string format) {
 	OTBUtils::path = path;
+	OTBUtils::format = format;
+
 	auto rectFile = path + "/" + RectSpecFile;
 	auto imgDir = path + "/" + ImagesDir;
 
@@ -26,13 +32,19 @@ void OTBUtils::openDataset(string path) {
 
 void OTBUtils::run(ProcessParam *param_) {
 	auto param = (ObjTrackParam*)param_;
+	ofstream opt(path + "/CustomOTBResult.csv");
+	run(param, opt);
+}
 
-	// ¼ì²â£¬»ñÈ¡Ã¿Ö¡¼ì²â¾ØÐÎ
+void OTBUtils::run(ObjTrackParam *param, ofstream &opt, int frames_num, int rect_type) {
+	long start_frame = frames_num*truthRects.size()/20;
+
+	// ï¿½ï¿½â£?ï¿½ï¿½È¡Ã¿Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	Rect2d *detRects; double *dists, *oss;
-	_runDetect(detRects, dists, oss, param);
+	_runDetect(detRects, dists, oss, param, opt, start_frame, rect_type);
 
 	OutTable distRates, osRates;
-	long len = truthRects.size();
+	long len = truthRects.size() - start_frame;
 
 	for (double t = 0; t < 1; t += DeltaTreshold) {
 
@@ -44,16 +56,13 @@ void OTBUtils::run(ProcessParam *param_) {
 		double distRate, osRate;
 		long distCnt = 0, osCnt = 0;
 		for (int i = 1; i < len; ++i) {
-			auto det = detRects[i];
-			auto truth = truthRects[i];
-
 			double dist = dists[i], os = oss[i];
 
 			if (dist <= distT) distCnt++;
 			if (os >= osT) osCnt++;
 		}
 
-		if (len > 0) {
+		if (len > 1) {
 			distRate = distCnt * 1.0 / (len - 1);
 			osRate = osCnt * 1.0 / (len - 1);
 		} else distRate = osRate = 0;
@@ -62,72 +71,228 @@ void OTBUtils::run(ProcessParam *param_) {
 		osRates[osT] = osRate;
 	}
 
-	_saveToFile(distRates, "DistResult.r");
-	_saveToFile(osRates, "OSResult.r");
+	//opt << "Distance" << endl;
+	//opt << "Treshold" << "," << "Ratio" << endl;
+	opt << "#" << endl;
+	_saveToFile(distRates, opt);
+
+	//opt << "OverlapSpace" << endl;
+	//opt << "Treshold" << "," << "Ratio" << endl;
+	opt << "#" << endl;
+	_saveToFile(osRates, opt);
 }
 
-void OTBUtils::_saveToFile(OutTable out, string title) {
-	string filename = path + "/" + title;
-
-	ofstream file(filename, ios::out);
-	if (!file) { //´ò¿ªÊ§°Ü
-		LOG("Error opening save file."); return;
-	}
-
+void OTBUtils::_saveToFile(OutTable out, ofstream &opt) {
 	OutTable::iterator oit = out.begin();
 	for (; oit != out.end(); ++oit) {
 		auto pair = *oit;
-		file << pair.first << " " << pair.second << endl;
+		opt << pair.first << "," << pair.second << endl;
 	}
 }
 
-void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrackParam *param) {
-	bool newDet = true;
-	Ptr<Tracker> tracker = NULL;
+void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, 
+	ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type) {
 
-	long len = truthRects.size();
+	long len = truthRects.size() - start_frame;
 	rects = new Rect2d[len];
 	dists = new double[len];
 	oss = new double[len];
 
+	if (param->algo == ObjTrackParam::STRUCK)
+		__runSTRUCKDetect(rects, dists, oss, param, opt, start_frame, rect_type);
+	else if (param->algo == ObjTrackParam::GOTURN)
+		__runGOTURNDetect(rects, dists, oss, param, opt, start_frame, rect_type);
+	else
+		__runStdDetect(rects, dists, oss, param, opt, start_frame, rect_type);
+}
+
+void OTBUtils::__runStdDetect(Rect2d* &rects, double* &dists, double* &oss,
+	ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type) {
+	double start, end, run_time;
+
+	bool newDet = true;
+	Ptr<cv::Tracker> tracker = NULL;
+
+	long len = truthRects.size() - start_frame;
+
 	for (int i = 0; i < len; ++i) {
 		ImageProcess::progress = i * 1.0 / len * 0.9;
+		start = static_cast<double>(getTickCount());
 
-		auto truth = truthRects[i];
-		auto frame = frames[i];
+		auto truth = truthRects[i+start_frame];
+		auto frame = frames[i+start_frame];
 
 		if (i == 0) {
-			param->setRect(rects[i] = truth);
+			param->setRect(rects[i] = _initRect(truth, rect_type));
 			ImageProcess::doObjTrack(frame, tracker, newDet, param);
 			continue;
 		}
 
 		auto det = ImageProcess::doObjTrack(frame, tracker, newDet, param);
 
-		// Æ¥Åä²»µ½
+		// Æ¥ï¿½ä²»ï¿½ï¿½
 		if (newDet) det = Rect2d();
 		rects[i] = det;
-
-		// Õ¹Ê¾
-		Mat drawFrame = frame.clone();
 
 		double dist = dists[i] = __calcDistance(det, truth);
 		double os = oss[i] = __calcOS(det, truth);
 
-		char showText[256];
+		end = static_cast<double>(getTickCount());
+		run_time = (end-start)/getTickFrequency();
 
-		sprintf(showText, "Dist: %.4f, OS: %.4f", dist, os);
+		opt<<i+start_frame+1<<","<<dist<<","<<os<<","<<run_time<<endl;
 
-		putText(drawFrame, showText, Point(20, 20), 
-			FONT_HERSHEY_SIMPLEX, 0.75, Scalar(255, 255, 255), 2);
+		// Õ¹Ê¾
+		if (!showImg) continue;
 
-		rectangle(drawFrame, det, param->color, 2);
-		rectangle(drawFrame, truth, Scalar(255, 0, 0), 2);
-
-		imshow("OTBTest", drawFrame);
-
-		waitKey(1);
+		__showProcessingImage(dist, os, frame, det, param, truth);
 	}
+}
+
+void OTBUtils::__runSTRUCKDetect(Rect2d* &rects, double* &dists, double* &oss, 
+	ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type) {
+	double start, end, run_time;
+
+	Config conf; ::Tracker tracker(conf);
+
+	long len = truthRects.size() - start_frame;
+
+	for (int i = 0; i < len; ++i) {
+		ImageProcess::progress = i * 1.0 / len * 0.9;
+		start = static_cast<double>(getTickCount());
+
+		auto truth = truthRects[i + start_frame];
+		auto frame = frames[i + start_frame];
+
+		if (i == 0) {
+			Mat scaledFrame;
+
+			float scaleW = (float)conf.frameWidth / frame.cols;
+			float scaleH = (float)conf.frameHeight / frame.rows;
+
+			auto rect = _initRect(truth, rect_type);
+			param->setRect(rects[i] = rect);
+
+			resize(frame, scaledFrame, Size(conf.frameWidth, conf.frameHeight));
+			FloatRect initBB = FloatRect(rect.x*scaleW, rect.y*scaleH,
+				rect.width*scaleW, rect.height*scaleH);
+
+			tracker.Initialise(scaledFrame, initBB);
+
+			continue;
+		}
+
+		auto det = rects[i] = ImageProcess::doObjTrack(frame, tracker);
+
+		double dist = dists[i] = __calcDistance(det, truth);
+		double os = oss[i] = __calcOS(det, truth);
+
+		end = static_cast<double>(getTickCount());
+		run_time = (end - start) / getTickFrequency();
+
+		opt << i + start_frame + 1 << "," << dist << "," << os << "," << run_time << endl;
+
+		// Õ¹Ê¾
+		if (!showImg) continue;
+
+		__showProcessingImage(dist, os, frame, det, param, truth);
+	}
+}
+
+void OTBUtils::__runGOTURNDetect(Rect2d* &rects, double* &dists, double* &oss,
+	ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type) {
+	double start, end, run_time;
+
+	auto tracker = ImageProcess::createGOTURN();
+
+	long len = truthRects.size() - start_frame;
+	Rect2d det; // ÉÏÒ»Ö¡½á¹û
+
+	for (int i = 0; i < len; ++i) {
+		ImageProcess::progress = i * 1.0 / len * 0.9;
+		start = static_cast<double>(getTickCount());
+
+		auto truth = truthRects[i + start_frame];
+
+		if (i == 0) {
+			auto rect = _initRect(truth, rect_type);
+			param->setRect(det = rects[i] = rect);
+			continue;
+		}
+
+		auto frame = frames[i + start_frame];
+		auto prevFrame = frames[i + start_frame - 1];
+
+		det = rects[i] = ImageProcess::doObjTrack(
+			prevFrame, frame, tracker, det);
+
+		double dist = dists[i] = __calcDistance(det, truth);
+		double os = oss[i] = __calcOS(det, truth);
+
+		end = static_cast<double>(getTickCount());
+		run_time = (end - start) / getTickFrequency();
+
+		opt << i + start_frame + 1 << "," << dist << "," << os << "," << run_time << endl;
+
+		// Õ¹Ê¾
+		if (!showImg) continue;
+
+		__showProcessingImage(dist, os, frame, det, param, truth);
+	}
+}
+
+void OTBUtils::__showProcessingImage(double dist, double os,
+	Mat &frame, Rect2d &det, ObjTrackParam * param, cv::Rect &truth) {
+	Mat drawFrame = frame.clone();
+
+	char showText[256];
+
+	sprintf(showText, "Dist: %.4f, OS: %.4f", dist, os);
+
+	putText(drawFrame, showText, Point(20, 20),
+		FONT_HERSHEY_SIMPLEX, 0.75, Scalar(255, 255, 255), 2);
+
+	rectangle(drawFrame, det, param->color, 2);
+	rectangle(drawFrame, truth, Scalar(255, 0, 0), 2);
+
+	imshow("OTBTest", drawFrame);
+
+	waitKey(1);
+}
+
+cv::Rect OTBUtils::_initRect(cv::Rect orig, int rect_type){
+    int x = frames[0].rows; int y = frames[0].cols;    
+
+	switch(rect_type){
+        case 0:
+            return orig;
+        case 1:
+            return cv::Rect(orig.x, max(int(orig.y-orig.height*0.1), int(orig.height/2)), orig.width, orig.height);
+        case 2:
+            return cv::Rect(min(int(orig.x+orig.width*0.07), int(x-orig.width/2)), max(int(orig.y-orig.height*0.07),int(orig.height/2)), orig.width, orig.height);
+        case 3:
+            return cv::Rect(min(int(orig.x+orig.width*0.1), int(x-orig.width/2)), orig.y, orig.width, orig.height);
+        case 4:
+            return cv::Rect(min(int(orig.x+orig.width*0.07),int(x-orig.width/2)), min(int(orig.y+orig.height*0.07),int(y-orig.height/2)), orig.width, orig.height);
+        case 5:
+            return cv::Rect(orig.x, min(int(orig.y+orig.height*0.1), int(y-orig.height/2)), orig.width, orig.height);
+        case 6:
+            return cv::Rect(max(int(orig.x-orig.width*0.07), int(orig.width/2)), min(int(orig.y+orig.height*0.07),int(y-orig.height/2)), orig.width, orig.height);
+        case 7:
+            return cv::Rect(max(int(orig.x-orig.width*0.1),int(orig.width/2)), orig.y, orig.width, orig.height);
+        case 8:
+            return cv::Rect(max(int(orig.x-orig.width*0.07),int(orig.width/2)), max(int(orig.y-orig.height*0.07),int(orig.height/2)), orig.width, orig.height);
+        case 9:
+            return cv::Rect(orig.x, orig.y, orig.width*0.8, orig.height*0.8);
+        case 10:
+            return cv::Rect(orig.x, orig.y, orig.width*0.9, orig.height*0.9);
+        case 11:
+            return cv::Rect(min(orig.x,int(x-orig.width*1.1/2)), min(orig.y,int(y-orig.height*1.1/2)), orig.width*1.1, orig.height*1.1);
+        default:
+            return cv::Rect(min(orig.x,int(x-orig.width*1.2/2)), min(orig.y,int(y-orig.height*1.2/2)), orig.width*1.2, orig.height*1.2);
+    }
+    
+    return orig;
 }
 
 //void OTBUtils::_calcEvaluation(Rect2d* rects, double* &dists, double* &oss) {
@@ -155,15 +320,15 @@ void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrack
 void OTBUtils::_loadRects(string filename) {
 	truthRects.clear();
 
-	ifstream file(filename, ios::in); // ÒÔÎÄ±¾Ä£Ê½´ò¿ªin.txt±¸¶Á
-	if (!file) { //´ò¿ªÊ§°Ü
+	ifstream file(filename, ios::in); // ï¿½ï¿½ï¿½Ä±ï¿½Ä£Ê½ï¿½ï¿½in.txtï¿½ï¿½ï¿½ï¿½
+	if (!file) { //ï¿½ï¿½Ê§ï¿½ï¿½
 		LOG("Error opening source file."); return;
 	}
 
-	int x, y, w, h;
+	int x, y, w, h; char ch;
 	while (file >> x) {
-		file >> y; file >> w; file >> h;
-		truthRects.push_back(Rect(x, y, w, h));
+		file >> ch >> y; file >> ch >> w; file >> ch >> h;
+		truthRects.push_back(cv::Rect(x, y, w, h));
 	}
 }
 
@@ -179,7 +344,7 @@ void OTBUtils::_loadFrames(string path) {
 		ImageProcess::progress = i * 1.0 / len;
 
 		char name_[12];
-		sprintf(name_, "%04d.jpg", i+1);
+		sprintf(name_, format.c_str(), i+1);
 		string filename(name_);
 		filename = path + filename;
 

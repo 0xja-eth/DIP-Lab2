@@ -1,6 +1,6 @@
 #pragma once
 #include <opencv2/opencv.hpp>
-#include "HaarFeature.cpp"
+#include "HaarFeatureFERNS.cpp"
 #include "Sample.cpp"
 
 #define DEBUG_HAAR_FEATURE_EXTRACTOR 1

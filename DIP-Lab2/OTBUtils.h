@@ -2,37 +2,59 @@
 
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
 #include "ImageProcess.h"
 #include "QTCVUtils.h"
+#include "FilesProcessUtils.hpp"
+
+#include "lib/STRUCK/Tracker.h"
+#include "lib/STRUCK/Config.h"
 
 static class OTBUtils {
 public:
-	static void openDataset(string path);
+	static bool showImg;
+
+	static void openDataset(string path, string format = "%04d.jpg");
 
 	static void run(ProcessParam *param_);
+	static void run(ObjTrackParam *param, ofstream &opt, int frames_num = 0, int rect_type = 0);
 
 private:
 	typedef map<double, double> OutTable;
 
-	static const string RectSpecFile; // ¾ØĞÎÖ¸¶¨ÎÄ¼şÃû
-	static const string ImagesDir; // Í¼Æ¬ÎÄ¼ş¼Ğ
+	static const string RectSpecFile; // ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
+	static const string ImagesDir; // Í¼Æ¬ï¿½Ä¼ï¿½ï¿½ï¿½
 
 	static const double MaxDistanceTreshold;
 	static const double MaxOSTreshold;
 
-	static const double DeltaTreshold; // ÔöÁ¿
+	static const double DeltaTreshold; // ï¿½ï¿½ï¿½ï¿½
 
+	static string format;
 	static string path;
 	static Mat* frames;
-	static vector<Rect> truthRects;
+	static vector<cv::Rect> truthRects;
 
 	static void _loadRects(string filename);
 	static void _loadFrames(string path);
 
-	static void _saveToFile(OutTable out, string title);
+	static void _saveToFile(OutTable out, ofstream &opt);
 
-	static void _runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrackParam *param);
+	static cv::Rect _initRect(cv::Rect orig, int rect_type); //æ ¹æ®ç±»å‹æ„é€ åˆå§‹çŸ©é˜µ
+
+	static void _runDetect(Rect2d* &rects, double* &dists, double* &oss, ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type);
+
+	static void __runStdDetect(Rect2d* &rects, double* &dists, double* &oss, 
+		ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type);
+	static void __runSTRUCKDetect(Rect2d* &rects, double* &dists, double* &oss,
+		ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type);
+	static void __runGOTURNDetect(Rect2d* &rects, double* &dists, double* &oss,
+		ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type);
+
+	static void __showProcessingImage(double dist, double os, 
+		Mat &frame, Rect2d &det, ObjTrackParam * param, cv::Rect &truth);
+
 	// static void _calcEvaluation(Rect2d* rects, double* &dists, double* &oss);
 
 	// Distance

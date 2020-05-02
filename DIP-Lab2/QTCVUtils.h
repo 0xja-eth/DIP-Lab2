@@ -123,6 +123,7 @@ public:
 	static QImage mat2QImage(const Mat* mat);
 
 	// 异步处理
+	static void process(void (*func)()); // 执行任意函数
 	static void process(ProcessFuncType0 func, // 处理函数
 		ProcessParam* param = NULL); // 执行任意函数
 	static void process(ProcessFuncType1 func, // 处理函数

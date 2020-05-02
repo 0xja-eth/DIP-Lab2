@@ -32,7 +32,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>12</x>
+      <x>10</x>
       <y>12</y>
       <width>831</width>
       <height>841</height>
@@ -153,7 +153,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>510</y>
+       <y>516</y>
        <width>80</width>
        <height>12</height>
       </rect>
@@ -706,99 +706,6 @@
       </widget>
      </widget>
     </widget>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="geometry">
-      <rect>
-       <x>620</x>
-       <y>0</y>
-       <width>211</width>
-       <height>121</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>OTB测试</string>
-     </property>
-     <widget class="QLabel" name="datasetName">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>50</y>
-        <width>181</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="wordWrap">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_11">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>96</y>
-        <width>54</width>
-        <height>12</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>跟踪算法</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="openDataset">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>20</y>
-        <width>76</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>选择数据集</string>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="otbAlgoSelect">
-      <property name="geometry">
-       <rect>
-        <x>80</x>
-        <y>90</y>
-        <width>121</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>KCF</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>TLD</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>GOTURN</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QPushButton" name="runOTB">
-      <property name="geometry">
-       <rect>
-        <x>120</x>
-        <y>20</y>
-        <width>76</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>执行测试</string>
-      </property>
-     </widget>
-    </widget>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="geometry">
       <rect>
@@ -1041,6 +948,304 @@
       <property name="text">
        <string>打开图片</string>
       </property>
+     </widget>
+    </widget>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="geometry">
+      <rect>
+       <x>620</x>
+       <y>10</y>
+       <width>211</width>
+       <height>491</height>
+      </rect>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab_3">
+      <attribute name="title">
+       <string>OTB测试</string>
+      </attribute>
+      <widget class="QPushButton" name="openOutDir">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>191</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>选择输出目录</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_12">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>132</y>
+         <width>91</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>处理数据集数量（0为不限）</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="batRunOTBTRE">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>200</y>
+         <width>191</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>批量执行TRE测试</string>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="numInput">
+       <property name="geometry">
+        <rect>
+         <x>120</x>
+         <y>136</y>
+         <width>81</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <number>10</number>
+       </property>
+       <property name="value">
+        <number>5</number>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="openDatasetDir">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>70</y>
+         <width>191</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>选择OTB数据集目录</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="outDir">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>40</y>
+         <width>191</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="datasetDir">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>100</y>
+         <width>191</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="batRunOTBSRE">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>230</y>
+         <width>191</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>批量执行SRE测试</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="batRunOTB">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>170</y>
+         <width>191</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>批量执行常规测试</string>
+       </property>
+      </widget>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>270</y>
+         <width>191</width>
+         <height>191</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>单次测试</string>
+       </property>
+       <widget class="QLineEdit" name="format">
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>20</y>
+          <width>61</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>%04d.jpg</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="runOTB">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>136</y>
+          <width>171</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>执行单个数据集测试</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_13">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>22</y>
+          <width>101</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>输入图片命名格式</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="otbAlgoSelect">
+        <property name="geometry">
+         <rect>
+          <x>80</x>
+          <y>106</y>
+          <width>101</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <item>
+         <property name="text">
+          <string>KCF</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>TLD</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>GOTURN</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>STRUCK</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QCheckBox" name="showImg">
+        <property name="geometry">
+         <rect>
+          <x>80</x>
+          <y>170</y>
+          <width>101</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>显示过程图片</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_11">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>112</y>
+          <width>54</width>
+          <height>12</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>跟踪算法</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="openDataset">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>50</y>
+          <width>171</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>选择单个数据集目录</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="datasetName">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>80</y>
+          <width>171</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_4">
+      <attribute name="title">
+       <string>VOT测试</string>
+      </attribute>
      </widget>
     </widget>
    </widget>

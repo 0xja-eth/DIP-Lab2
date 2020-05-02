@@ -125,7 +125,15 @@ public slots:
 
 	void setRecting() { recting = true; }
 	
+	void openOutDir();
+	void openDatasetDir();
+
+	void batRunOTB();
+	void batRunOTBTRE();
+	void batRunOTBSRE();
+
 	void openDataset();
+
 	void runOTB();
 
 	void onRectChanged();
@@ -141,6 +149,8 @@ protected:
 	void mousePressEvent(QMouseEvent * e);
 	void mouseMoveEvent(QMouseEvent *e);
 	void mouseReleaseEvent(QMouseEvent * e);
+
+	static void _batRunOTB();
 
 private:
 	MediaObject *media1 = NULL, *media2 = NULL;

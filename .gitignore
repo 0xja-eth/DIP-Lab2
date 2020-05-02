@@ -45,3 +45,5 @@ enc_temp_folder
 
 *.vcxproj
 *.orig
+
+goturn*
