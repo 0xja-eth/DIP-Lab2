@@ -471,11 +471,11 @@ void LaRank::UpdateDebugImage() {
 	} else {
 		kernelSize = 0;
 	}
-	
+	/*
 	Mat I = m_debugImage(cv::Rect(0, m_debugImage.rows - 200, m_debugImage.cols - kernelSize, 200));
 	I.setTo(Scalar(255, 255, 255));
 	IplImage II = IplImage(I);
 	setGraphColor(0);
 	drawFloatGraph(vals, n, &II, 0.f, 0.f, I.cols, I.rows);
-	
+	*/
 }

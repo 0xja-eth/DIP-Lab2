@@ -142,7 +142,7 @@ Mat ImageProcess::doFeatDet(const Mat &data1, const Mat &data2,
 
 	Ptr<Feature2D> algo;
 	switch (param->algo) {
-	case FeatDetParam::SIFT: algo = xfeatures2d::SIFT::create(); break;
+	//case FeatDetParam::SIFT: algo = xfeatures2d::SIFT::create(); break;
 	case FeatDetParam::SURF: algo = xfeatures2d::SURF::create(); break;
 	case FeatDetParam::ORB: algo = cv::ORB::create(); break;
 	default: return data1;
@@ -949,7 +949,7 @@ Mat ImageProcess::comMatR(const Mat &Matrix1, const Mat &Matrix2, ProcessParam* 
 	if (_param == NULL) return Matrix1;
 	auto param = (FeatDetParam*)_param;
 	switch (param->algo) {
-	case FeatDetParam::SIFT: algo = xfeatures2d::SIFT::create(); break;
+	//case FeatDetParam::SIFT: algo = xfeatures2d::SIFT::create(); break;
 	case FeatDetParam::SURF: algo = xfeatures2d::SURF::create(); break;
 	case FeatDetParam::ORB: algo = cv::ORB::create(); break;
 	}
