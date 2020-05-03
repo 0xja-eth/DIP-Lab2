@@ -270,7 +270,7 @@ void ImageProcess::doVideoFeatDet(const Mat *inVideo, long inLen,
 }
 
 cv::dnn::Net ImageProcess::createGOTURN() {
-	return readNetFromCaffe(GOTURNPrototxt, GOTURNModel);
+ 	return readNetFromCaffe(GOTURNPrototxt, GOTURNModel);
 }
 
 const std::string ImageProcess::FaceDetPath = "./xml/haarcascade_frontalface_alt.xml";
