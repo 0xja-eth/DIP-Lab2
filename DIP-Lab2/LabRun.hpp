@@ -9,15 +9,18 @@
 #include <cmath>
 #include <algorithm>
 
-#include "OTBUtils.h"
+#include "TestUtils.h"
 
 static class LabRun{
 public:
 	static int maxNum;
 
 	//初始化
-	static bool labIn(string outPath);
-	static void setOtbPath(string otbPath);
+	static bool labOtbIn(string outPath);
+	static bool labVotIn(string outPath);
+
+	static void setOtbPath(string path);
+	static void setVotPath(string path);
 
 	//实验一：otb测试
 	static void otbLab();
@@ -33,8 +36,14 @@ public:
 	static bool otbLabSRE(string otbPath);
     static bool otbAfterSRE(string inPath, string outPath);//后处理
 
+	//实验四：vot测试
+	static void votLab();
+	static bool votLab(string votPath);
+	static bool votAfter(string inPath, string outPath);//后处理
+
+
 private:
-    static string outPath, otbPath;
+    static string outPath, otbPath, votPath;
     
     //static ofstream opt1; //实验一写入文件
     

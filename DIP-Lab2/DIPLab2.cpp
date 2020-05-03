@@ -6,7 +6,7 @@
 
 #include "DIPLab2.h"
 
-#include "OTBUtils.h"
+#include "TestUtils.h"
 #include "LabRun.hpp"
 
 DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
@@ -54,16 +54,24 @@ DIPLab2::DIPLab2(QWidget *parent) : QMainWindow(parent) {
 		this, SLOT(onLoadCompleted(MediaObject*&)));
 	connect(this, SIGNAL(signalSaveCompleted()), this, SLOT(onSaveCompleted()));
 
-	connect(ui.openDataset, SIGNAL(clicked()), this, SLOT(openDataset()));
+	connect(ui.openOtbDataset, SIGNAL(clicked()), this, SLOT(openOtbDataset()));
 
-	connect(ui.openOutDir, SIGNAL(clicked()), this, SLOT(openOutDir()));
-	connect(ui.openDatasetDir, SIGNAL(clicked()), this, SLOT(openDatasetDir()));
+	connect(ui.openOtbOutDir, SIGNAL(clicked()), this, SLOT(openOtbOutDir()));
+	connect(ui.openOtbDatasetDir, SIGNAL(clicked()), this, SLOT(openOtbDatasetDir()));
+
+	connect(ui.openVotDataset, SIGNAL(clicked()), this, SLOT(openVotDataset()));
+
+	connect(ui.openVotOutDir, SIGNAL(clicked()), this, SLOT(openVotOutDir()));
+	connect(ui.openVotDatasetDir, SIGNAL(clicked()), this, SLOT(openVotDatasetDir()));
 
 	connect(ui.runOTB, SIGNAL(clicked()), this, SLOT(runOTB()));
+	connect(ui.runVOT, SIGNAL(clicked()), this, SLOT(runVOT()));
 
 	connect(ui.batRunOTB, SIGNAL(clicked()), this, SLOT(batRunOTB()));
 	connect(ui.batRunOTBTRE, SIGNAL(clicked()), this, SLOT(batRunOTBTRE()));
 	connect(ui.batRunOTBSRE, SIGNAL(clicked()), this, SLOT(batRunOTBSRE()));
+
+	connect(ui.batRunVOT, SIGNAL(clicked()), this, SLOT(batRunVOT()));
 
 	updateThread = new std::thread(requestUpdate, this);
 }
@@ -271,29 +279,29 @@ void DIPLab2::onSaveCompleted() {
 	QMessageBox::information(this, SaveSuccText, SaveSuccText);
 }
 
-void DIPLab2::openDatasetDir() {
+void DIPLab2::openOtbDatasetDir() {
 	QString path = QFileDialog::getExistingDirectory(this, DatasetTitle, "");
 	if (path.isEmpty()) return;
 
 	QTextCodec *code = QTextCodec::codecForName("GBK");
 	string pathStr = code->fromUnicode(path).data();
 
-	ui.datasetDir->setText(path);
+	ui.otbDatasetDir->setText(path);
 	LabRun::setOtbPath(pathStr);
 }
 
-void DIPLab2::openOutDir() {
+void DIPLab2::openOtbOutDir() {
 	QString path = QFileDialog::getExistingDirectory(this, DatasetTitle, "");
 	if (path.isEmpty()) return;
 
 	QTextCodec *code = QTextCodec::codecForName("GBK");
 	string pathStr = code->fromUnicode(path).data();
 
-	ui.outDir->setText(path);
-	LabRun::labIn(pathStr);
+	ui.otbOutDir->setText(path);
+	LabRun::labOtbIn(pathStr);
 }
 
-void DIPLab2::openDataset() {
+void DIPLab2::openOtbDataset() {
 	QString path = QFileDialog::getExistingDirectory(this, DatasetTitle, "");
 	if (path.isEmpty()) return;
 
@@ -301,11 +309,49 @@ void DIPLab2::openDataset() {
 	string pathStr = code->fromUnicode(path).data();
 	auto format = ui.format->text();
 	string formatStr = code->fromUnicode(format).data();
-	ui.datasetName->setText(path);
+	ui.otbDatasetName->setText(path);
 
 	new std::thread([this, &pathStr, &formatStr]() {
 		//LOG(pathStr);
-		OTBUtils::openDataset(pathStr, formatStr);
+		TestUtils::openOtbDataset(pathStr, formatStr);
+	});
+}
+
+void DIPLab2::openVotDatasetDir() {
+	QString path = QFileDialog::getExistingDirectory(this, DatasetTitle, "");
+	if (path.isEmpty()) return;
+
+	QTextCodec *code = QTextCodec::codecForName("GBK");
+	string pathStr = code->fromUnicode(path).data();
+
+	ui.votDatasetDir->setText(path);
+	LabRun::setVotPath(pathStr);
+}
+
+void DIPLab2::openVotOutDir() {
+	QString path = QFileDialog::getExistingDirectory(this, DatasetTitle, "");
+	if (path.isEmpty()) return;
+
+	QTextCodec *code = QTextCodec::codecForName("GBK");
+	string pathStr = code->fromUnicode(path).data();
+
+	ui.votOutDir->setText(path);
+	LabRun::labVotIn(pathStr);
+}
+
+void DIPLab2::openVotDataset() {
+	QString path = QFileDialog::getExistingDirectory(this, DatasetTitle, "");
+	if (path.isEmpty()) return;
+
+	QTextCodec *code = QTextCodec::codecForName("GBK");
+	string pathStr = code->fromUnicode(path).data();
+	auto format = ui.format2->text();
+	string formatStr = code->fromUnicode(format).data();
+	ui.votDatasetName->setText(path);
+
+	new std::thread([this, &pathStr, &formatStr]() {
+		//LOG(pathStr);
+		TestUtils::openVotDataset(pathStr, formatStr);
 	});
 }
 
@@ -490,7 +536,7 @@ void DIPLab2::doVideoObjDetTrack(ProcessParam* param) {
 }
 
 void DIPLab2::runOTB() {
-	OTBUtils::showImg = ui.showImg->isChecked();
+	TestUtils::showImg = ui.showImg->isChecked();
 	int algo_ = ui.otbAlgoSelect->currentIndex();
 
 	ObjTrackParam::Algo algo = ObjTrackParam::KCF;
@@ -504,25 +550,49 @@ void DIPLab2::runOTB() {
 
 	param = new ObjTrackParam(algo);
 
-	QTCVUtils::process(OTBUtils::run, param);
+	QTCVUtils::process(TestUtils::runOtb, param);
 }
 
 void DIPLab2::batRunOTB() {
-	OTBUtils::showImg = ui.showImg->isChecked();
+	TestUtils::showImg = ui.showImg->isChecked();
 	LabRun::maxNum = ui.numInput->value();
 	QTCVUtils::process(LabRun::otbLab);
 }
 
 void DIPLab2::batRunOTBTRE() {
-	OTBUtils::showImg = ui.showImg->isChecked();
+	TestUtils::showImg = ui.showImg->isChecked();
 	LabRun::maxNum = ui.numInput->value();
 	QTCVUtils::process(LabRun::otbLabTRE);
 }
 
 void DIPLab2::batRunOTBSRE() {
-	OTBUtils::showImg = ui.showImg->isChecked();
+	TestUtils::showImg = ui.showImg->isChecked();
 	LabRun::maxNum = ui.numInput->value();
 	QTCVUtils::process(LabRun::otbLabSRE);
+}
+
+void DIPLab2::runVOT() {
+	TestUtils::showImg = ui.showImg2->isChecked();
+	int algo_ = ui.votAlgoSelect->currentIndex();
+
+	ObjTrackParam::Algo algo = ObjTrackParam::KCF;
+
+	switch (algo_) {
+	case 0: algo = ObjTrackParam::KCF; break;
+	case 1: algo = ObjTrackParam::TLD; break;
+	case 2: algo = ObjTrackParam::GOTURN; break;
+	case 3: algo = ObjTrackParam::STRUCK; break;
+	}
+
+	param = new ObjTrackParam(algo);
+
+	QTCVUtils::process(TestUtils::runVot, param);
+}
+
+void DIPLab2::batRunVOT() {
+	TestUtils::showImg = ui.showImg2->isChecked();
+	LabRun::maxNum = ui.numInput2->value();
+	QTCVUtils::process(LabRun::votLab);
 }
 
 #pragma endregion

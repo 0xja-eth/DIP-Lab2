@@ -1,43 +1,63 @@
-#include "OTBUtils.h"
+#include "TestUtils.h"
 
-const std::string OTBUtils::RectSpecFile = "groundtruth_rect.txt";
+const std::string TestUtils::OtbRectSpecFile = "groundtruth_rect.txt";
 
-const std::string OTBUtils::ImagesDir = "img/";
+const std::string TestUtils::VotRectSpecFile = "groundtruth.txt";
 
-const double OTBUtils::MaxDistanceTreshold = 50;
+const std::string TestUtils::ImagesDir = "img/";
 
-const double OTBUtils::MaxOSTreshold = 1;
+const double TestUtils::MaxDistanceTreshold = 50;
 
-const double OTBUtils::DeltaTreshold = 0.01;
+const double TestUtils::MaxOSTreshold = 1;
 
-bool OTBUtils::showImg = false;
+const double TestUtils::DeltaTreshold = 0.01;
 
-std::string OTBUtils::format = "%04d.jpg";
+std::string TestUtils::mode;
 
-std::string OTBUtils::path = "";
+bool TestUtils::showImg = false;
 
-Mat* OTBUtils::frames = NULL;
+std::string TestUtils::format = "%04d.jpg";
 
-vector<cv::Rect> OTBUtils::truthRects;
+std::string TestUtils::path = "";
 
-void OTBUtils::openDataset(string path, string format) {
-	OTBUtils::path = path;
-	OTBUtils::format = format;
+Mat* TestUtils::frames = NULL;
 
-	auto rectFile = path + "/" + RectSpecFile;
+vector<cv::Rect> TestUtils::truthRects;
+
+void TestUtils::openOtbDataset(string path, string format) {
+	TestUtils::path = path;
+	TestUtils::format = format;
+
+	mode = "otb";
+
+	auto rectFile = path + "/" + OtbRectSpecFile;
 	auto imgDir = path + "/" + ImagesDir;
 
-	_loadRects(rectFile); _loadFrames(imgDir);
+	_loadOtbRects(rectFile); _loadFrames(imgDir);
 }
 
-void OTBUtils::run(ProcessParam *param_) {
+void TestUtils::openVotDataset(string path, string format /*= "%04d.jpg"*/) {
+
+	TestUtils::path = path;
+	TestUtils::format = format;
+
+	mode = "vot";
+
+	auto rectFile = path + "/" + VotRectSpecFile;
+	auto imgDir = path + "/";
+
+	_loadVotRects(rectFile); _loadFrames(imgDir);
+}
+
+void TestUtils::runOtb(ProcessParam *param_) {
 	auto param = (ObjTrackParam*)param_;
 	ofstream opt(path + "/CustomOTBResult.csv");
-	run(param, opt);
+	runOtb(param, opt, 0, 0, true);
 }
 
-void OTBUtils::run(ObjTrackParam *param, ofstream &opt, int frames_num, int rect_type) {
-	long start_frame = frames_num*truthRects.size()/20;
+void TestUtils::runOtb(ObjTrackParam *param, ofstream &opt, 
+	int frames_num, int rect_type, bool head) {
+	long start_frame = frames_num * truthRects.size() / 20;
 
 	// ï¿½ï¿½â£?ï¿½ï¿½È¡Ã¿Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	Rect2d *detRects; double *dists, *oss;
@@ -71,18 +91,97 @@ void OTBUtils::run(ObjTrackParam *param, ofstream &opt, int frames_num, int rect
 		osRates[osT] = osRate;
 	}
 
-	//opt << "Distance" << endl;
-	//opt << "Treshold" << "," << "Ratio" << endl;
-	opt << "#" << endl;
+	if (head) {
+		opt << "Distance" << endl;
+		opt << "Treshold" << "," << "Ratio" << endl;
+	} else opt << "#" << endl;
 	_saveToFile(distRates, opt);
 
-	//opt << "OverlapSpace" << endl;
-	//opt << "Treshold" << "," << "Ratio" << endl;
-	opt << "#" << endl;
+	if (head) {
+		opt << "OverlapSpace" << endl;
+		opt << "Treshold" << "," << "Ratio" << endl;
+	} else opt << "#" << endl;
 	_saveToFile(osRates, opt);
 }
 
-void OTBUtils::_saveToFile(OutTable out, ofstream &opt) {
+void TestUtils::runVot(ProcessParam *param_) {
+	auto param = (ObjTrackParam*)param_;
+	ofstream opt(path + "/CustomVOTResult.csv");
+	runVot(param, opt, true);
+}
+
+void TestUtils::runVot(ObjTrackParam *param, ofstream &opt, bool head) {
+
+	// ï¿½ï¿½â£?ï¿½ï¿½È¡Ã¿Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	Rect2d *detRects; double *dists, *oss;
+	_runDetect(detRects, dists, oss, param, opt, 0, 0);
+
+	OutTable distRates, osRates, trackLens, failRates;
+	long len = truthRects.size();
+
+	for (double t = 0; t < 1; t += DeltaTreshold) {
+
+		ImageProcess::progress = 0.9 + t / 1 * 0.1;
+
+		auto distT = t * MaxDistanceTreshold;
+		auto osT = t * MaxOSTreshold;
+
+		vector<long> failPos;
+
+		long tLen = 0; bool flag = true;
+		double distRate, osRate;
+		long distCnt = 0, osCnt = 0;
+		for (int i = 1; i < len; ++i) {
+			double dist = dists[i], os = oss[i];
+
+			if (dist > distT && flag) {
+				flag = false; tLen = i;
+			}
+			if (dist <= distT) distCnt++;
+			if (os >= osT) osCnt++;
+			else failPos.push_back(i);
+		}
+
+		auto fr = __calcFailRate(len, failPos);
+
+		if (len > 1) {
+			distRate = distCnt * 1.0 / (len - 1);
+			osRate = osCnt * 1.0 / (len - 1);
+		} else distRate = osRate = 0;
+
+		trackLens[distT] = tLen;
+		failRates[osT] = fr;
+
+		distRates[distT] = distRate;
+		osRates[osT] = osRate;
+	}
+
+	if (head) {
+		opt << "Distance" << endl;
+		opt << "Treshold" << "," << "Ratio" << endl;
+	} else opt << "#" << endl;
+	_saveToFile(distRates, opt);
+
+	if (head) {
+		opt << "OverlapSpace" << endl;
+		opt << "Treshold" << "," << "Ratio" << endl;
+	} else opt << "#" << endl;
+	_saveToFile(osRates, opt);
+
+	if (head) {
+		opt << "TrackLength" << endl;
+		opt << "Treshold" << "," << "Ratio" << endl;
+	} else opt << "#" << endl;
+	_saveToFile(trackLens, opt);
+
+	if (head) {
+		opt << "FailRate" << endl;
+		opt << "Treshold" << "," << "Ratio" << endl;
+	} else opt << "#" << endl;
+	_saveToFile(failRates, opt);
+}
+
+void TestUtils::_saveToFile(OutTable out, ofstream &opt) {
 	OutTable::iterator oit = out.begin();
 	for (; oit != out.end(); ++oit) {
 		auto pair = *oit;
@@ -90,7 +189,7 @@ void OTBUtils::_saveToFile(OutTable out, ofstream &opt) {
 	}
 }
 
-void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, 
+void TestUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss, 
 	ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type) {
 
 	long len = truthRects.size() - start_frame;
@@ -106,7 +205,7 @@ void OTBUtils::_runDetect(Rect2d* &rects, double* &dists, double* &oss,
 		__runStdDetect(rects, dists, oss, param, opt, start_frame, rect_type);
 }
 
-void OTBUtils::__runStdDetect(Rect2d* &rects, double* &dists, double* &oss,
+void TestUtils::__runStdDetect(Rect2d* &rects, double* &dists, double* &oss,
 	ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type) {
 	double start, end, run_time;
 
@@ -122,7 +221,8 @@ void OTBUtils::__runStdDetect(Rect2d* &rects, double* &dists, double* &oss,
 		auto truth = truthRects[i+start_frame];
 		auto frame = frames[i+start_frame];
 
-		if (i == 0) {
+		if (i == 0 || (mode == "vot" && newDet)) {
+			// ÖØÖÃ¾ØÐÎ
 			param->setRect(rects[i] = _initRect(truth, rect_type));
 			ImageProcess::doObjTrack(frame, tracker, newDet, param);
 			continue;
@@ -137,6 +237,8 @@ void OTBUtils::__runStdDetect(Rect2d* &rects, double* &dists, double* &oss,
 		double dist = dists[i] = __calcDistance(det, truth);
 		double os = oss[i] = __calcOS(det, truth);
 
+		if (mode == "vot" && dists[i] >= 50) newDet = true;
+
 		end = static_cast<double>(getTickCount());
 		run_time = (end-start)/getTickFrequency();
 
@@ -149,7 +251,7 @@ void OTBUtils::__runStdDetect(Rect2d* &rects, double* &dists, double* &oss,
 	}
 }
 
-void OTBUtils::__runSTRUCKDetect(Rect2d* &rects, double* &dists, double* &oss, 
+void TestUtils::__runSTRUCKDetect(Rect2d* &rects, double* &dists, double* &oss, 
 	ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type) {
 	double start, end, run_time;
 
@@ -164,7 +266,7 @@ void OTBUtils::__runSTRUCKDetect(Rect2d* &rects, double* &dists, double* &oss,
 		auto truth = truthRects[i + start_frame];
 		auto frame = frames[i + start_frame];
 
-		if (i == 0) {
+		if (i == 0 || (mode == "vot" && dists[i-1] >= 50)) {
 			Mat scaledFrame;
 
 			float scaleW = (float)conf.frameWidth / frame.cols;
@@ -173,7 +275,7 @@ void OTBUtils::__runSTRUCKDetect(Rect2d* &rects, double* &dists, double* &oss,
 			auto rect = _initRect(truth, rect_type);
 			param->setRect(rects[i] = rect);
 
-			resize(frame, scaledFrame, Size(conf.frameWidth, conf.frameHeight));
+			cv::resize(frame, scaledFrame, Size(conf.frameWidth, conf.frameHeight));
 			FloatRect initBB = FloatRect(rect.x*scaleW, rect.y*scaleH,
 				rect.width*scaleW, rect.height*scaleH);
 
@@ -199,7 +301,7 @@ void OTBUtils::__runSTRUCKDetect(Rect2d* &rects, double* &dists, double* &oss,
 	}
 }
 
-void OTBUtils::__runGOTURNDetect(Rect2d* &rects, double* &dists, double* &oss,
+void TestUtils::__runGOTURNDetect(Rect2d* &rects, double* &dists, double* &oss,
 	ObjTrackParam *param, ofstream &opt, long start_frame, int rect_type) {
 	double start, end, run_time;
 
@@ -214,7 +316,7 @@ void OTBUtils::__runGOTURNDetect(Rect2d* &rects, double* &dists, double* &oss,
 
 		auto truth = truthRects[i + start_frame];
 
-		if (i == 0) {
+		if (i == 0 || (mode == "vot" && dists[i - 1] >= 50)) {
 			auto rect = _initRect(truth, rect_type);
 			param->setRect(det = rects[i] = rect);
 			continue;
@@ -241,7 +343,7 @@ void OTBUtils::__runGOTURNDetect(Rect2d* &rects, double* &dists, double* &oss,
 	}
 }
 
-void OTBUtils::__showProcessingImage(double dist, double os,
+void TestUtils::__showProcessingImage(double dist, double os,
 	Mat &frame, Rect2d &det, ObjTrackParam * param, cv::Rect &truth) {
 	Mat drawFrame = frame.clone();
 
@@ -260,7 +362,7 @@ void OTBUtils::__showProcessingImage(double dist, double os,
 	waitKey(1);
 }
 
-cv::Rect OTBUtils::_initRect(cv::Rect orig, int rect_type){
+cv::Rect TestUtils::_initRect(cv::Rect orig, int rect_type){
     int x = frames[0].rows; int y = frames[0].cols;    
 
 	switch(rect_type){
@@ -316,8 +418,7 @@ cv::Rect OTBUtils::_initRect(cv::Rect orig, int rect_type){
 //	}
 //}
 
-
-void OTBUtils::_loadRects(string filename) {
+void TestUtils::_loadOtbRects(string filename) {
 	truthRects.clear();
 
 	ifstream file(filename, ios::in); // ï¿½ï¿½ï¿½Ä±ï¿½Ä£Ê½ï¿½ï¿½in.txtï¿½ï¿½ï¿½ï¿½
@@ -332,7 +433,27 @@ void OTBUtils::_loadRects(string filename) {
 	}
 }
 
-void OTBUtils::_loadFrames(string path) {
+void TestUtils::_loadVotRects(string filename) {
+	truthRects.clear();
+
+	ifstream file(filename, ios::in); // ï¿½ï¿½ï¿½Ä±ï¿½Ä£Ê½ï¿½ï¿½in.txtï¿½ï¿½ï¿½ï¿½
+	if (!file) { //ï¿½ï¿½Ê§ï¿½ï¿½
+		LOG("Error opening source file."); return;
+	}
+
+	double x, y; char ch;
+	while (file >> x) {
+		VOTBB bbox;
+		file >> ch >> y >> ch; bbox.a = cv::Point(x, y);
+		file >> x >> ch >> y >> ch; bbox.b = cv::Point(x, y);
+		file >> x >> ch >> y >> ch; bbox.c = cv::Point(x, y);
+		file >> x >> ch >> y; bbox.d = cv::Point(x, y);
+
+		truthRects.push_back(bbox.toRect());
+	}
+}
+
+void TestUtils::_loadFrames(string path) {
 	long len = truthRects.size();
 
 	if (frames != NULL) {
@@ -352,7 +473,7 @@ void OTBUtils::_loadFrames(string path) {
 	}
 }
 
-double OTBUtils::__calcDistance(Rect2d dist, Rect2d truth) {
+double TestUtils::__calcDistance(Rect2d dist, Rect2d truth) {
 	double dx = dist.x + (dist.width / 2);
 	double dy = dist.y + (dist.height / 2);
 	double tx = truth.x + (truth.width / 2);
@@ -360,12 +481,12 @@ double OTBUtils::__calcDistance(Rect2d dist, Rect2d truth) {
 	return sqrt((tx - dx)*(tx - dx) + (ty - dy)*(ty - dy));
 }
 
-double OTBUtils::__calcOS(Rect2d dist, Rect2d truth) {
+double TestUtils::__calcOS(Rect2d dist, Rect2d truth) {
 	auto cross = __calcCrossSpace(dist, truth);
 	return __calcCrossSpace(dist, truth) / __calcMergeSpace(dist, truth, cross);
 }
 
-double OTBUtils::__calcCrossSpace(Rect2d dist, Rect2d truth) {
+double TestUtils::__calcCrossSpace(Rect2d dist, Rect2d truth) {
 	double dx = dist.x, dy = dist.y,
 		dw = dist.width, dh = dist.height;
 	double tx = truth.x, ty = truth.y,
@@ -379,6 +500,23 @@ double OTBUtils::__calcCrossSpace(Rect2d dist, Rect2d truth) {
 	return width * height;
 }
 
-double OTBUtils::__calcMergeSpace(Rect2d dist, Rect2d truth, double cross) {
+double TestUtils::__calcMergeSpace(Rect2d dist, Rect2d truth, double cross) {
 	return dist.area() + truth.area() - cross;
+}
+
+double TestUtils::__calcFailRate(long len, vector<long> &failPos) {
+	double res = 0;
+	for (int i = 0; i < failPos.size(); ++i) {
+		auto dfi = __deltaFail(len, failPos, i);
+		res += (-dfi / len)*log(dfi / len);
+	}
+	return res / log(failPos.size());
+}
+
+double TestUtils::__deltaFail(long len, vector<long> &failPos, int index) {
+	long fi = failPos[index];
+	long maxF = failPos[failPos.size() - 1];
+	if (fi < maxF) return failPos[index + 1] - fi;
+	else if (fi == maxF) return failPos[0] + len - fi;
+	return 0;
 }
